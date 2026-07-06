@@ -108,12 +108,21 @@ def build_report():
     story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#cccccc"), spaceBefore=8, spaceAfter=16))
 
     # ── Scope note ──
-    story.append(Paragraph(
-        f"<b>Scope:</b> this report covers India, Pakistan, China, Bangladesh, Nepal, Sri Lanka, "
-        f"and Myanmar only. Of {total_all:,} total findings in the full dataset, {total:,} "
-        f"({total*100/total_all:.1f}%) carry a location attribution to one of these countries -- "
-        f"the rest (other countries, plus non-country-specific categories like Global threat-intel "
-        f"feeds, Cloud, or Dark Web) are excluded from the tables below.", body))
+    if total_all > total:
+        scope_text = (
+            f"<b>Scope:</b> this report covers India, Pakistan, China, Bangladesh, Nepal, Sri Lanka, "
+            f"and Myanmar only. Of {total_all:,} total findings in the full dataset, {total:,} "
+            f"({total*100/total_all:.1f}%) carry a location attribution to one of these countries -- "
+            f"the rest (other countries, plus non-country-specific categories like Global threat-intel "
+            f"feeds, Cloud, or Dark Web) are excluded from the tables below."
+        )
+    else:
+        scope_text = (
+            f"<b>Scope:</b> this dataset has been filtered to India, Pakistan, China, Bangladesh, "
+            f"Nepal, Sri Lanka, and Myanmar only -- all {total:,} findings below are from these "
+            f"countries. Other countries' data has been removed from the master dataset."
+        )
+    story.append(Paragraph(scope_text, body))
     story.append(Spacer(1, 10))
 
     # ── Executive summary ──
