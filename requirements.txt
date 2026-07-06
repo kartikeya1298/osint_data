@@ -1,0 +1,8 @@
+# Core tool (military_osint_tool_v2.py) + desktop GUI (osint_gui_app.py)
+requests
+pywebview
+
+# Optional -- only needed if you use whatsapp_bot.py
+# flask
+# twilio
+# pyngrok

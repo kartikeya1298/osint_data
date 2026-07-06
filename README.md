@@ -25,6 +25,9 @@ A browsable dashboard and an optional desktop GUI app are included.
 | `whatsapp_bot.py` | Optional two-way WhatsApp interface (Twilio + ngrok) for triggering runs remotely |
 | `Military_OSINT_Source_Map.md` | Reference notes on data sources |
 | `.env.example` | Template for API keys -- copy to `.env` and fill in your own |
+| `requirements.txt` | Python dependencies |
+| `generate_summary_report.py` | Generates the PDF summary report from the master CSV |
+| `Military_OSINT_Summary_Report.pdf` | Findings summary -- category/severity breakdowns, top sources, notable findings |
 
 ## Just want to browse the data?
 
@@ -37,7 +40,7 @@ is embedded directly in the file.
 Python 3.9+. Only two third-party packages are needed (everything else is
 standard library):
 ```bash
-pip install requests pywebview
+pip install -r requirements.txt
 ```
 
 ### 2. Get the code
