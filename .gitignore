@@ -1,0 +1,12 @@
+# Real API keys — never commit these. Use .env.example as the template.
+.env
+
+# Python
+__pycache__/
+*.pyc
+
+# Ever-growing runtime log — diagnostic noise, not analytical data
+osint_tool_v2.log
+
+# Local Claude Code session config, not part of the project
+.claude/

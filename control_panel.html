@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Military OSINT — Control Panel</title>
+<style>
+  :root {
+    --bg:#0a0d14; --surface:#111520; --surface2:#161b2e; --border:#1e2a45;
+    --accent:#00c8ff; --accent2:#7b5ef8; --red:#ff4560; --orange:#ff9f0a;
+    --yellow:#ffd60a; --green:#30d158; --text:#e2e8f0; --muted:#64748b;
+    --card-glow:0 0 20px rgba(0,200,255,0.07);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{height:100%;}
+  body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;
+    display:flex;flex-direction:column;overflow:hidden;}
+
+  header{background:linear-gradient(135deg,#0d1117 0%,#111520 100%);border-bottom:1px solid var(--border);
+    padding:12px 22px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+  .logo{display:flex;align-items:center;gap:10px;}
+  .logo-icon{width:32px;height:32px;background:linear-gradient(135deg,var(--accent),var(--accent2));
+    border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;}
+  .logo h1{font-size:15px;font-weight:600;letter-spacing:.3px;}
+  .logo span{font-size:11px;color:var(--muted);}
+  .header-right{display:flex;align-items:center;gap:8px;}
+  .hbtn{background:var(--surface2);border:1px solid var(--border);color:var(--text);
+    border-radius:7px;padding:7px 14px;font-size:12px;cursor:pointer;transition:all .15s;white-space:nowrap;}
+  .hbtn:hover{border-color:var(--accent);color:var(--accent);}
+  .hbtn:disabled{opacity:.4;cursor:not-allowed;}
+
+  #status-badge{display:inline-flex;align-items:center;gap:6px;border-radius:20px;padding:5px 12px;
+    font-size:11px;font-weight:700;letter-spacing:.4px;border:1px solid var(--border);}
+  #status-badge .dot{width:7px;height:7px;border-radius:50%;background:var(--muted);}
+  #status-badge.idle{color:var(--muted);}
+  #status-badge.running .dot{background:var(--accent);box-shadow:0 0 6px var(--accent);animation:pulse 1s infinite;}
+  #status-badge.running{color:var(--accent);border-color:rgba(0,200,255,.3);}
+  #status-badge.done .dot{background:var(--green);} #status-badge.done{color:var(--green);border-color:rgba(48,209,88,.3);}
+  #status-badge.error .dot{background:var(--red);} #status-badge.error{color:var(--red);border-color:rgba(255,69,96,.3);}
+  #status-badge.stopped .dot{background:var(--orange);} #status-badge.stopped{color:var(--orange);border-color:rgba(255,159,10,.3);}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+
+  main{flex:1;display:grid;grid-template-columns:360px 1fr;gap:14px;padding:14px 18px;overflow:hidden;min-height:0;}
+  .col{display:flex;flex-direction:column;gap:14px;overflow-y:auto;min-height:0;padding-right:2px;}
+
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;box-shadow:var(--card-glow);flex-shrink:0;}
+  .card h3{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:12px;}
+
+  .run-btn{width:100%;padding:12px;border-radius:9px;border:none;font-size:14px;font-weight:700;cursor:pointer;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));color:#04121a;transition:opacity .15s;}
+  .run-btn:hover{opacity:.9;} .run-btn:disabled{opacity:.35;cursor:not-allowed;}
+  .stop-btn{width:100%;margin-top:8px;padding:10px;border-radius:9px;border:1px solid rgba(255,69,96,.4);
+    background:rgba(255,69,96,.1);color:var(--red);font-size:13px;font-weight:600;cursor:pointer;}
+  .stop-btn:hover{background:rgba(255,69,96,.18);} .stop-btn:disabled{opacity:.3;cursor:not-allowed;}
+  .run-note{font-size:11px;color:var(--muted);margin-top:10px;line-height:1.5;}
+  .elapsed{font-size:12px;color:var(--muted);margin-top:8px;text-align:center;}
+
+  .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .stat{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:9px 11px;}
+  .stat .label{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;}
+  .stat .value{font-size:19px;font-weight:700;margin-top:2px;}
+
+  .sev-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;}
+  .sev-chip{font-size:10px;font-weight:700;border-radius:5px;padding:3px 8px;letter-spacing:.3px;}
+  .sev-CRITICAL{background:rgba(255,69,96,.15);color:var(--red);border:1px solid rgba(255,69,96,.3);}
+  .sev-HIGH{background:rgba(255,159,10,.15);color:var(--orange);border:1px solid rgba(255,159,10,.3);}
+  .sev-MEDIUM{background:rgba(255,214,10,.15);color:var(--yellow);border:1px solid rgba(255,214,10,.3);}
+  .sev-LOW{background:rgba(48,209,88,.12);color:var(--green);border:1px solid rgba(48,209,88,.3);}
+  .sev-UNKNOWN{background:rgba(100,116,139,.2);color:var(--muted);border:1px solid rgba(100,116,139,.3);}
+
+  .health-row{display:flex;justify-content:space-between;align-items:center;font-size:12px;padding:6px 0;
+    border-bottom:1px solid rgba(30,42,69,.5);}
+  .health-row:last-child{border-bottom:none;}
+  .health-flag{font-size:10px;font-weight:700;color:var(--red);}
+  .health-ok{font-size:10px;color:var(--muted);}
+  .empty-note{font-size:12px;color:var(--muted);padding:4px 0;}
+
+  .run-list{display:flex;flex-direction:column;gap:6px;}
+  .run-item{display:flex;justify-content:space-between;align-items:center;background:var(--surface2);
+    border:1px solid var(--border);border-radius:7px;padding:8px 10px;font-size:11px;}
+  .run-item button{background:none;border:1px solid var(--border);color:var(--muted);border-radius:5px;
+    padding:3px 8px;font-size:10px;cursor:pointer;}
+  .run-item button:hover{color:var(--accent);border-color:var(--accent);}
+
+  .clean-form label{font-size:11px;color:var(--muted);display:block;margin-bottom:4px;margin-top:8px;}
+  .clean-form .row{display:flex;gap:6px;}
+  .clean-form input[type=text]{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:6px;
+    color:var(--text);padding:7px 9px;font-size:11px;outline:none;min-width:0;}
+  .clean-form input[type=text]:focus{border-color:var(--accent);}
+  .clean-form button.pick{background:var(--surface2);border:1px solid var(--border);color:var(--muted);
+    border-radius:6px;padding:7px 10px;font-size:11px;cursor:pointer;}
+  .clean-form button.pick:hover{color:var(--accent);border-color:var(--accent);}
+  .clean-form .run-btn{margin-top:12px;padding:9px;font-size:12px;}
+
+  .delta-pre{font-size:11px;color:var(--text);white-space:pre-wrap;line-height:1.5;max-height:220px;overflow-y:auto;
+    background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px;}
+
+  /* Console */
+  .console-card{display:flex;flex-direction:column;flex:1;min-height:0;}
+  .console-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+  .console-head h3{margin:0;}
+  .console-actions{display:flex;gap:6px;align-items:center;font-size:11px;color:var(--muted);}
+  .console-actions label{display:flex;align-items:center;gap:4px;cursor:pointer;}
+  #console{flex:1;background:#05070c;border:1px solid var(--border);border-radius:9px;padding:12px 14px;
+    overflow-y:auto;font-family:Consolas,'Cascadia Mono',monospace;font-size:12px;line-height:1.55;min-height:0;}
+  #console .line{white-space:pre-wrap;word-break:break-word;}
+  #console .line.err{color:var(--red);}
+  #console .line.warn{color:var(--orange);}
+  #console .line.info{color:var(--text);}
+  #console .line.gui{color:var(--accent);}
+  #console-empty{color:var(--muted);font-style:italic;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">🛰</div>
+    <div>
+      <h1>Military OSINT — Control Panel</h1>
+      <span>military_osint_tool_v2.py · local desktop app</span>
+    </div>
+  </div>
+  <div class="header-right">
+    <span id="status-badge" class="idle"><span class="dot"></span><span id="status-text">Idle</span></span>
+    <button class="hbtn" onclick="openDataFolder()">Open Data Folder</button>
+    <button class="hbtn" onclick="openDashboard()">Open Dashboard</button>
+  </div>
+</header>
+
+<main>
+  <div class="col" id="left-col">
+
+    <div class="card">
+      <h3>Collection Run</h3>
+      <button class="run-btn" id="btn-start" onclick="startRun()">▶ Start Full Collection Run</button>
+      <button class="stop-btn" id="btn-stop" onclick="stopRun()" disabled>■ Stop Run</button>
+      <div class="elapsed" id="elapsed"></div>
+      <div class="run-note">Queries live OSINT sources (Shodan, GitHub, HIBP, Censys, dark-web feeds, etc.) using the API keys configured in military_osint_tool_v2.py. A full run can take several minutes and uses API quota.</div>
+    </div>
+
+    <div class="card">
+      <h3>Master Dataset</h3>
+      <div class="stats-grid">
+        <div class="stat"><div class="label">Total Rows</div><div class="value" id="stat-rows">—</div></div>
+        <div class="stat"><div class="label">Categories</div><div class="value" id="stat-cats">—</div></div>
+      </div>
+      <div class="sev-row" id="sev-row"></div>
+    </div>
+
+    <div class="card">
+      <h3>Module Health</h3>
+      <div id="health-list"><div class="empty-note">No data yet.</div></div>
+    </div>
+
+    <div class="card">
+      <h3>Latest Weekly Delta</h3>
+      <div id="delta-box"><div class="empty-note">No delta report yet.</div></div>
+    </div>
+
+    <div class="card">
+      <h3>Recent Runs</h3>
+      <div class="run-list" id="run-list"><div class="empty-note">No runs yet.</div></div>
+    </div>
+
+    <div class="card">
+      <h3>Clean an Existing CSV</h3>
+      <div class="clean-form">
+        <label>Input CSV</label>
+        <div class="row">
+          <input type="text" id="clean-input" placeholder="Select a CSV to re-filter…" readonly>
+          <button class="pick" onclick="pickInput()">Browse…</button>
+        </div>
+        <label>Output CSV</label>
+        <div class="row">
+          <input type="text" id="clean-output" placeholder="Where to save the cleaned CSV…" readonly>
+          <button class="pick" onclick="pickOutput()">Browse…</button>
+        </div>
+        <button class="run-btn" id="btn-clean" onclick="runClean()">Run --clean</button>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="col" style="min-height:0;">
+    <div class="card console-card">
+      <div class="console-head">
+        <h3>Live Output</h3>
+        <div class="console-actions">
+          <span id="line-count">0 lines</span>
+          <label><input type="checkbox" id="autoscroll" checked> autoscroll</label>
+          <button class="hbtn" onclick="clearConsole()">Clear</button>
+          <button class="hbtn" onclick="openPath('osint_tool_v2.log')">Open Log File</button>
+        </div>
+      </div>
+      <div id="console"><div id="console-empty">Output from the tool will stream here once a run starts…</div></div>
+    </div>
+  </div>
+</main>
+
+<script>
+let sinceIdx = 0;
+let pollTimer = null;
+let elapsedTimer = null;
+let runStartTime = null;
+let currentState = "idle";
+
+function setStatus(state) {
+  currentState = state;
+  const badge = document.getElementById('status-badge');
+  const text = document.getElementById('status-text');
+  badge.className = state;
+  const labels = {idle: "Idle", running: "Running", done: "Completed", error: "Error", stopped: "Stopped"};
+  text.textContent = labels[state] || state;
+
+  const running = state === "running";
+  document.getElementById('btn-start').disabled = running;
+  document.getElementById('btn-clean').disabled = running;
+  document.getElementById('btn-stop').disabled = !running;
+}
+
+function fmtElapsed(sec) {
+  const m = Math.floor(sec / 60), s = Math.floor(sec % 60);
+  return `${m}m ${s.toString().padStart(2,'0')}s`;
+}
+
+function startElapsedTimer() {
+  runStartTime = Date.now();
+  if (elapsedTimer) clearInterval(elapsedTimer);
+  elapsedTimer = setInterval(() => {
+    document.getElementById('elapsed').textContent = "Elapsed: " + fmtElapsed((Date.now() - runStartTime) / 1000);
+  }, 500);
+}
+
+function stopElapsedTimer() {
+  if (elapsedTimer) clearInterval(elapsedTimer);
+  elapsedTimer = null;
+}
+
+function classifyLine(line) {
+  if (/\[ERROR\]/.test(line) || /Traceback/.test(line)) return "err";
+  if (/\[WARNING\]/.test(line)) return "warn";
+  if (/^\[GUI\]/.test(line)) return "gui";
+  return "info";
+}
+
+function appendLogLines(lines) {
+  const consoleEl = document.getElementById('console');
+  const emptyEl = document.getElementById('console-empty');
+  if (emptyEl) emptyEl.remove();
+  const frag = document.createDocumentFragment();
+  for (const line of lines) {
+    const div = document.createElement('div');
+    div.className = 'line ' + classifyLine(line);
+    div.textContent = line;
+    frag.appendChild(div);
+  }
+  consoleEl.appendChild(frag);
+  document.getElementById('line-count').textContent = consoleEl.children.length + " lines";
+  if (document.getElementById('autoscroll').checked) {
+    consoleEl.scrollTop = consoleEl.scrollHeight;
+  }
+}
+
+function clearConsole() {
+  document.getElementById('console').innerHTML = '<div id="console-empty">Output from the tool will stream here once a run starts…</div>';
+}
+
+async function poll() {
+  try {
+    const res = await pywebview.api.poll(sinceIdx);
+    sinceIdx = res.total_lines;
+    if (res.new_lines.length) appendLogLines(res.new_lines);
+
+    if (res.state !== currentState) {
+      setStatus(res.state);
+      if (res.state !== "running") {
+        stopElapsedTimer();
+        refreshAllStats();
+      }
+    }
+  } catch (e) {
+    // window may be tearing down
+  }
+}
+
+function startPolling() {
+  if (pollTimer) return;
+  pollTimer = setInterval(poll, 500);
+}
+
+async function startRun() {
+  if (!confirm("Start a full OSINT collection run? This queries live external sources and may take several minutes.")) return;
+  const res = await pywebview.api.start_collection();
+  if (!res.ok) { alert(res.error); return; }
+  clearConsole();
+  sinceIdx = 0;
+  setStatus("running");
+  startElapsedTimer();
+  startPolling();
+}
+
+async function stopRun() {
+  if (!confirm("Stop the current run?")) return;
+  await pywebview.api.stop();
+}
+
+async function runClean() {
+  const input = document.getElementById('clean-input').value;
+  const output = document.getElementById('clean-output').value;
+  if (!input || !output) { alert("Pick both an input and output CSV path first."); return; }
+  const res = await pywebview.api.start_clean(input, output);
+  if (!res.ok) { alert(res.error); return; }
+  clearConsole();
+  sinceIdx = 0;
+  setStatus("running");
+  startElapsedTimer();
+  startPolling();
+}
+
+async function pickInput() {
+  const path = await pywebview.api.pick_csv_open();
+  if (path) document.getElementById('clean-input').value = path;
+}
+
+async function pickOutput() {
+  const path = await pywebview.api.pick_csv_save();
+  if (path) document.getElementById('clean-output').value = path;
+}
+
+async function openDashboard() {
+  const res = await pywebview.api.open_dashboard();
+  if (!res.ok) alert(res.error);
+}
+
+async function openDataFolder() {
+  await pywebview.api.open_data_folder();
+}
+
+async function openPath(path) {
+  const res = await pywebview.api.open_path(path);
+  if (!res.ok) alert(res.error);
+}
+
+async function refreshStats() {
+  const s = await pywebview.api.get_master_stats();
+  document.getElementById('stat-rows').textContent = s.rows.toLocaleString();
+  document.getElementById('stat-cats').textContent = Object.keys(s.category || {}).length;
+  const sevRow = document.getElementById('sev-row');
+  sevRow.innerHTML = '';
+  const order = ["CRITICAL", "HIGH", "MEDIUM", "LOW", "UNKNOWN"];
+  for (const sev of order) {
+    const count = (s.severity || {})[sev];
+    if (!count) continue;
+    const chip = document.createElement('span');
+    chip.className = 'sev-chip sev-' + sev;
+    chip.textContent = `${sev} ${count}`;
+    sevRow.appendChild(chip);
+  }
+}
+
+async function refreshHealth() {
+  const health = await pywebview.api.get_health();
+  const el = document.getElementById('health-list');
+  const entries = Object.entries(health || {});
+  if (!entries.length) { el.innerHTML = '<div class="empty-note">No module health data yet.</div>'; return; }
+  el.innerHTML = '';
+  for (const [name, rec] of entries) {
+    const row = document.createElement('div');
+    row.className = 'health-row';
+    const flagged = (rec.consecutive_zeros || 0) >= 3;
+    row.innerHTML = `<span>${name}</span><span class="${flagged ? 'health-flag' : 'health-ok'}">${
+      flagged ? rec.consecutive_zeros + '× zero results' : (rec.last_results || 0) + ' last run'
+    }</span>`;
+    el.appendChild(row);
+  }
+}
+
+async function refreshDelta() {
+  const delta = await pywebview.api.get_latest_delta();
+  const el = document.getElementById('delta-box');
+  if (!delta) { el.innerHTML = '<div class="empty-note">No delta report yet.</div>'; return; }
+  el.innerHTML = `<div class="empty-note" style="margin-bottom:6px;">${delta.filename}</div><div class="delta-pre">${
+    delta.content.replace(/&/g,'&amp;').replace(/</g,'&lt;')
+  }</div>`;
+}
+
+async function refreshRuns() {
+  const runs = await pywebview.api.list_runs();
+  const el = document.getElementById('run-list');
+  if (!runs.length) { el.innerHTML = '<div class="empty-note">No runs yet.</div>'; return; }
+  el.innerHTML = '';
+  for (const r of runs) {
+    const item = document.createElement('div');
+    item.className = 'run-item';
+    item.innerHTML = `<span>${r.timestamp} · ${r.size_kb} KB</span>`;
+    const btn = document.createElement('button');
+    btn.textContent = 'Open';
+    btn.onclick = () => openPath(r.filename);
+    item.appendChild(btn);
+    el.appendChild(item);
+  }
+}
+
+function refreshAllStats() {
+  refreshStats();
+  refreshHealth();
+  refreshDelta();
+  refreshRuns();
+}
+
+window.addEventListener('pywebviewready', () => {
+  refreshAllStats();
+  startPolling();
+});
+</script>
+</body>
+</html>
