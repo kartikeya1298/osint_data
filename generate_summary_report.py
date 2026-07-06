@@ -1,8 +1,10 @@
 """
 generate_summary_report.py
-Builds a PDF summary report of military_osint_master.csv  -  total findings,
-category/severity/source breakdowns, country coverage, and a few notable
-highlighted findings. Run: python generate_summary_report.py
+Builds a PDF summary report of military_osint_master.csv, scoped to India and
+its neighbouring countries (India, Pakistan, China, Bangladesh, Nepal, Sri
+Lanka, Myanmar) -- total findings, category/severity/source breakdowns, and
+an appendix listing the actual search terms/tags/queries used by each API
+source. Run: python generate_summary_report.py
 """
 import csv
 from collections import Counter
@@ -30,11 +32,18 @@ CATEGORY_NAMES = {
     "T8": "Information Operations & Influence Threats",
 }
 
-COUNTRY_KEYS = [
-    "United States", "US", "India", "China", "Pakistan", "United Kingdom", "UK",
-    "Germany", "Canada", "Australia", "Israel", "France", "Japan", "South Korea",
-    "Taiwan", "Ukraine", "NATO",
-]
+# Report scope: India and its neighbouring countries only. Matched against
+# the "location" field by substring (catches "Orbit - India" satellite rows
+# too) plus exact short ISO-code matches (some sources record just "IN"/"PK").
+NEIGHBOR_NAMES = ["India", "Pakistan", "China", "Bangladesh", "Nepal", "Sri Lanka", "Myanmar"]
+NEIGHBOR_CODES = {"IN", "PK", "CN", "PRC", "BD", "NP", "LK", "MM"}
+
+
+def is_neighbor_row(location: str) -> bool:
+    loc = (location or "").strip()
+    if loc in NEIGHBOR_CODES:
+        return True
+    return any(name in loc for name in NEIGHBOR_NAMES)
 
 
 def load_rows():
@@ -43,8 +52,10 @@ def load_rows():
 
 
 def build_report():
-    rows = load_rows()
+    all_rows = load_rows()
+    rows = [r for r in all_rows if is_neighbor_row(r.get("location"))]
     total = len(rows)
+    total_all = len(all_rows)
 
     by_cat = Counter(r.get("category_code") for r in rows)
     by_sev = Counter(r.get("severity") for r in rows)
@@ -53,8 +64,6 @@ def build_report():
     by_source = Counter(r.get("source") for r in rows)
     by_loc = Counter(r.get("location") for r in rows)
     distinct_sources = len(by_source)
-
-    country_total = sum(by_loc.get(k, 0) for k in COUNTRY_KEYS)
 
     styles = getSampleStyleSheet()
     title_style = ParagraphStyle("TitleCustom", parent=styles["Title"], fontSize=22, spaceAfter=6)
@@ -65,52 +74,73 @@ def build_report():
     body = ParagraphStyle("BodyCustom", parent=styles["Normal"], fontSize=10, leading=14)
     small = ParagraphStyle("Small", parent=styles["Normal"], fontSize=8.5,
                             textColor=colors.HexColor("#777777"))
+    cell_style = ParagraphStyle("Cell", parent=body, fontSize=9, leading=11.5)
+    cell_style_bold = ParagraphStyle("CellBold", parent=cell_style, fontName="Helvetica-Bold")
+    header_style = ParagraphStyle("HeaderCell", parent=cell_style_bold, textColor=colors.white)
+
+    def P(text, bold=False, header=False):
+        style = header_style if header else (cell_style_bold if bold else cell_style)
+        return Paragraph(text, style)
+
+    def styled_table(rows_data, col_widths, header_color):
+        t = Table(rows_data, colWidths=col_widths)
+        t.setStyle(TableStyle([
+            ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor(header_color)),
+            ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+            ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+            ("FONTSIZE", (0, 0), (-1, -1), 9),
+            ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, colors.HexColor("#f4f4f8")]),
+            ("GRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#dddddd")),
+            ("TOPPADDING", (0, 0), (-1, -1), 5),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 5),
+            ("VALIGN", (0, 0), (-1, -1), "TOP"),
+        ]))
+        return t
 
     story = []
 
     # ── Title ──
     story.append(Paragraph("Military Cyber Threat OSINT", title_style))
-    story.append(Paragraph("Intelligence Summary Report", subtitle_style))
+    story.append(Paragraph("Intelligence Summary Report -- India & Neighbouring Countries", subtitle_style))
     story.append(Paragraph(
         f"Generated {datetime.now().strftime('%B %d, %Y')} &nbsp;|&nbsp; "
         f"Data source: <b>military_osint_master.csv</b>", small))
     story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#cccccc"), spaceBefore=8, spaceAfter=16))
 
+    # ── Scope note ──
+    story.append(Paragraph(
+        f"<b>Scope:</b> this report covers India, Pakistan, China, Bangladesh, Nepal, Sri Lanka, "
+        f"and Myanmar only. Of {total_all:,} total findings in the full dataset, {total:,} "
+        f"({total*100/total_all:.1f}%) carry a location attribution to one of these countries -- "
+        f"the rest (other countries, plus non-country-specific categories like Global threat-intel "
+        f"feeds, Cloud, or Dark Web) are excluded from the tables below.", body))
+    story.append(Spacer(1, 10))
+
     # ── Executive summary ──
     story.append(Paragraph("Executive Summary", h2))
     summary_data = [
-        ["Total unique threat entries", f"{total:,}"],
-        ["Distinct data sources", f"{distinct_sources}"],
-        ["Threat categories (T1-T8)", "8"],
-        ["Countries / regions with dedicated coverage", "13+ (US, UK, Germany, Canada, Australia, India, Pakistan, China, Israel, France, Japan, South Korea, Taiwan, Ukraine, NATO)"],
+        ["Findings in scope (India + neighbours)", f"{total:,}"],
+        ["Distinct data sources contributing to this scope", f"{distinct_sources}"],
+        ["Countries covered", "India, Pakistan, China, Bangladesh, Nepal, Sri Lanka, Myanmar"],
         ["CRITICAL-severity findings", f"{by_sev.get('CRITICAL', 0):,}"],
-        ["HIGH-confidence findings", f"{by_conf.get('HIGH', 0):,}  ({by_conf.get('HIGH',0)*100//total}% of total)"],
+        ["HIGH-confidence findings", f"{by_conf.get('HIGH', 0):,}" + (f"  ({by_conf.get('HIGH',0)*100//total}% of scope)" if total else "")],
     ]
-    t = Table(summary_data, colWidths=[3.0*inch, 3.4*inch])
+    summary_rows = [[P(label, True), P(value)] for label, value in summary_data]
+    t = Table(summary_rows, colWidths=[3.0*inch, 3.4*inch])
     t.setStyle(TableStyle([
-        ("FONTSIZE", (0, 0), (-1, -1), 10),
         ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
         ("TOPPADDING", (0, 0), (-1, -1), 6),
-        ("FONTNAME", (0, 0), (0, -1), "Helvetica-Bold"),
         ("LINEBELOW", (0, 0), (-1, -2), 0.5, colors.HexColor("#eeeeee")),
-        ("TEXTCOLOR", (0, 0), (-1, -1), colors.HexColor("#222222")),
+        ("VALIGN", (0, 0), (-1, -1), "TOP"),
     ]))
     story.append(t)
 
-    story.append(Paragraph(
-        "The dataset aggregates threat intelligence collected from ~40 free and paid OSINT "
-        "sources  -  certificate transparency logs, exposed cloud storage buckets, dark web "
-        "search, ransomware leak-site monitoring, satellite tracking, CVE/vulnerability feeds, "
-        "Telegram OSINT channels, and defence news  -  filtered through a shared relevance engine "
-        "so that only military-, government-, and defence-contractor-relevant findings are retained.",
-        body))
-
     # ── Category breakdown ──
     story.append(Paragraph("Breakdown by Threat Category", h2))
-    cat_rows = [["Code", "Category", "Count", "% of Total"]]
+    cat_rows = [["Code", "Category", "Count", "% of Scope"]]
     for code, name in CATEGORY_NAMES.items():
         cnt = by_cat.get(code, 0)
-        pct = f"{cnt*100/total:.1f}%"
+        pct = f"{cnt*100/total:.1f}%" if total else "0.0%"
         cat_rows.append([code, name, f"{cnt:,}", pct])
     cat_table = Table(cat_rows, colWidths=[0.5*inch, 3.6*inch, 0.8*inch, 0.9*inch])
     cat_table.setStyle(TableStyle([
@@ -126,17 +156,37 @@ def build_report():
     ]))
     story.append(cat_table)
 
+    # ── Per-country breakdown ──
+    story.append(Paragraph("Findings by Country", h2))
+    geo_rows = [["Country", "Findings"]]
+    for name in NEIGHBOR_NAMES:
+        cnt = sum(v for k, v in by_loc.items() if name in k)
+        geo_rows.append([name, f"{cnt:,}"])
+    geo_table = Table(geo_rows, colWidths=[4.8*inch, 1.0*inch])
+    geo_table.setStyle(TableStyle([
+        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#1a1a2e")),
+        ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+        ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+        ("FONTSIZE", (0, 0), (-1, -1), 9.5),
+        ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, colors.HexColor("#f4f4f8")]),
+        ("GRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#dddddd")),
+        ("TOPPADDING", (0, 0), (-1, -1), 5),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 5),
+        ("ALIGN", (1, 0), (1, -1), "CENTER"),
+    ]))
+    story.append(geo_table)
+
     # ── Severity / confidence / layer breakdown ──
     story.append(Paragraph("Severity, Confidence & Source-Layer Distribution", h2))
     sev_order = ["CRITICAL", "HIGH", "MEDIUM", "LOW"]
     sev_rows = [["Severity", "Count", "%"]] + [
-        [s, f"{by_sev.get(s,0):,}", f"{by_sev.get(s,0)*100/total:.1f}%"] for s in sev_order
+        [s, f"{by_sev.get(s,0):,}", f"{by_sev.get(s,0)*100/total:.1f}%" if total else "0.0%"] for s in sev_order
     ]
     conf_rows = [["Confidence", "Count", "%"]] + [
-        [c, f"{by_conf.get(c,0):,}", f"{by_conf.get(c,0)*100/total:.1f}%"] for c in ["HIGH", "MEDIUM", "LOW"]
+        [c, f"{by_conf.get(c,0):,}", f"{by_conf.get(c,0)*100/total:.1f}%" if total else "0.0%"] for c in ["HIGH", "MEDIUM", "LOW"]
     ]
     layer_rows = [["Layer", "Count", "%"]] + [
-        [l, f"{by_layer.get(l,0):,}", f"{by_layer.get(l,0)*100/total:.1f}%"]
+        [l, f"{by_layer.get(l,0):,}", f"{by_layer.get(l,0)*100/total:.1f}%" if total else "0.0%"]
         for l in ["Surface Web", "Deep Web", "Dark Web"]
     ]
 
@@ -162,10 +212,10 @@ def build_report():
     triple.setStyle(TableStyle([("VALIGN", (0, 0), (-1, -1), "TOP")]))
     story.append(triple)
 
-    # ── Top sources ──
-    story.append(Paragraph("Top Data Sources", h2))
+    # ── Sources contributing to this scope ──
+    story.append(Paragraph("Data Sources Contributing to This Scope", h2))
     src_rows = [["Source", "Findings"]]
-    for src, cnt in by_source.most_common(15):
+    for src, cnt in by_source.most_common(25):
         src_rows.append([src, f"{cnt:,}"])
     src_table = Table(src_rows, colWidths=[4.8*inch, 1.0*inch])
     src_table.setStyle(TableStyle([
@@ -181,140 +231,46 @@ def build_report():
     ]))
     story.append(src_table)
 
-    story.append(PageBreak())
-
-    # ── Free vs paid tools ──
-    story.append(Paragraph("Free vs. Paid Tools", h2))
-    story.append(Paragraph(
-        f"All {total:,} findings in this dataset were produced entirely by <b>free-tier sources</b> "
-        f"({distinct_sources} of them, active and contributing data). The tool also has paid/premium "
-        f"integrations built in, but none are currently active on this account -- either not "
-        f"configured, or blocked by free-tier account limits (noted below).", body))
-    story.append(Spacer(1, 8))
-
-    story.append(Paragraph("Free sources actively contributing data:", ParagraphStyle(
-        "FreeHead", parent=body, fontName="Helvetica-Bold", spaceBefore=4, spaceAfter=4)))
-    cell_style = ParagraphStyle("Cell", parent=body, fontSize=9, leading=11.5)
-    cell_style_bold = ParagraphStyle("CellBold", parent=cell_style, fontName="Helvetica-Bold")
-    header_style = ParagraphStyle("HeaderCell", parent=cell_style_bold, textColor=colors.white)
-
-    def P(text, bold=False, header=False):
-        style = header_style if header else (cell_style_bold if bold else cell_style)
-        return Paragraph(text, style)
-
-    free_groups = [
-        ("Certificate transparency", "crt.sh"),
-        ("Internet-wide scanners", "URLScan.io, LeakIX, GrayHatWarfare"),
-        ("Malware / threat-intel feeds", "ThreatFox, MalwareBazaar, OTX AlienVault, URLhaus, Feodo Tracker, VirusTotal (free tier)"),
-        ("Vulnerability feeds", "CISA KEV, NVD, CIRCL CVE API"),
-        ("Satellite / navigation tracking", "Celestrak SATCAT, OpenSky Network"),
-        ("Code repositories", "GitHub code search"),
-        ("Dark web", "Torch (.onion search via Tor)"),
-        ("Ransomware leak-site tracking", "ransomware.live"),
-        ("Defence news / RSS", "Defense News, BBC World/Defence, The War Zone, Breaking Defense, C4ISRNET, "
-                                "Army/Navy/Air Force Times, CyberScoop, BleepingComputer, The Hacker News, "
-                                "Livefist Defence, Asia-Pacific Defence Reporter, Zone Militaire/Opex360"),
-        ("Social media monitoring", "Telegram (public channels)"),
-    ]
-    free_rows = [[P("Category", header=True), P("Sources", header=True)]] + [[P(c, True), P(s)] for c, s in free_groups]
-    free_table = Table(free_rows, colWidths=[1.9*inch, 4.9*inch])
-    free_table.setStyle(TableStyle([
-        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#1f6f43")),
-        ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
-        ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
-        ("FONTNAME", (0, 1), (0, -1), "Helvetica-Bold"),
-        ("FONTSIZE", (0, 0), (-1, -1), 9),
-        ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, colors.HexColor("#f0f7f2")]),
-        ("GRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#dddddd")),
-        ("TOPPADDING", (0, 0), (-1, -1), 5),
-        ("BOTTOMPADDING", (0, 0), (-1, -1), 5),
-        ("VALIGN", (0, 0), (-1, -1), "TOP"),
-    ]))
-    story.append(free_table)
-
-    story.append(Spacer(1, 14))
-    story.append(Paragraph("Paid / premium tools built into the tool (not currently active):", ParagraphStyle(
-        "PaidHead", parent=body, fontName="Helvetica-Bold", spaceBefore=4, spaceAfter=4)))
-    paid_data = [
-        ["Shodan", "$69/mo", "Configured, but account has 0 query credits"],
-        ["Censys", "Free tier available (250/mo)", "Configured, but returning authorization errors"],
-        ["SecurityTrails", "$50/mo", "Not configured"],
-        ["IntelligenceX", "~$100/mo", "Not configured"],
-        ["DeHashed", "$15/mo", "Not configured"],
-        ["BinaryEdge", "$50/mo", "Not configured"],
-        ["Recorded Future", "~$25,000+/yr (enterprise)", "Not configured"],
-        ["SpyCloud", "$500+/mo", "Not configured"],
-        ["Cybersixgill, KELA, DarkOwl, Flashpoint, Digital Shadows", "Enterprise pricing", "Not configured"],
-    ]
-    paid_rows = [[P("Tool", header=True), P("Tier / Cost", header=True), P("Status", header=True)]] + \
-                [[P(a, True), P(b), P(c)] for a, b, c in paid_data]
-    paid_table = Table(paid_rows, colWidths=[2.3*inch, 1.9*inch, 2.6*inch])
-    paid_table.setStyle(TableStyle([
-        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#7a3b1e")),
-        ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
-        ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
-        ("FONTSIZE", (0, 0), (-1, -1), 8.5),
-        ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, colors.HexColor("#f8f1ee")]),
-        ("GRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#dddddd")),
-        ("TOPPADDING", (0, 0), (-1, -1), 5),
-        ("BOTTOMPADDING", (0, 0), (-1, -1), 5),
-        ("VALIGN", (0, 0), (-1, -1), "TOP"),
-    ]))
-    story.append(paid_table)
-    story.append(Spacer(1, 6))
-    story.append(Paragraph(
-        "The tool is written so that adding any of these later only requires pasting in an API key -- "
-        "no code changes needed.", small))
-
-    # ── Country coverage ──
-    story.append(Paragraph("Geographic Coverage", h2))
-    story.append(Paragraph(
-        f"Of {total:,} total findings, {country_total:,} carry a specific country/alliance "
-        f"attribution (the remainder are labeled Global, Unknown, Cloud, Dark Web, or an orbital "
-        f"owner code for satellite tracking data  -  categories that are not tied to one country "
-        f"by nature of the source).", body))
-    story.append(Spacer(1, 6))
-    geo_rows = [["Country / Region", "Findings"]]
-    for k in COUNTRY_KEYS:
-        cnt = by_loc.get(k, 0)
-        if cnt:
-            geo_rows.append([k, f"{cnt:,}"])
-    geo_table = Table(geo_rows, colWidths=[4.8*inch, 1.0*inch])
-    geo_table.setStyle(TableStyle([
-        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#1a1a2e")),
-        ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
-        ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
-        ("FONTSIZE", (0, 0), (-1, -1), 9.5),
-        ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, colors.HexColor("#f4f4f8")]),
-        ("GRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#dddddd")),
-        ("TOPPADDING", (0, 0), (-1, -1), 5),
-        ("BOTTOMPADDING", (0, 0), (-1, -1), 5),
-        ("ALIGN", (1, 0), (1, -1), "CENTER"),
-    ]))
-    story.append(geo_table)
-
     # ── Notable findings ──
     story.append(Paragraph("Notable Findings", h2))
     notables = [
-        ("UK Ministry of Defence  -  exposed Git repository",
-         "vle.action.mod.uk (a UK MoD e-learning platform) has a publicly accessible .git "
-         "directory, revealing it runs Moodle. Cross-referenced against Shodan InternetDB, the "
-         "exposed version matches 5 known CVEs. Severity: CRITICAL."),
-        ("US Army  -  exposed .DS_Store directory listing",
-         "fifeanddrum.army.mil exposes a macOS .DS_Store file revealing 18 internal folders. "
-         "Observed repeatedly (91 separate scan events), indicating a persistent, unresolved "
-         "exposure rather than a one-off."),
-        ("US Army  -  exposed internal API documentation",
-         "A public Swagger UI on an army.mil host lists live API endpoints, including "
-         "delete-capable routes  -  a real exposed attack surface."),
-        ("Dark web coverage",
-         "Direct Tor (.onion) search returned genuine relevant results this cycle, including a "
-         "forum thread referencing a Pentagon security leak."),
+        ("Indian Navy -- active wildcard certificate",
+         "A currently-valid (not expired, expires Feb 2027) wildcard TLS certificate for "
+         "*.indiannavy.gov.in was found via certificate transparency logs. A wildcard "
+         "certificate covers every subdomain under the domain -- if its private key were ever "
+         "compromised, an attacker could impersonate any indiannavy.gov.in subdomain. Severity: CRITICAL."),
+        ("Indian Ministry of Defence -- expired wildcard certificates",
+         "Two expired wildcard certificates were found for *.mod.gov.in and a specific "
+         "subdomain, *.maabharatikesapoot.mod.gov.in. Expired wildcard certs on government "
+         "infrastructure indicate stale or unmanaged TLS configuration. Severity: CRITICAL."),
+        ("AVIC (China) -- active wildcard certificate",
+         "A currently-valid wildcard certificate for *.sadri.avic.com was found -- AVIC "
+         "(Aviation Industry Corporation of China) is a major Chinese state-owned defence and "
+         "aerospace conglomerate. Severity: CRITICAL."),
+        ("Sri Lanka Army -- two active wildcard certificates",
+         "Currently-valid wildcard certificates were found for *.army.lk and *.cloud.army.lk "
+         "(expiring November 2026 and January 2027 respectively). Severity: CRITICAL."),
+        ("Sri Lanka Navy -- active wildcard certificate",
+         "A currently-valid wildcard certificate for *.navy.lk was found, expiring December 2026. "
+         "Severity: CRITICAL."),
+        ("Myanmar Ministry of Defence -- active wildcard certificate",
+         "A currently-valid wildcard certificate for *.mod.gov.mm was found, expiring December "
+         "2026. Severity: CRITICAL."),
+        ("Bangladesh Ministry of Defence -- exposed live credential in a Git config file",
+         "An exposed .git/config file on mod.gov.bd revealed a live GitLab access token granting "
+         "write access to a contractor's private repository (\"oracle-cloud-npf-ministrycluster\"), "
+         "which by its name appears to be Oracle Cloud infrastructure for a government ministry "
+         "cluster. This is one of the most significant findings in this report -- a real, working "
+         "credential, not just metadata. The token has been redacted from the underlying dataset "
+         "and this report; it is not published anywhere. This should be reported to the affected "
+         "organization so the credential can be revoked."),
     ]
     for title_txt, desc in notables:
         story.append(Paragraph(f"<b>{title_txt}</b>", body))
         story.append(Paragraph(desc, body))
         story.append(Spacer(1, 8))
+
+    story.append(PageBreak())
 
     # ── Methodology ──
     story.append(Paragraph("Methodology", h2))
@@ -326,7 +282,133 @@ def build_report():
         "leak-site monitoring, Telegram OSINT channels, and defence news RSS. Every result "
         "passes through a shared relevance-filtering engine (domain allow-lists, contractor/APT "
         "name matching, and negative-term rejection) before being retained, and results are "
-        "deduplicated against all prior collection runs.", body))
+        "deduplicated against all prior collection runs. The appendix below lists every search "
+        "term, domain, and tag actually queried across all sources (not limited to this report's "
+        "country scope), so the full search methodology is transparent.", body))
+
+    story.append(PageBreak())
+
+    # ── Appendix: search terms / tags used per source ──
+    story.append(Paragraph("Appendix: Search Terms & Tags Used Per Source", h2))
+    story.append(Paragraph(
+        "The tool does not use generic keyword searches (e.g. just \"military\") -- every source "
+        "below is queried with specific domains, named organizations/APT groups, or technical "
+        "tags. This list covers every country the tool tracks, not just the ones in this report's "
+        "scope, so the full methodology is visible.", body))
+    story.append(Spacer(1, 8))
+
+    appendix_head = ParagraphStyle("ApxHead", parent=body, fontName="Helvetica-Bold",
+                                    fontSize=10.5, spaceBefore=12, spaceAfter=4,
+                                    textColor=colors.HexColor("#1a1a2e"))
+
+    story.append(Paragraph("Domain / host-based sources", appendix_head))
+    story.append(Paragraph(
+        "crt.sh, URLScan.io, LeakIX, GrayHatWarfare, Hudson Rock, Onyphe, ZoomEye, "
+        "BreachDirectory, GitHub code search, and SecurityTrails all query variations of this "
+        "same master domain list (exact official domains, never bare TLDs like \".gov\" or "
+        "\".mil.xx\" alone, to avoid matching unrelated civilian sites):", body))
+    story.append(Spacer(1, 4))
+
+    domain_groups = [
+        ("United States", "army.mil, navy.mil, af.mil, marines.mil, disa.mil, socom.mil, "
+                           "cybercom.mil, dia.mil, nsa.gov, dod.gov, nato.int"),
+        ("United Kingdom", "mod.uk"),
+        ("Germany", "bundeswehr.de"),
+        ("Canada", "forces.gc.ca"),
+        ("Australia", "defence.gov.au"),
+        ("India", "indianarmy.nic.in, indiannavy.gov.in, indianairforce.nic.in, "
+                  "mod.gov.in, drdo.gov.in"),
+        ("Pakistan", "pakistanarmy.gov.pk, paknavy.gov.pk, paf.gov.pk, mod.gov.pk, ispr.gov.pk"),
+        ("China", "mod.gov.cn, norinco.cn, spacechina.com, avic.com, cetc.com.cn"),
+        ("Israel", "mod.gov.il, idf.il"),
+        ("France", "defense.gouv.fr"),
+        ("Japan", "mod.go.jp"),
+        ("South Korea", "mnd.go.kr, army.mil.kr"),
+        ("Taiwan", "mnd.gov.tw"),
+        ("Ukraine", "mod.gov.ua, zsu.gov.ua, gur.gov.ua"),
+        ("Bangladesh", "mod.gov.bd, afd.gov.bd, ispr.gov.bd"),
+        ("Nepal", "mod.gov.np, nepalarmy.mil.np"),
+        ("Sri Lanka", "defence.lk, army.lk, navy.lk, airforce.lk"),
+        ("Myanmar", "mod.gov.mm"),
+        ("Defence contractors", "lockheedmartin.com, rtx.com, northropgrumman.com, "
+                                 "baesystems.com, leidos.com, l3harris.com, generaldynamics.com, "
+                                 "rafael.co.il, iai.co.il, dassault-aviation.com, naval-group.com"),
+        ("Indian defence PSUs", "hal-india.co.in, bel-india.in, bdl-india.com, mazagondock.in, "
+                                 "grse.in, bemlindia.in"),
+    ]
+    domain_rows = [[P("Country / Group", header=True), P("Domains Queried", header=True)]] + \
+                  [[P(c, True), P(d)] for c, d in domain_groups]
+    story.append(styled_table(domain_rows, [1.7*inch, 5.1*inch], "#1f6f43"))
+
+    story.append(Paragraph("GitHub code-search dork patterns", appendix_head))
+    story.append(Paragraph(
+        "Beyond the domain list above, GitHub search additionally scopes by leaked-file patterns: "
+        "<font face='Courier'>filename:.env</font>, <font face='Courier'>filename:config.json</font>, "
+        "<font face='Courier'>filename:config.yaml</font>, <font face='Courier'>filename:secrets.yaml</font>, "
+        "<font face='Courier'>filename:application.properties</font>, <font face='Courier'>filename:kubeconfig</font>, "
+        "<font face='Courier'>filename:.htpasswd</font>, <font face='Courier'>extension:pem</font>, "
+        "<font face='Courier'>extension:key</font>, <font face='Courier'>extension:sql</font>, "
+        "<font face='Courier'>extension:tf</font> -- combined with the domain list and terms like "
+        "<font face='Courier'>api_key</font>, <font face='Courier'>token</font>, "
+        "<font face='Courier'>secret</font>, <font face='Courier'>password</font>. Any hit is then "
+        "content-verified (the actual file is fetched and checked for a real secret-shaped pattern) "
+        "before being marked CRITICAL.", body))
+
+    story.append(Paragraph("Malware / threat-intel feeds (tag- and family-based)", appendix_head))
+    threat_rows = [
+        ["ThreatFox (abuse.ch)", "Named APT/nation-state malware families: Cobalt Strike, Turla, Sandworm, "
+                                  "NotPetya, Industroyer, Fancy Bear/APT28, Cozy Bear/APT29, Lazarus, Kimsuky, "
+                                  "Winnti/APT41, Volt Typhoon, Salt Typhoon, ShadowPad, PlugX, Transparent "
+                                  "Tribe/APT36, SideCopy, Mustang Panda/APT40 -- OR explicit tags "
+                                  "apt / nation-state / targeted / military."],
+        ["MalwareBazaar (abuse.ch)", "Tag queries: APT, RAT, loader, stealer, plus recent submissions -- gated "
+                                      "on the same named-APT-family list as ThreatFox (Cobalt Strike, Turla, "
+                                      "Sandworm, APT28/29/41, Lazarus, Kimsuky, ShadowPad, PlugX, Transparent "
+                                      "Tribe, SideCopy, Mustang Panda, etc.)."],
+        ["OTX AlienVault", "Pulse search tags: military, apt, nation-state, defence, espionage."],
+        ["NVD (CVE database)", "Vendor/product keywords: Cisco IOS XE, Fortinet FortiGate, Palo Alto PAN-OS, "
+                                "Juniper JunOS, F5 BIG-IP, Siemens SIMATIC, Rockwell Studio 5000, Honeywell "
+                                "Experion, Schneider Modicon, GE CIMPLICITY, SCADA/industrial control, "
+                                "satellite GPS firmware, Ivanti Pulse Secure, VMware vCenter -- CVSS >= 9.0 only."],
+        ["CIRCL CVE API", "Vendor terms: Cisco, Fortinet, Palo Alto, Juniper, F5, Pulse Secure, Ivanti, "
+                           "SonicWall, Citrix, Siemens, Rockwell, Honeywell, Schneider Electric, Viasat, "
+                           "Hughes, Iridium, Inmarsat, plus others -- CVSS >= 9.0 only."],
+        ["CISA KEV", "Word-boundary regex: scada, ics, industrial, defence, defense, military, "
+                      "critical infrastructure, plc, ot."],
+    ]
+    threat_data = [[P("Source", header=True), P("Tags / Filter Criteria", header=True)]] + \
+                  [[P(a, True), P(b)] for a, b in threat_rows]
+    story.append(styled_table(threat_data, [1.6*inch, 5.2*inch], "#7a3b1e"))
+
+    story.append(Paragraph("Dark web, satellite, and other structural sources", appendix_head))
+    other_rows = [
+        ["Torch (.onion dark web search)", "army.mil credentials, nato classified leak, pentagon hack "
+                                            "breach, military apt nation state, defense contractor "
+                                            "database, dod.gov exploit -- each result additionally "
+                                            "passed through the same relevance-filtering engine."],
+        ["Telegram (public channels)", "English keywords: missile, classified, breach, espionage, cyber "
+                                        "attack, nato, hack, intercept, warfare, pentagon, special forces, "
+                                        "radar, sigint; Russian-language word-stems (added after finding "
+                                        "English-only keywords meant Russian-language channels like rybar "
+                                        "could never score a match): raket- (missile), sekretn- (secret/"
+                                        "classified), utechk- (leak), kiberatak- (cyberattack), nato, vzlom "
+                                        "(hack), spetsnaz (special forces), radar, razvedk- (intelligence/"
+                                        "reconnaissance), atak- (attack), armiya (army), flot (navy/fleet), "
+                                        "oruzhi- (weapon), voyna (war)."],
+        ["Celestrak (satellite tracking)", "Object-name match: GPS, GLONASS, COSMOS; owner-code match: "
+                                            "PRC (China), CIS/RU/USSR (Russia), US, IND (India) -- deliberately "
+                                            "not extended to other countries where military-vs-civilian "
+                                            "satellite names can't yet be reliably distinguished."],
+        ["OpenSky Network (GPS/EW)", "Geographic regions monitored: Eastern Europe (Ukraine/Russia), Middle "
+                                      "East (Israel/Lebanon/Syria), Baltic Region, Black Sea, South Asia "
+                                      "(India/Pakistan/China border), Taiwan Strait, Korean Peninsula."],
+        ["ransomware.live", "Named ransomware groups: LockBit, ALPHV/BlackCat, Clop, RansomHub, Akira, "
+                             "Play, RagnarLocker, Rhysida, Medusa, Qilin, and others -- cross-referenced "
+                             "against the same military-domain and defence-contractor lists above."],
+    ]
+    other_data = [[P("Source", header=True), P("Tags / Filter Criteria", header=True)]] + \
+                 [[P(a, True), P(b)] for a, b in other_rows]
+    story.append(styled_table(other_data, [1.6*inch, 5.2*inch], "#3a3a5e"))
 
     story.append(Spacer(1, 20))
     story.append(HRFlowable(width="100%", thickness=0.5, color=colors.HexColor("#cccccc")))

@@ -165,6 +165,12 @@ CONFIG = {
         # More defence contractors — infostealer logs on employees here
         # are the same personnel-risk signal as the US/UK primes above
         "rafael.co.il", "iai.co.il", "dassault-aviation.com", "naval-group.com",
+        # India's neighbours — all domains verified live before adding
+        # (Bhutan skipped: its only candidate domain, rba.bt, is dead)
+        "mod.gov.bd", "afd.gov.bd", "ispr.gov.bd",
+        "mod.gov.np", "nepalarmy.mil.np",
+        "defence.lk", "army.lk", "navy.lk", "airforce.lk",
+        "mod.gov.mm",
     ],
     "breachdirectory_api_key": "",
 
@@ -353,6 +359,18 @@ MIL_DOMAIN_SUFFIXES = (
     # Ukraine — verified live (mod.gov.ua corrected after initial 404 on wrong
     # guess "mil.gov.ua"; zsu.gov.ua and gur.gov.ua confirmed via search).
     ".mod.gov.ua", ".zsu.gov.ua", ".gur.gov.ua",
+    # Bangladesh — verified live (mod.gov.bd, afd.gov.bd, ispr.gov.bd all
+    # confirmed reachable with real content; army.mil.bd is unreachable from
+    # this network despite being cited as official, so left out).
+    ".mod.gov.bd", ".afd.gov.bd", ".ispr.gov.bd",
+    # Nepal — verified live (mod.gov.np confirmed reachable; nepalarmy.mil.np
+    # is WAF-blocked but real, same pattern as Pakistan's domains above).
+    ".mod.gov.np", ".nepalarmy.mil.np",
+    # Sri Lanka — verified live (defence.lk, army.lk via www prefix, navy.lk,
+    # airforce.lk all confirmed reachable with real content).
+    ".defence.lk", ".army.lk", ".navy.lk", ".airforce.lk",
+    # Myanmar — verified live (mod.gov.mm confirmed reachable).
+    ".mod.gov.mm",
 )
 
 STRONG_MIL_TERMS = {
@@ -489,6 +507,11 @@ _DOMAIN_COUNTRY_SUFFIXES = (
     (".mnd.go.kr", "South Korea"), (".army.mil.kr", "South Korea"),
     (".mnd.gov.tw", "Taiwan"),
     (".mod.gov.ua", "Ukraine"), (".zsu.gov.ua", "Ukraine"), (".gur.gov.ua", "Ukraine"),
+    (".mod.gov.bd", "Bangladesh"), (".afd.gov.bd", "Bangladesh"), (".ispr.gov.bd", "Bangladesh"),
+    (".mod.gov.np", "Nepal"), (".nepalarmy.mil.np", "Nepal"),
+    (".defence.lk", "Sri Lanka"), (".army.lk", "Sri Lanka"),
+    (".navy.lk", "Sri Lanka"), (".airforce.lk", "Sri Lanka"),
+    (".mod.gov.mm", "Myanmar"),
     (".nato.int", "NATO"),
     (".mil", "United States"), (".nsa.gov", "United States"),
 )
@@ -575,6 +598,8 @@ _GHW_STRONG_QUERIES = [
     "forces.gc.ca",
     "mod.gov.il", "idf.il", "defense.gouv.fr", "mod.go.jp",
     "mnd.go.kr", "mnd.gov.tw", "mod.gov.ua",
+    "mod.gov.bd", "afd.gov.bd", "ispr.gov.bd", "mod.gov.np", "nepalarmy.mil.np",
+    "defence.lk", "army.lk", "navy.lk", "airforce.lk", "mod.gov.mm",
 ]
 _GHW_SOFT_QUERIES = ["pentagon", "bundeswehr", "defence.gov.au"]
 
@@ -737,6 +762,9 @@ def fetch_github_leaks(token: str) -> list:
         # consolidated query (not one per country) to control this module's
         # already-heavy runtime under GitHub's ~10/min code-search rate limit.
         '"@mod.gov.il" OR "@defense.gouv.fr" OR "@mod.go.jp" OR "@mnd.go.kr" OR "@mnd.gov.tw" OR "@mod.gov.ua" filename:.env',
+        # India's neighbours (Bangladesh, Nepal, Sri Lanka, Myanmar) — same
+        # consolidated-query treatment for the same rate-limit reason.
+        '"@mod.gov.bd" OR "@mod.gov.np" OR "@defence.lk" OR "@mod.gov.mm" filename:.env',
     ]
     headers = {
         "Authorization": f"token {token}", "Accept": "application/vnd.github.v3+json",
@@ -881,7 +909,9 @@ def fetch_breachdirectory(api_key: str) -> list:
                ("@indianarmy.nic.in", "Indian Army"), ("@mod.gov.in", "Indian Ministry of Defence"),
                ("@mod.gov.pk", "Pakistan Ministry of Defence"), ("@mod.gov.cn", "China Ministry of National Defense"),
                ("@defence.gov.au", "Australia Defence"), ("@forces.gc.ca", "Canadian Armed Forces"),
-               ("@mod.gov.il", "Israel Ministry of Defense"), ("@mod.gov.ua", "Ukraine Ministry of Defense")]
+               ("@mod.gov.il", "Israel Ministry of Defense"), ("@mod.gov.ua", "Ukraine Ministry of Defense"),
+               ("@mod.gov.bd", "Bangladesh Ministry of Defence"), ("@mod.gov.np", "Nepal Ministry of Defence"),
+               ("@defence.lk", "Sri Lanka Ministry of Defence"), ("@mod.gov.mm", "Myanmar Ministry of Defence")]
     headers = {"X-RapidAPI-Key": api_key, "X-RapidAPI-Host": "breachdirectory.p.rapidapi.com",
                "Accept": "application/json"}
     try:
@@ -1182,6 +1212,15 @@ def fetch_leakix(api_key: str) -> list:
         ("host:mnd.go.kr", "South Korea Ministry of National Defense", "T2"),
         ("host:mnd.gov.tw", "Taiwan Ministry of National Defense", "T2"),
         ("host:mod.gov.ua", "Ukraine Ministry of Defense", "T2"),
+        ("host:mod.gov.bd", "Bangladesh Ministry of Defence", "T2"),
+        ("host:afd.gov.bd", "Bangladesh Armed Forces Division", "T2"),
+        ("host:ispr.gov.bd", "Bangladesh ISPR", "T3"),
+        ("host:mod.gov.np", "Nepal Ministry of Defence", "T2"),
+        ("host:nepalarmy.mil.np", "Nepal Army", "T2"),
+        ("host:defence.lk", "Sri Lanka Ministry of Defence", "T2"),
+        ("host:army.lk", "Sri Lanka Army", "T2"), ("host:navy.lk", "Sri Lanka Navy", "T2"),
+        ("host:airforce.lk", "Sri Lanka Air Force", "T2"),
+        ("host:mod.gov.mm", "Myanmar Ministry of Defence", "T2"),
     ]
     headers = {"api-key": api_key, "Accept": "application/json", "User-Agent": "MilOSINT/2.0"}
     try:
@@ -1275,7 +1314,11 @@ _TIER1_MIL_DOMAINS = (".mil", ".mod.uk", ".bundeswehr.de", ".nato.int",
                        ".mod.gov.cn", ".norinco.cn", ".spacechina.com", ".avic.com", ".cetc.com.cn",
                        ".mod.gov.il", ".idf.il", ".defense.gouv.fr", ".mod.go.jp",
                        ".mnd.go.kr", ".army.mil.kr", ".mnd.gov.tw",
-                       ".mod.gov.ua", ".zsu.gov.ua", ".gur.gov.ua")
+                       ".mod.gov.ua", ".zsu.gov.ua", ".gur.gov.ua",
+                       ".mod.gov.bd", ".afd.gov.bd", ".ispr.gov.bd",
+                       ".mod.gov.np", ".nepalarmy.mil.np",
+                       ".defence.lk", ".army.lk", ".navy.lk", ".airforce.lk",
+                       ".mod.gov.mm")
 _TIER3_GENERIC_GOV_MARKER = ".gov"
 _TIER2_CONTRACTORS = [
     "lockheed", "raytheon", "northrop", "boeing defense", "general dynamics",
@@ -1864,7 +1907,8 @@ def fetch_securitytrails(api_key: str) -> list:
     domains = ["army.mil", "navy.mil", "af.mil", "marines.mil", "dod.gov", "nato.int",
                "mod.uk", "bundeswehr.de", "defence.gov.au", "forces.gc.ca",
                "mod.gov.in", "mod.gov.pk", "mod.gov.cn",
-               "mod.gov.il", "defense.gouv.fr", "mod.go.jp", "mnd.go.kr", "mnd.gov.tw", "mod.gov.ua"]
+               "mod.gov.il", "defense.gouv.fr", "mod.go.jp", "mnd.go.kr", "mnd.gov.tw", "mod.gov.ua",
+               "mod.gov.bd", "mod.gov.np", "defence.lk", "mod.gov.mm"]
     headers = {"APIKEY": api_key, "Accept": "application/json", "User-Agent": "MilOSINT/2.0"}
     try:
         for domain in domains:
@@ -1986,6 +2030,19 @@ def fetch_crtsh() -> list:
         ("%.mnd.go.kr", "South Korea MND Subdomains"),
         ("%.mnd.gov.tw", "Taiwan MND Subdomains"),
         ("%.mod.gov.ua", "Ukraine MoD Subdomains"),
+        # India's neighbours — now a primary focus, so given fuller coverage
+        # (not capped to 1 domain) rather than the minimal gap-fill treatment
+        # above; all live-verified before adding.
+        ("%.mod.gov.bd", "Bangladesh MoD Subdomains"),
+        ("%.afd.gov.bd", "Bangladesh Armed Forces Division Subdomains"),
+        ("%.ispr.gov.bd", "Bangladesh ISPR Subdomains"),
+        ("%.mod.gov.np", "Nepal MoD Subdomains"),
+        ("%.nepalarmy.mil.np", "Nepal Army Subdomains"),
+        ("%.defence.lk", "Sri Lanka MoD Subdomains"),
+        ("%.army.lk", "Sri Lanka Army Subdomains"),
+        ("%.navy.lk", "Sri Lanka Navy Subdomains"),
+        ("%.airforce.lk", "Sri Lanka Air Force Subdomains"),
+        ("%.mod.gov.mm", "Myanmar MoD Subdomains"),
     ]
 
     def _crtsh_fetch(q: str) -> list:
@@ -2127,6 +2184,10 @@ def fetch_zoomeye(api_key: str) -> list:
         ('hostname:"mnd.go.kr"', "South Korea MND", "KR"),
         ('hostname:"mnd.gov.tw"', "Taiwan MND", "TW"),
         ('hostname:"mod.gov.ua"', "Ukraine MoD", "UA"),
+        ('hostname:"mod.gov.bd"', "Bangladesh MoD", "BD"),
+        ('hostname:"mod.gov.np"', "Nepal MoD", "NP"),
+        ('hostname:"defence.lk"', "Sri Lanka MoD", "LK"),
+        ('hostname:"mod.gov.mm"', "Myanmar MoD", "MM"),
     ]
     headers = {"API-KEY": api_key, "User-Agent": "MilOSINT/2.0",
                "Content-Type": "application/json", "Accept": "application/json"}
@@ -2182,6 +2243,8 @@ def fetch_onyphe(api_key: str) -> list:
         ("mod.gov.il", "Israel Ministry of Defense"), ("defense.gouv.fr", "France Ministry of Defense"),
         ("mod.go.jp", "Japan Ministry of Defense"), ("mnd.go.kr", "South Korea Ministry of National Defense"),
         ("mnd.gov.tw", "Taiwan Ministry of National Defense"), ("mod.gov.ua", "Ukraine Ministry of Defense"),
+        ("mod.gov.bd", "Bangladesh Ministry of Defence"), ("mod.gov.np", "Nepal Ministry of Defence"),
+        ("defence.lk", "Sri Lanka Ministry of Defence"), ("mod.gov.mm", "Myanmar Ministry of Defence"),
     ]
     headers = {"Authorization": f"apikey {api_key}", "User-Agent": "MilOSINT/2.0", "Content-Type": "application/json"}
     try:
@@ -2328,6 +2391,10 @@ def fetch_urlscan(api_key: str = "") -> list:
         ("page.domain:mod.gov.il", "Israel MoD"), ("page.domain:defense.gouv.fr", "France Defense"),
         ("page.domain:mod.go.jp", "Japan MoD"), ("page.domain:mnd.go.kr", "South Korea MND"),
         ("page.domain:mnd.gov.tw", "Taiwan MND"), ("page.domain:mod.gov.ua", "Ukraine MoD"),
+        ("page.domain:mod.gov.bd", "Bangladesh MoD"), ("page.domain:afd.gov.bd", "Bangladesh Armed Forces Division"),
+        ("page.domain:mod.gov.np", "Nepal MoD"), ("page.domain:nepalarmy.mil.np", "Nepal Army"),
+        ("page.domain:defence.lk", "Sri Lanka MoD"), ("page.domain:army.lk", "Sri Lanka Army"),
+        ("page.domain:mod.gov.mm", "Myanmar MoD"),
         ('page.url:pentagon AND (login OR admin OR api)', "Pentagon sensitive path"),
     ]
     headers = {"API-Key": api_key} if api_key else {}

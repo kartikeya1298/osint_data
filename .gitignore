@@ -8,5 +8,12 @@ __pycache__/
 # Ever-growing runtime log — diagnostic noise, not analytical data
 osint_tool_v2.log
 
+# Per-run byproducts -- superseded by military_osint_master.csv every run,
+# so keeping them around (and in git) is just redundant clutter.
+MilOSINT_v2_Task_*.xml
+military_osint_data_v2_*.csv
+military_osint_stix_v2_*.json
+weekly_delta_v2_*.txt
+
 # Local Claude Code session config, not part of the project
 .claude/
