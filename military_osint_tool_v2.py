@@ -136,18 +136,11 @@ CONFIG = {
     # category in the compiled dataset (32 rows, all from one source) — the
     # US-only list meant allied-nation and defence-contractor infostealer
     # victims were never even queried, not that none exist.
+    # Narrowed to India + neighbouring countries only (per explicit instruction).
     "hudson_rock_domains": [
-        "army.mil", "navy.mil", "af.mil", "marines.mil", "disa.mil",
-        "socom.mil", "nato.int", "defense.gov", "nsa.gov", "dia.mil",
-        # Allied nations' defence ministries
-        "mod.uk", "bundeswehr.de", "defence.gov.au", "forces.gc.ca",
         # India — all domains verified live (see chat) before adding
         "indianarmy.nic.in", "indiannavy.gov.in", "indianairforce.nic.in",
         "mod.gov.in", "drdo.gov.in",
-        # Prime defence contractors — infostealer logs on employees here
-        # are exactly the personnel-risk signal T1 was missing
-        "lockheedmartin.com", "rtx.com", "northropgrumman.com",
-        "baesystems.com", "leidos.com", "l3harris.com", "generaldynamics.com",
         # Indian defence PSUs
         "hal-india.co.in", "bel-india.in", "bdl-india.com",
         "mazagondock.in", "grse.in", "bemlindia.in",
@@ -158,13 +151,6 @@ CONFIG = {
         # China — verified live: mod.gov.cn, norinco.cn, spacechina.com,
         # avic.com, cetc.com.cn
         "mod.gov.cn", "norinco.cn", "spacechina.com", "avic.com", "cetc.com.cn",
-        # New allied/priority nations — all domains verified live before adding
-        "mod.gov.il", "idf.il", "defense.gouv.fr", "mod.go.jp",
-        "mnd.go.kr", "army.mil.kr", "mnd.gov.tw",
-        "mod.gov.ua", "zsu.gov.ua", "gur.gov.ua",
-        # More defence contractors — infostealer logs on employees here
-        # are the same personnel-risk signal as the US/UK primes above
-        "rafael.co.il", "iai.co.il", "dassault-aviation.com", "naval-group.com",
         # India's neighbours — all domains verified live before adding
         # (Bhutan skipped: its only candidate domain, rba.bt, is dead)
         "mod.gov.bd", "afd.gov.bd", "ispr.gov.bd",
@@ -191,9 +177,12 @@ CONFIG = {
     "faa_client_secret":       "",
 
     # Telegram PUBLIC channels to monitor (no key needed)
+    # rybar/intel_slava_z/osintua removed — explicitly Russia-Ukraine conflict
+    # channels, out of scope now that this tool is narrowed to India +
+    # neighbouring countries only. CyberSecAlert/RALee85/militaryreview kept:
+    # general/global OSINT commentary, not tied to one excluded country.
     "telegram_channels": [
-        "rybar", "intel_slava_z", "osintua", "CyberSecAlert",
-        "RALee85", "militaryreview",
+        "CyberSecAlert", "RALee85", "militaryreview",
     ],
 
     # ALERTS
@@ -328,11 +317,10 @@ def short_id(text: str) -> str:
 #  row outright unless a real domain match overrides it.
 # ═════════════════════════════════════════════════════════════════════════
 
+# Narrowed to India + neighbouring countries only (per explicit instruction).
+# Previously also covered US/UK/Germany/Canada/Australia/Israel/France/Japan/
+# South Korea/Taiwan/Ukraine/NATO — those domain suffixes were removed here.
 MIL_DOMAIN_SUFFIXES = (
-    ".mil", ".gov", ".nato.int", ".mod.uk", ".bundeswehr.de",
-    ".army.mil", ".navy.mil", ".af.mil", ".marines.mil",
-    ".disa.mil", ".socom.mil", ".dia.mil", ".nsa.gov",
-    ".defence.gov.au", ".forces.gc.ca",
     # India — specific hostnames only, never bare ".gov.in"/".nic.in": both are
     # shared by thousands of unrelated Indian government sites (state govts,
     # municipal bodies, tax dept...) and would reproduce the exact ".gov"
@@ -346,19 +334,6 @@ MIL_DOMAIN_SUFFIXES = (
     # China — verified live (eng.mod.gov.cn, en.norinco.cn, spacechina.com,
     # avic.com, cetc.com.cn all confirmed reachable).
     ".mod.gov.cn", ".norinco.cn", ".spacechina.com", ".avic.com", ".cetc.com.cn",
-    # Israel — verified live (mod.gov.il, idf.il both confirmed reachable).
-    ".mod.gov.il", ".idf.il",
-    # France — verified live (defense.gouv.fr confirmed reachable).
-    ".defense.gouv.fr",
-    # Japan — verified live (mod.go.jp confirmed reachable).
-    ".mod.go.jp",
-    # South Korea — verified live (mnd.go.kr, army.mil.kr both confirmed reachable).
-    ".mnd.go.kr", ".army.mil.kr",
-    # Taiwan — verified live (mnd.gov.tw confirmed reachable).
-    ".mnd.gov.tw",
-    # Ukraine — verified live (mod.gov.ua corrected after initial 404 on wrong
-    # guess "mil.gov.ua"; zsu.gov.ua and gur.gov.ua confirmed via search).
-    ".mod.gov.ua", ".zsu.gov.ua", ".gur.gov.ua",
     # Bangladesh — verified live (mod.gov.bd, afd.gov.bd, ispr.gov.bd all
     # confirmed reachable with real content; army.mil.bd is unreachable from
     # this network despite being cited as official, so left out).
@@ -490,30 +465,19 @@ def has_mil_domain(value: str) -> bool:
 # to (dashboard "location"/map field) rather than just whether it's military.
 # Specific multi-label suffixes are listed before generic ones so a country
 # domain is never miscategorized by a broader fallback checked earlier.
+# Narrowed to India + neighbouring countries only (per explicit instruction).
 _DOMAIN_COUNTRY_SUFFIXES = (
-    (".mod.uk", "United Kingdom"),
-    (".bundeswehr.de", "Germany"),
-    (".defence.gov.au", "Australia"),
-    (".forces.gc.ca", "Canada"),
     (".indianarmy.nic.in", "India"), (".indiannavy.gov.in", "India"),
     (".indianairforce.nic.in", "India"), (".mod.gov.in", "India"), (".drdo.gov.in", "India"),
     (".pakistanarmy.gov.pk", "Pakistan"), (".paknavy.gov.pk", "Pakistan"),
     (".paf.gov.pk", "Pakistan"), (".mod.gov.pk", "Pakistan"), (".ispr.gov.pk", "Pakistan"),
     (".mod.gov.cn", "China"), (".norinco.cn", "China"), (".spacechina.com", "China"),
     (".avic.com", "China"), (".cetc.com.cn", "China"),
-    (".mod.gov.il", "Israel"), (".idf.il", "Israel"),
-    (".defense.gouv.fr", "France"),
-    (".mod.go.jp", "Japan"),
-    (".mnd.go.kr", "South Korea"), (".army.mil.kr", "South Korea"),
-    (".mnd.gov.tw", "Taiwan"),
-    (".mod.gov.ua", "Ukraine"), (".zsu.gov.ua", "Ukraine"), (".gur.gov.ua", "Ukraine"),
     (".mod.gov.bd", "Bangladesh"), (".afd.gov.bd", "Bangladesh"), (".ispr.gov.bd", "Bangladesh"),
     (".mod.gov.np", "Nepal"), (".nepalarmy.mil.np", "Nepal"),
     (".defence.lk", "Sri Lanka"), (".army.lk", "Sri Lanka"),
     (".navy.lk", "Sri Lanka"), (".airforce.lk", "Sri Lanka"),
     (".mod.gov.mm", "Myanmar"),
-    (".nato.int", "NATO"),
-    (".mil", "United States"), (".nsa.gov", "United States"),
 )
 
 
@@ -588,20 +552,16 @@ def _fetch_raw_github_content(html_url: str) -> str:
 
 
 # ── GrayhatWarfare tiered queries (used by fetch_grayhatwarfare) ───────────
+# Narrowed to India + neighbouring countries only (per explicit instruction).
 _GHW_STRONG_QUERIES = [
-    "army.mil", "navy.mil", "af.mil", "disa.mil", "socom.mil", "cybercom.mil",
-    "nato.int", "mod.uk", "noforn", "fouo", "siprnet", "niprnet", "itar",
     "indianarmy.nic.in", "indiannavy.gov.in", "indianairforce.nic.in",
     "mod.gov.in", "drdo.gov.in",
     "pakistanarmy.gov.pk", "paknavy.gov.pk", "paf.gov.pk", "mod.gov.pk", "ispr.gov.pk",
     "mod.gov.cn", "norinco.cn", "spacechina.com", "avic.com", "cetc.com.cn",
-    "forces.gc.ca",
-    "mod.gov.il", "idf.il", "defense.gouv.fr", "mod.go.jp",
-    "mnd.go.kr", "mnd.gov.tw", "mod.gov.ua",
     "mod.gov.bd", "afd.gov.bd", "ispr.gov.bd", "mod.gov.np", "nepalarmy.mil.np",
     "defence.lk", "army.lk", "navy.lk", "airforce.lk", "mod.gov.mm",
 ]
-_GHW_SOFT_QUERIES = ["pentagon", "bundeswehr", "defence.gov.au"]
+_GHW_SOFT_QUERIES = []
 
 _GHW_SKIP_EXTS = {
     ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp", ".tiff", ".svg",
@@ -723,28 +683,9 @@ def fetch_github_leaks(token: str) -> list:
     raw file is fetched and scanned for an actual secret-shaped pattern before
     being called CRITICAL. A bare keyword match without a real secret pattern
     (e.g. a dork wordlist mentioning army.mil) is downgraded, not dropped."""
+    # Narrowed to India + neighbouring countries only (per explicit instruction).
     rows = []
     queries = [
-        '"@army.mil" OR "@navy.mil" OR "@af.mil" filename:.env',
-        '"@army.mil" OR "@dod.gov" OR "@navy.mil" filename:config',
-        '"@disa.mil" OR "@socom.mil" OR "@cybercom.mil" password OR secret',
-        'filename:.env "dod.gov" OR "army.mil" OR "navy.mil"',
-        'filename:config.json "army.mil" OR "dod.gov" api_key OR token OR secret',
-        'filename:config.yaml "army.mil" OR "disa.mil" OR "af.mil" password OR secret',
-        'filename:secrets.yaml "army.mil" OR "dod.gov" OR "nato.int"',
-        'filename:application.properties "army.mil" OR "dod.gov" password',
-        'extension:pem "army.mil" OR "navy.mil" OR "dod.gov"',
-        'extension:key "army.mil" OR "disa.mil" PRIVATE',
-        'extension:sql "army.mil" OR "navy.mil" OR "dod.gov" INSERT',
-        'filename:.htpasswd "mil" OR "dod" OR "nato"',
-        'filename:kubeconfig "army.mil" OR "dod.gov" OR "nato.int"',
-        'extension:tf "army.mil" OR "dod.gov" secret OR password',
-        # Allied nations — the original list was entirely US-.mil-focused,
-        # so a UK/German/NATO credential leak would never even be searched for.
-        # Australia added here too (was previously missing from this module entirely).
-        '"@mod.uk" OR "@bundeswehr.de" OR "@forces.gc.ca" OR "@defence.gov.au" filename:.env',
-        'filename:config.json "mod.uk" OR "bundeswehr.de" OR "nato.int" api_key OR token OR secret',
-        'extension:pem "mod.uk" OR "bundeswehr.de" OR "nato.int" OR "defence.gov.au"',
         # India — verified real domains: indianarmy.nic.in, indiannavy.gov.in,
         # indianairforce.nic.in, mod.gov.in, drdo.gov.in (all confirmed live).
         '"@indianarmy.nic.in" OR "@indiannavy.gov.in" OR "@indianairforce.nic.in" OR "@mod.gov.in" filename:.env',
@@ -758,12 +699,9 @@ def fetch_github_leaks(token: str) -> list:
         # avic.com, cetc.com.cn
         'filename:config.json "mod.gov.cn" OR "norinco.cn" OR "avic.com" api_key OR token OR secret',
         'extension:pem "mod.gov.cn" OR "spacechina.com" OR "cetc.com.cn"',
-        # New countries (Israel/France/Japan/S.Korea/Taiwan/Ukraine) — kept to ONE
-        # consolidated query (not one per country) to control this module's
-        # already-heavy runtime under GitHub's ~10/min code-search rate limit.
-        '"@mod.gov.il" OR "@defense.gouv.fr" OR "@mod.go.jp" OR "@mnd.go.kr" OR "@mnd.gov.tw" OR "@mod.gov.ua" filename:.env',
-        # India's neighbours (Bangladesh, Nepal, Sri Lanka, Myanmar) — same
-        # consolidated-query treatment for the same rate-limit reason.
+        # India's neighbours (Bangladesh, Nepal, Sri Lanka, Myanmar) — kept to
+        # ONE consolidated query to control this module's already-heavy
+        # runtime under GitHub's ~10/min code-search rate limit.
         '"@mod.gov.bd" OR "@mod.gov.np" OR "@defence.lk" OR "@mod.gov.mm" filename:.env',
     ]
     headers = {
@@ -851,7 +789,7 @@ def fetch_github_leaks(token: str) -> list:
 def fetch_hudson_rock() -> list:
     """T1 — FREE. Infostealer-compromised .mil accounts via Hudson Rock Cavalier."""
     rows = []
-    domains = CONFIG.get("hudson_rock_domains") or ["army.mil", "navy.mil", "af.mil"]
+    domains = CONFIG.get("hudson_rock_domains") or ["mod.gov.in", "mod.gov.pk", "mod.gov.cn"]
     base = "https://cavalier.hudsonrock.com/api/json/v2/osint-tools/search-by-domain"
     try:
         for domain in domains:
@@ -901,15 +839,10 @@ def fetch_hudson_rock() -> list:
 
 def fetch_breachdirectory(api_key: str) -> list:
     """T1/T2 — FREE via RapidAPI. Dark web breach dump search for .mil emails."""
+    # Narrowed to India + neighbouring countries only (per explicit instruction).
     rows = []
-    targets = [("@army.mil", "US Army"), ("@navy.mil", "US Navy"),
-               ("@af.mil", "US Air Force"), ("@nato.int", "NATO"),
-               ("@marines.mil", "US Marines"), ("@mod.uk", "UK Ministry of Defence"),
-               ("@bundeswehr.de", "German Bundeswehr"), ("@lockheedmartin.com", "Lockheed Martin"),
-               ("@indianarmy.nic.in", "Indian Army"), ("@mod.gov.in", "Indian Ministry of Defence"),
+    targets = [("@indianarmy.nic.in", "Indian Army"), ("@mod.gov.in", "Indian Ministry of Defence"),
                ("@mod.gov.pk", "Pakistan Ministry of Defence"), ("@mod.gov.cn", "China Ministry of National Defense"),
-               ("@defence.gov.au", "Australia Defence"), ("@forces.gc.ca", "Canadian Armed Forces"),
-               ("@mod.gov.il", "Israel Ministry of Defense"), ("@mod.gov.ua", "Ukraine Ministry of Defense"),
                ("@mod.gov.bd", "Bangladesh Ministry of Defence"), ("@mod.gov.np", "Nepal Ministry of Defence"),
                ("@defence.lk", "Sri Lanka Ministry of Defence"), ("@mod.gov.mm", "Myanmar Ministry of Defence")]
     headers = {"X-RapidAPI-Key": api_key, "X-RapidAPI-Host": "breachdirectory.p.rapidapi.com",
@@ -1191,27 +1124,14 @@ def fetch_leakix(api_key: str) -> list:
     to a specific military host, so results only include that domain's assets."""
     rows = []
     _seen_services: set = set()
+    # Narrowed to India + neighbouring countries only (per explicit instruction).
     LEAKIX_TARGETS = [
-        ("host:army.mil", "US Army", "T2"), ("host:navy.mil", "US Navy", "T2"),
-        ("host:af.mil", "US Air Force", "T2"), ("host:cybercom.mil", "US Cyber Command", "T3"),
-        ("host:disa.mil", "DISA", "T3"), ("host:pentagon.mil", "Pentagon", "T2"),
-        ("host:socom.mil", "US SOCOM", "T2"), ("host:dla.mil", "Defense Logistics Agency", "T3"),
-        ("host:nsa.gov", "NSA / Intelligence", "T3"), ("host:nato.int", "NATO", "T2"),
-        ("host:defense.gov", "US Defense.gov", "T2"), ("host:mod.uk", "UK Ministry of Defence", "T2"),
-        ("host:bundeswehr.de", "German Bundeswehr", "T2"),
         ("host:indianarmy.nic.in", "Indian Army", "T2"), ("host:indiannavy.gov.in", "Indian Navy", "T2"),
         ("host:indianairforce.nic.in", "Indian Air Force", "T2"),
         ("host:mod.gov.in", "Indian Ministry of Defence", "T2"), ("host:drdo.gov.in", "DRDO", "T3"),
         ("host:pakistanarmy.gov.pk", "Pakistan Army", "T2"), ("host:paknavy.gov.pk", "Pakistan Navy", "T2"),
         ("host:paf.gov.pk", "Pakistan Air Force", "T2"), ("host:mod.gov.pk", "Pakistan Ministry of Defence", "T2"),
         ("host:mod.gov.cn", "China Ministry of National Defense", "T2"),
-        ("host:forces.gc.ca", "Canadian Armed Forces", "T2"),
-        ("host:mod.gov.il", "Israel Ministry of Defense", "T2"), ("host:idf.il", "Israel Defense Forces", "T2"),
-        ("host:defense.gouv.fr", "France Ministry of Defense", "T2"),
-        ("host:mod.go.jp", "Japan Ministry of Defense", "T2"),
-        ("host:mnd.go.kr", "South Korea Ministry of National Defense", "T2"),
-        ("host:mnd.gov.tw", "Taiwan Ministry of National Defense", "T2"),
-        ("host:mod.gov.ua", "Ukraine Ministry of Defense", "T2"),
         ("host:mod.gov.bd", "Bangladesh Ministry of Defence", "T2"),
         ("host:afd.gov.bd", "Bangladesh Armed Forces Division", "T2"),
         ("host:ispr.gov.bd", "Bangladesh ISPR", "T3"),
@@ -1305,29 +1225,22 @@ def fetch_leakix(api_key: str) -> list:
     return rows
 
 
-_TIER1_MIL_DOMAINS = (".mil", ".mod.uk", ".bundeswehr.de", ".nato.int",
-                       ".defence.gov.au", ".forces.gc.ca", ".army.mil", ".navy.mil",
-                       ".indianarmy.nic.in", ".indiannavy.gov.in", ".indianairforce.nic.in",
+# Narrowed to India + neighbouring countries only (per explicit instruction).
+_TIER1_MIL_DOMAINS = (".indianarmy.nic.in", ".indiannavy.gov.in", ".indianairforce.nic.in",
                        ".mod.gov.in", ".drdo.gov.in",
                        ".pakistanarmy.gov.pk", ".paknavy.gov.pk", ".paf.gov.pk",
                        ".mod.gov.pk", ".ispr.gov.pk",
                        ".mod.gov.cn", ".norinco.cn", ".spacechina.com", ".avic.com", ".cetc.com.cn",
-                       ".mod.gov.il", ".idf.il", ".defense.gouv.fr", ".mod.go.jp",
-                       ".mnd.go.kr", ".army.mil.kr", ".mnd.gov.tw",
-                       ".mod.gov.ua", ".zsu.gov.ua", ".gur.gov.ua",
                        ".mod.gov.bd", ".afd.gov.bd", ".ispr.gov.bd",
                        ".mod.gov.np", ".nepalarmy.mil.np",
                        ".defence.lk", ".army.lk", ".navy.lk", ".airforce.lk",
                        ".mod.gov.mm")
 _TIER3_GENERIC_GOV_MARKER = ".gov"
+# Narrowed to India + neighbouring countries only (per explicit instruction) —
+# removed all foreign (US/UK/Germany/Israel/France/etc) contractor names.
 _TIER2_CONTRACTORS = [
-    "lockheed", "raytheon", "northrop", "boeing defense", "general dynamics",
-    "bae systems", "leidos", "l3harris", "saic", "mantech", "booz allen",
-    "caci", "peraton", "gdit", "curtiss-wright", "elbit", "rheinmetall",
-    "leonardo", "thales", "saab", "kongsberg", "hanwha", "oshkosh defense",
-    "parsons", "mitre", "rand corporation", "palantir", "csra", "dxc technology",
-    "engility", "aecom federal", "pentagon", "ministry of defence",
-    "armed forces", "cyber command", "defense intelligence", "naval air", "army corps",
+    "ministry of defence", "armed forces", "defense intelligence",
+    "naval air", "army corps",
     # Indian defence PSUs — full names used deliberately, not 3-4 letter
     # acronyms (hal/bel/bdl/grse) that would be far more collision-prone
     # even with word-boundary matching
@@ -1339,10 +1252,6 @@ _TIER2_CONTRACTORS = [
     "heavy industries taxila", "pakistan ordnance factories",
     "norinco", "china north industries", "china aerospace science and technology",
     "aviation industry corporation of china", "china electronics technology group",
-    # New allied nations' defence contractors/ministries — full distinctive
-    # names used deliberately, matching the established pattern above
-    "rafael advanced defense", "israel aerospace industries", "dassault aviation",
-    "naval group", "ministere des armees",
 ]
 
 
@@ -1558,13 +1467,15 @@ def fetch_tor_onion() -> list:
         log.warning(f"Tor: cannot reach SOCKS5 on port {tor_port} ({tor_chk_e}) — skipping dark web search")
         return rows
 
+    # Narrowed to India + neighbouring countries only (per explicit instruction)
+    # — the queries below replace the original US/NATO-focused set.
     QUERIES = [
-        ("army.mil credentials", "T1", "Military Credential Exposure"),
-        ("nato classified leak", "T2", "NATO Classified Leak"),
-        ("pentagon hack breach", "T2", "Pentagon Breach Mention"),
-        ("military apt nation state", "T6", "Nation-State APT Mention"),
-        ("defense contractor database", "T2", "Defense Contractor Data"),
-        ("dod.gov exploit", "T7", "DoD Exploit Mention"),
+        ("indian army credentials", "T1", "Indian Military Credential Exposure"),
+        ("pakistan military leak", "T2", "Pakistan Military Leak"),
+        ("china pla hack breach", "T2", "China PLA Breach Mention"),
+        ("south asia military apt nation state", "T6", "South Asia Nation-State APT Mention"),
+        ("indian defense contractor database", "T2", "Indian Defense Contractor Data"),
+        ("bangladesh nepal sri lanka myanmar military exploit", "T7", "Neighbouring Countries Exploit Mention"),
     ]
     TORCH_URL = "http://xmh57jrknzkhv6y3ls3ubitzfqnkrwxhopf5aygthi7d6rplyvk3noyd.onion/cgi-bin/omega/omega"
     seen_urls: set = set()
@@ -1997,42 +1908,21 @@ _PERSONAL_CERT_RE = re.compile(r'^[A-Z][A-Z.\-]+\.[A-Z]+\.\d{7,}$')
 def fetch_crtsh() -> list:
     """T3 — FREE, no key. Certificate transparency logs for .mil/.gov domains —
     reveals hidden subdomains/attack surface not discoverable via plain DNS."""
+    # Narrowed to India + neighbouring countries only (per explicit instruction).
     rows = []
     targets = [
-        ("%.af.mil", "Air Force Subdomains"), ("%.navy.mil", "Navy Subdomains"),
-        ("%.army.mil", "Army Subdomains"), ("%.disa.mil", "DISA (Defence Info Systems)"),
-        ("%.cybercom.mil", "US Cyber Command"), ("%.socom.mil", "SOCOM Subdomains"),
-        # India — adds ~2-3 min to this module's runtime (crt.sh's own
-        # rate-limit backoff makes each domain slow), but this was the only
-        # source with zero India targeting at all before this pass.
+        # India
         ("%.indianarmy.nic.in", "Indian Army Subdomains"),
         ("%.indiannavy.gov.in", "Indian Navy Subdomains"),
         ("%.indianairforce.nic.in", "Indian Air Force Subdomains"),
         ("%.mod.gov.in", "Indian MoD Subdomains"),
         ("%.drdo.gov.in", "DRDO Subdomains"),
-        # Pakistan/China — kept to 2 domains each (not the full 5, like India
-        # got) specifically to limit how much further this already-slow
-        # module's runtime grows; crt.sh's own rate-limit backoff is the
-        # bottleneck, not anything on our end.
+        # Pakistan / China
         ("%.pakistanarmy.gov.pk", "Pakistan Army Subdomains"),
         ("%.mod.gov.pk", "Pakistan MoD Subdomains"),
         ("%.mod.gov.cn", "China MoD Subdomains"),
         ("%.avic.com", "AVIC Subdomains"),
-        # Coverage-gap fill (Canada/Australia/Germany already have MIL_DOMAIN_SUFFIXES
-        # entries but were missing from this source) + 6 new countries — kept to
-        # ONE domain per country to bound this already rate-limited module's runtime.
-        ("%.forces.gc.ca", "Canada Forces Subdomains"),
-        ("%.defence.gov.au", "Australia Defence Subdomains"),
-        ("%.bundeswehr.de", "Germany Bundeswehr Subdomains"),
-        ("%.mod.gov.il", "Israel MoD Subdomains"),
-        ("%.defense.gouv.fr", "France Defense Subdomains"),
-        ("%.mod.go.jp", "Japan MoD Subdomains"),
-        ("%.mnd.go.kr", "South Korea MND Subdomains"),
-        ("%.mnd.gov.tw", "Taiwan MND Subdomains"),
-        ("%.mod.gov.ua", "Ukraine MoD Subdomains"),
-        # India's neighbours — now a primary focus, so given fuller coverage
-        # (not capped to 1 domain) rather than the minimal gap-fill treatment
-        # above; all live-verified before adding.
+        # India's other neighbours — all live-verified before adding.
         ("%.mod.gov.bd", "Bangladesh MoD Subdomains"),
         ("%.afd.gov.bd", "Bangladesh Armed Forces Division Subdomains"),
         ("%.ispr.gov.bd", "Bangladesh ISPR Subdomains"),
@@ -2163,27 +2053,15 @@ def fetch_zoomeye(api_key: str) -> list:
     request format is now confirmed correct, the response-parsing below is
     best-effort (based on documented field names, not a verified live
     response) since no successful response was obtainable to test against."""
+    # Narrowed to India + neighbouring countries only (per explicit instruction).
     rows = []
     TARGETS = [
-        ('hostname:"army.mil"', "US Army", "US"), ('hostname:"navy.mil"', "US Navy", "US"),
-        ('hostname:"af.mil"', "US Air Force", "US"), ('hostname:"cybercom.mil"', "US Cyber Command", "US"),
-        ('hostname:"disa.mil"', "DISA", "US"), ('hostname:"nato.int"', "NATO", "EU"),
-        ('hostname:"mod.uk"', "UK MoD", "GB"),
         ('hostname:"indianarmy.nic.in"', "Indian Army", "IN"),
         ('hostname:"mod.gov.in"', "Indian MoD", "IN"),
         ('hostname:"drdo.gov.in"', "DRDO", "IN"),
         ('hostname:"pakistanarmy.gov.pk"', "Pakistan Army", "PK"),
         ('hostname:"mod.gov.pk"', "Pakistan MoD", "PK"),
         ('hostname:"mod.gov.cn"', "China MoD", "CN"),
-        ('hostname:"bundeswehr.de"', "German Bundeswehr", "DE"),
-        ('hostname:"forces.gc.ca"', "Canadian Armed Forces", "CA"),
-        ('hostname:"defence.gov.au"', "Australia Defence", "AU"),
-        ('hostname:"mod.gov.il"', "Israel MoD", "IL"),
-        ('hostname:"defense.gouv.fr"', "France MoD", "FR"),
-        ('hostname:"mod.go.jp"', "Japan MoD", "JP"),
-        ('hostname:"mnd.go.kr"', "South Korea MND", "KR"),
-        ('hostname:"mnd.gov.tw"', "Taiwan MND", "TW"),
-        ('hostname:"mod.gov.ua"', "Ukraine MoD", "UA"),
         ('hostname:"mod.gov.bd"', "Bangladesh MoD", "BD"),
         ('hostname:"mod.gov.np"', "Nepal MoD", "NP"),
         ('hostname:"defence.lk"', "Sri Lanka MoD", "LK"),
@@ -2232,17 +2110,11 @@ def fetch_zoomeye(api_key: str) -> list:
 
 def fetch_onyphe(api_key: str) -> list:
     """T3 — FREE 100 calls/mo at onyphe.io. Strong EU/NATO scan coverage."""
+    # Narrowed to India + neighbouring countries only (per explicit instruction).
     rows = []
     TARGETS = [
-        ("army.mil", "US Army"), ("navy.mil", "US Navy"), ("nato.int", "NATO"),
-        ("mod.uk", "UK Ministry of Defence"), ("bundeswehr.de", "German Bundeswehr"),
-        ("defense.gov", "US Defense.gov"), ("forces.gc.ca", "Canadian Armed Forces"),
-        ("defence.gov.au", "Australia Defence"),
         ("mod.gov.in", "Indian Ministry of Defence"), ("drdo.gov.in", "DRDO"),
         ("mod.gov.pk", "Pakistan Ministry of Defence"), ("mod.gov.cn", "China Ministry of National Defense"),
-        ("mod.gov.il", "Israel Ministry of Defense"), ("defense.gouv.fr", "France Ministry of Defense"),
-        ("mod.go.jp", "Japan Ministry of Defense"), ("mnd.go.kr", "South Korea Ministry of National Defense"),
-        ("mnd.gov.tw", "Taiwan Ministry of National Defense"), ("mod.gov.ua", "Ukraine Ministry of Defense"),
         ("mod.gov.bd", "Bangladesh Ministry of Defence"), ("mod.gov.np", "Nepal Ministry of Defence"),
         ("defence.lk", "Sri Lanka Ministry of Defence"), ("mod.gov.mm", "Myanmar Ministry of Defence"),
     ]
@@ -2376,26 +2248,17 @@ def fetch_binaryedge(api_key: str) -> list:
 def fetch_urlscan(api_key: str = "") -> list:
     """T3 — FREE 1000 searches/day at urlscan.io. Live scans of military domains
     — catches exposed admin panels and phishing pages mimicking military sites."""
+    # Narrowed to India + neighbouring countries only (per explicit instruction).
     rows = []
     queries = [
-        ("page.domain:army.mil", "US Army"), ("page.domain:navy.mil", "US Navy"),
-        ("page.domain:af.mil", "US Air Force"), ("page.domain:disa.mil", "DISA"),
-        ("page.domain:cybercom.mil", "USCYBERCOM"), ("page.domain:nato.int", "NATO"),
-        ("page.domain:mod.uk", "UK MoD"),
         ("page.domain:indianarmy.nic.in", "Indian Army"), ("page.domain:indiannavy.gov.in", "Indian Navy"),
         ("page.domain:mod.gov.in", "Indian MoD"), ("page.domain:drdo.gov.in", "DRDO"),
         ("page.domain:pakistanarmy.gov.pk", "Pakistan Army"), ("page.domain:mod.gov.pk", "Pakistan MoD"),
         ("page.domain:mod.gov.cn", "China MoD"),
-        ("page.domain:forces.gc.ca", "Canada Forces"), ("page.domain:defence.gov.au", "Australia Defence"),
-        ("page.domain:bundeswehr.de", "Germany Bundeswehr"),
-        ("page.domain:mod.gov.il", "Israel MoD"), ("page.domain:defense.gouv.fr", "France Defense"),
-        ("page.domain:mod.go.jp", "Japan MoD"), ("page.domain:mnd.go.kr", "South Korea MND"),
-        ("page.domain:mnd.gov.tw", "Taiwan MND"), ("page.domain:mod.gov.ua", "Ukraine MoD"),
         ("page.domain:mod.gov.bd", "Bangladesh MoD"), ("page.domain:afd.gov.bd", "Bangladesh Armed Forces Division"),
         ("page.domain:mod.gov.np", "Nepal MoD"), ("page.domain:nepalarmy.mil.np", "Nepal Army"),
         ("page.domain:defence.lk", "Sri Lanka MoD"), ("page.domain:army.lk", "Sri Lanka Army"),
         ("page.domain:mod.gov.mm", "Myanmar MoD"),
-        ('page.url:pentagon AND (login OR admin OR api)', "Pentagon sensitive path"),
     ]
     headers = {"API-Key": api_key} if api_key else {}
     headers["User-Agent"] = "MilOSINT/2.0"
@@ -3262,9 +3125,9 @@ def fetch_defence_news_rss() -> list:
         # outlets, so min_weak=1 like Defense News/War Zone/Defense Scoop.
         ("https://breakingdefense.com/feed/", "Breaking Defense", 1),
         ("https://www.c4isrnet.com/arc/outboundfeeds/rss/", "C4ISRNET", 1),
-        ("https://www.armytimes.com/arc/outboundfeeds/rss/", "Army Times", 1),
-        ("https://www.navytimes.com/arc/outboundfeeds/rss/", "Navy Times", 1),
-        ("https://www.airforcetimes.com/arc/outboundfeeds/rss/", "Air Force Times", 1),
+        # Army/Navy/Air Force Times removed — explicitly US-service-branch
+        # outlets (not general/global), out of scope now that this tool is
+        # narrowed to India + neighbouring countries only.
         # India — only one of several Indian defence outlets tried actually
         # serves a working RSS feed (idrw.org, The Print, ANI, Financial
         # Express, Defence Aviation Post all returned HTML/404/403 at every
@@ -3281,9 +3144,10 @@ def fetch_defence_news_rss() -> list:
         # candidates were either dead, or general-news firehoses mislabeled as
         # "defense" feeds (UPI's Defense-News RSS is just its generic feed).
         # Left as gaps rather than adding noise or non-functional entries.
-        ("https://www.militarnyi.com/en/feed/", "Militarnyi (Ukraine)", 1),
-        ("https://opex360.com/feed/", "Zone Militaire / Opex360 (France)", 1),
-        ("https://asiapacificdefencereporter.com/feed/", "Asia-Pacific Defence Reporter (Australia/APAC)", 1),
+        # Militarnyi (Ukraine), Opex360 (France), and Asia-Pacific Defence
+        # Reporter (Australia) removed — explicitly single-country outlets for
+        # non-neighbour countries, out of scope now that this tool is narrowed
+        # to India + neighbouring countries only.
     ]
     _RSS_WEAK_TERMS = WEAK_MIL_TERMS | {
         "disinformation", "propaganda", "psyop", "deepfake", "influence operation",

@@ -52,10 +52,14 @@ def load_rows():
 
 
 def build_report():
-    all_rows = load_rows()
-    rows = [r for r in all_rows if is_neighbor_row(r.get("location"))]
+    # military_osint_master.csv is already filtered to India + neighbours
+    # (including deliberately-kept general/global sources like RSS feeds and
+    # ThreatFox that don't carry a country-specific location field) — trust
+    # it directly instead of re-filtering by location here, which would
+    # wrongly exclude those global-source rows again.
+    rows = load_rows()
     total = len(rows)
-    total_all = len(all_rows)
+    total_all = total
 
     by_cat = Counter(r.get("category_code") for r in rows)
     by_sev = Counter(r.get("severity") for r in rows)

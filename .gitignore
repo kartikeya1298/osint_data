@@ -17,3 +17,10 @@ weekly_delta_v2_*.txt
 
 # Local Claude Code session config, not part of the project
 .claude/
+
+# Local-only safety backups and manual run logs — never push these; a backup
+# of the pre-filter dataset would put "removed" countries' data right back
+# into the public repo under a different filename.
+military_osint_master_*BACKUP*.csv
+run*_narrowed_*.log
+run[0-9]_*.log
