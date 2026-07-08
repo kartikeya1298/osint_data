@@ -115,8 +115,22 @@ CONFIG = {
 
     # DEEP / DARK WEB — FREE tier (key needed)
     "zoomeye_api_key":         "",
-    "vulners_api_key":         "",  # not required by NVD; kept for future use
+    "vulners_api_key":         "",  # not required by NVD; kept for future use.
+                                    # Confirmed live-tested (see chat): the
+                                    # API is currently gated behind a
+                                    # Cloudflare JS bot-challenge for plain
+                                    # HTTP clients (403 "Just a moment...",
+                                    # same with/without a browser User-
+                                    # Agent) — not usable via simple requests
+                                    # right now regardless of key validity.
     "onyphe_api_key":          "",
+    # Netlas.io — genuinely free "Community" tier (50 req/day, forever free,
+    # no card required — sign up at app.netlas.io, key on the profile page).
+    # Added as an independent alternative to Shodan/Censys/ZoomEye (all
+    # three are currently blocked on the account/credit side — see chat),
+    # so this gives a live, working path to the same class of exposed-
+    # asset data even while those three stay broken.
+    "netlas_api_key":          "",
 
     # DEEP / DARK WEB — PAID (stubs ready, activate by pasting key)
     "darkowl_api_key":         "",
@@ -147,7 +161,7 @@ CONFIG = {
         # Pakistan — verified live: pakistanarmy.gov.pk, paknavy.gov.pk,
         # paf.gov.pk, mod.gov.pk, ispr.gov.pk, hit.com.pk
         "pakistanarmy.gov.pk", "paknavy.gov.pk", "paf.gov.pk",
-        "mod.gov.pk", "ispr.gov.pk", "hit.com.pk",
+        "mod.gov.pk", "ispr.gov.pk", "hit.com.pk", "modp.gov.pk",
         # China — verified live: mod.gov.cn, norinco.cn, spacechina.com,
         # avic.com, cetc.com.cn
         "mod.gov.cn", "norinco.cn", "spacechina.com", "avic.com", "cetc.com.cn",
@@ -157,6 +171,20 @@ CONFIG = {
         "mod.gov.np", "nepalarmy.mil.np",
         "defence.lk", "army.lk", "navy.lk", "airforce.lk",
         "mod.gov.mm",
+        # Bangladesh state-owned defence-industrial entities (domains
+        # confirmed live via web search)
+        "bof.gov.bd", "khulnashipyard.gov.bd", "cddl.gov.bd", "dewbn.gov.bd",
+        # Broad military-run commercial conglomerates — deliberately only
+        # added here (infostealer-log lookup, keyed to compromised employee
+        # credentials at that specific domain) and NOT to the crt.sh/urlscan/
+        # ZoomEye domain-suffix lists above, since those would auto-pass ANY
+        # subdomain as a military-domain match and these two run large
+        # ordinary-commercial operations (fertiliser, banking, food) too.
+        "fauji.org.pk", "mecwebsite.com",
+        # Nuclear facilities/agencies (T5 gap — see chat)
+        "barc.gov.in", "npcil.nic.in", "paec.gov.pk", "cnnc.com.cn", "baec.gov.bd",
+        # Border Security Force (T7 border-surveillance gap — see chat)
+        "bsf.gov.in",
     ],
     "breachdirectory_api_key": "",
 
@@ -243,6 +271,10 @@ CATEGORY_NAMES = {
     "T6": "Malware & Advanced Cyber Attacks",
     "T7": "Emerging & Autonomous System Threats",
     "T8": "Information Operations & Influence Threats",
+    # Section II of sir's framework — dark web marketplace/forum sources.
+    # Purely additive: no existing T1-T8 row's category_code changes, so
+    # this doesn't affect anything already in the master CSV (see chat).
+    "S1": "Dark Web Marketplaces & Forums",
 }
 
 # ─────────────────────────────────────────────
@@ -327,17 +359,31 @@ MIL_DOMAIN_SUFFIXES = (
     # over-broad-match bug already found and fixed in RansomWatch.
     ".indianarmy.nic.in", ".indiannavy.gov.in", ".indianairforce.nic.in",
     ".mod.gov.in", ".drdo.gov.in",
+    # Nuclear facilities/agencies — T5 "Nuclear Facility Cyber Threats" /
+    # "Nuclear Research Data Leakage" had zero domain coverage before
+    # (domains confirmed live via web search; see chat).
+    ".barc.gov.in", ".npcil.nic.in",
+    # Border Security Force — T7 "Border Surveillance System Compromise" gap
+    # (guards the India-Pakistan and India-Bangladesh borders specifically;
+    # runs the BOLD-QIT/CIBMS electronic border-surveillance systems).
+    ".bsf.gov.in",
     # Pakistan — all verified live (403-WAF-blocked but real, or confirmed via
     # multiple independent sources when directly unreachable from this network).
     ".pakistanarmy.gov.pk", ".paknavy.gov.pk", ".paf.gov.pk",
-    ".mod.gov.pk", ".ispr.gov.pk",
+    ".mod.gov.pk", ".ispr.gov.pk", ".modp.gov.pk", ".paec.gov.pk",
     # China — verified live (eng.mod.gov.cn, en.norinco.cn, spacechina.com,
     # avic.com, cetc.com.cn all confirmed reachable).
     ".mod.gov.cn", ".norinco.cn", ".spacechina.com", ".avic.com", ".cetc.com.cn",
+    ".cnnc.com.cn",
     # Bangladesh — verified live (mod.gov.bd, afd.gov.bd, ispr.gov.bd all
     # confirmed reachable with real content; army.mil.bd is unreachable from
     # this network despite being cited as official, so left out).
     ".mod.gov.bd", ".afd.gov.bd", ".ispr.gov.bd",
+    # Bangladesh state-owned defence-industrial entities — domains confirmed
+    # live via web search (bof.gov.bd, khulnashipyard.gov.bd, cddl.gov.bd,
+    # dewbn.gov.bd all resolve to the actual official sites).
+    ".bof.gov.bd", ".khulnashipyard.gov.bd", ".cddl.gov.bd", ".dewbn.gov.bd",
+    ".baec.gov.bd",
     # Nepal — verified live (mod.gov.np confirmed reachable; nepalarmy.mil.np
     # is WAF-blocked but real, same pattern as Pakistan's domains above).
     ".mod.gov.np", ".nepalarmy.mil.np",
@@ -348,22 +394,55 @@ MIL_DOMAIN_SUFFIXES = (
     ".mod.gov.mm",
 )
 
+# Narrowed to India + neighbouring countries only (per explicit instruction).
+# Previously still had US/NATO-specific bare terms (us army, pentagon, nato
+# breach, siprnet, uscybercom, itar...) even after the rest of the tool was
+# narrowed in Parts 1-6 — since STRONG_MIL_TERMS feeds relevance_check(),
+# used by GHW/Tor/RSS/Telegram/OTX/LeakIX, any of those sources mentioning
+# NATO or the Pentagon would still have passed "strong" tier and reintroduced
+# exactly the out-of-scope content the Parts 1-6 narrowing was meant to
+# remove. Found and fixed in the same accuracy pass as the Shodan/Censys
+# fix (see chat).
 STRONG_MIL_TERMS = {
-    "department of defense", "dod breach", "us army", "u.s. army",
-    "us navy", "u.s. navy", "us air force", "u.s. air force",
-    "air force records", "nato breach", "pentagon", "ministry of defence",
-    "disa", "socom", "nsa breach", "military database", "armed forces",
-    "defence contractor", "defense contractor", "cyber command", "uscybercom",
-    "siprnet", "niprnet", "noforn", "fouo", "itar",
+    "ministry of defence", "ministry of national defense", "armed forces",
+    "military database", "defence contractor", "defense contractor",
+    "inter-services intelligence",
 }
 
+# Narrowed to India + neighbouring countries only (per explicit instruction).
+# Was still 100% foreign (US/European/Israeli) defense contractors —
+# Lockheed, Raytheon, Northrop Grumman, BAE Systems, Thales, Elbit, etc —
+# despite _TIER2_CONTRACTORS (ransomware.live's own contractor list, a few
+# hundred lines below) having already been correctly narrowed to our 7
+# countries' actual PSUs/SOEs. This set feeds the SAME relevance_check()
+# used broadly across the tool, so it was silently letting foreign-
+# contractor content back in wherever it appeared, unlike the ransomware
+# module's already-fixed narrow list. _TIER2_CONTRACTORS below now builds
+# on top of this one set instead of maintaining its own separate copy, so
+# the two can no longer drift apart again.
 MIL_CONTRACTORS = {
-    "lockheed martin", "lockheed", "raytheon", "northrop grumman", "northrop",
-    "boeing defense", "general dynamics", "bae systems", "leidos", "l3harris",
-    "saic", "mantech", "booz allen", "caci", "peraton", "gdit",
-    "curtiss-wright", "elbit", "rheinmetall", "leonardo", "thales", "saab",
-    "kongsberg", "hanwha", "oshkosh defense", "parsons", "mitre",
-    "rand corporation", "palantir",
+    # Indian defence PSUs — full names, not 3-4 letter acronyms (hal/bel/
+    # bdl/grse) that would be far more collision-prone even with
+    # word-boundary matching
+    "hindustan aeronautics", "bharat electronics", "bharat dynamics",
+    "mazagon dock", "garden reach shipbuilders", "beml limited",
+    # Pakistani and Chinese defence contractors/SOEs — full names again,
+    # avoiding short ambiguous acronyms (norinco/avic/cetc kept since
+    # they're already distinctive enough proper nouns)
+    "heavy industries taxila", "pakistan ordnance factories",
+    "norinco", "china north industries", "china aerospace science and technology",
+    "aviation industry corporation of china", "china electronics technology group",
+    "pakistan aeronautical complex", "karachi shipyard",
+    "national radio and telecommunication corporation",
+    # Pakistani/Myanmar military-run business conglomerates — full names
+    # since both run large ordinary-commercial arms too (fertiliser,
+    # banking, food), so a bare short acronym would be far too
+    # collision-prone here
+    "fauji foundation", "army welfare trust", "ministry of defence production",
+    "myanmar economic corporation",
+    # Bangladesh state-owned defence-industrial entities
+    "bangladesh ordnance factory", "khulna shipyard", "chittagong dry dock",
+    "chattogram dry dock", "bangladesh machine tools factory",
 }
 
 APT_GROUPS = {
@@ -381,6 +460,22 @@ APT_GROUPS = {
     "transparent tribe", "apt36", "sidecopy", "operation c-major",
     # A few more well-documented Chinese groups beyond what was already here
     "apt40", "mustang panda", "apt10", "stone panda", "menupass",
+    # South Asia-focused groups researched specifically for this scope
+    # (India/Pakistan/China/Bangladesh/Nepal/Sri Lanka/Myanmar), added to
+    # widen relevance-check recall. Deliberately using distinctive aliases
+    # instead of the groups' own common-word codenames — bare "sidewinder"
+    # (a snake/missile), "patchwork", "confucius", and "bitter" would match
+    # unrelated text under the word-boundary check and reintroduce exactly
+    # the over-broad-match class of bug already fixed once in this engine
+    # (see _has_any's docstring above).
+    "razor tiger", "sidewinder apt", "operation southnet",
+    "bitter apt", "apt-c-08",
+    "sloppylemming", "outrider tiger", "fishing elephant",
+    "dropping elephant", "donot team", "apt-c-35", "confucius apt",
+    # Mustang Panda aliases (already have "mustang panda" above) + malware/
+    # tool names tied to these campaigns — distinctive enough to add directly
+    "ta416", "red delta", "earth preta", "honeymyte", "camaro dragon",
+    "bronze president", "burrowshell", "deskrat", "toneshell",
 }
 
 MIL_VENDOR_TERMS = {
@@ -398,6 +493,14 @@ WEAK_MIL_TERMS = {
     "military", "army", "navy", "air force", "defence", "defense",
     "warfare", "weapon", "drone", "uav", "satellite",
     "intelligence agency", "government", "federal", "national security",
+    # Added while closing gaps against sir's OSINT category framework (see
+    # chat) — subject-matter terms for T1-T3 subcategories that had no
+    # search coverage at all before. Specific enough (2-weak-term minimum
+    # still applies) not to reopen the "disa"/"ot" class of over-broad match.
+    "biometric", "geolocation", "procurement", "tender",
+    "technology transfer", "strategic plan", "joint exercise",
+    "supply depot", "communications intercept", "sigint",
+    "ground station", "battlefield network", "single sign-on", "saml",
 }
 
 NEGATIVE_TERMS = {
@@ -469,11 +572,15 @@ def has_mil_domain(value: str) -> bool:
 _DOMAIN_COUNTRY_SUFFIXES = (
     (".indianarmy.nic.in", "India"), (".indiannavy.gov.in", "India"),
     (".indianairforce.nic.in", "India"), (".mod.gov.in", "India"), (".drdo.gov.in", "India"),
+    (".barc.gov.in", "India"), (".npcil.nic.in", "India"), (".bsf.gov.in", "India"),
     (".pakistanarmy.gov.pk", "Pakistan"), (".paknavy.gov.pk", "Pakistan"),
     (".paf.gov.pk", "Pakistan"), (".mod.gov.pk", "Pakistan"), (".ispr.gov.pk", "Pakistan"),
+    (".modp.gov.pk", "Pakistan"), (".paec.gov.pk", "Pakistan"),
     (".mod.gov.cn", "China"), (".norinco.cn", "China"), (".spacechina.com", "China"),
-    (".avic.com", "China"), (".cetc.com.cn", "China"),
+    (".avic.com", "China"), (".cetc.com.cn", "China"), (".cnnc.com.cn", "China"),
     (".mod.gov.bd", "Bangladesh"), (".afd.gov.bd", "Bangladesh"), (".ispr.gov.bd", "Bangladesh"),
+    (".bof.gov.bd", "Bangladesh"), (".khulnashipyard.gov.bd", "Bangladesh"),
+    (".cddl.gov.bd", "Bangladesh"), (".dewbn.gov.bd", "Bangladesh"), (".baec.gov.bd", "Bangladesh"),
     (".mod.gov.np", "Nepal"), (".nepalarmy.mil.np", "Nepal"),
     (".defence.lk", "Sri Lanka"), (".army.lk", "Sri Lanka"),
     (".navy.lk", "Sri Lanka"), (".airforce.lk", "Sri Lanka"),
@@ -491,6 +598,26 @@ def domain_to_country(value: str) -> str:
         if v.endswith(suffix) or v == suffix.lstrip("."):
             return country
     return "Unknown"
+
+
+def _domain_scan_category(label: str) -> str:
+    """The domain-scoped internet-scan modules (crt.sh, urlscan, ZoomEye,
+    Onyphe, Shodan, Censys, BinaryEdge, SecurityTrails) share one T3
+    (Communication & Network Attacks) default for every row — but a few
+    targets added to their shared target lists this session are
+    semantically different: nuclear facilities (BARC/NPCIL/PAEC/CNNC/BAEC,
+    labelled "... (Nuclear)") are T5 (Critical Infrastructure), and BSF
+    (labelled "... (Border Surveillance)") is T7 (Emerging & Autonomous
+    System Threats). Every one of those 8 fetch functions was hardcoding
+    "T3" regardless of label, silently mislabeling real findings and making
+    T5/T7 look empty in the dashboard even though the underlying data
+    existed. See chat."""
+    low = (label or "").lower()
+    if "nuclear" in low:
+        return "T5"
+    if "border surveillance" in low:
+        return "T7"
+    return "T3"
 
 
 def relevance_check(text: str, domain_value: str = "", weak_terms=None, min_weak: int = 2):
@@ -555,10 +682,13 @@ def _fetch_raw_github_content(html_url: str) -> str:
 # Narrowed to India + neighbouring countries only (per explicit instruction).
 _GHW_STRONG_QUERIES = [
     "indianarmy.nic.in", "indiannavy.gov.in", "indianairforce.nic.in",
-    "mod.gov.in", "drdo.gov.in",
+    "mod.gov.in", "drdo.gov.in", "barc.gov.in", "npcil.nic.in", "bsf.gov.in",
     "pakistanarmy.gov.pk", "paknavy.gov.pk", "paf.gov.pk", "mod.gov.pk", "ispr.gov.pk",
-    "mod.gov.cn", "norinco.cn", "spacechina.com", "avic.com", "cetc.com.cn",
-    "mod.gov.bd", "afd.gov.bd", "ispr.gov.bd", "mod.gov.np", "nepalarmy.mil.np",
+    "modp.gov.pk", "paec.gov.pk",
+    "mod.gov.cn", "norinco.cn", "spacechina.com", "avic.com", "cetc.com.cn", "cnnc.com.cn",
+    "mod.gov.bd", "afd.gov.bd", "ispr.gov.bd",
+    "bof.gov.bd", "khulnashipyard.gov.bd", "cddl.gov.bd", "dewbn.gov.bd", "baec.gov.bd",
+    "mod.gov.np", "nepalarmy.mil.np",
     "defence.lk", "army.lk", "navy.lk", "airforce.lk", "mod.gov.mm",
 ]
 _GHW_SOFT_QUERIES = []
@@ -703,6 +833,15 @@ def fetch_github_leaks(token: str) -> list:
         # ONE consolidated query to control this module's already-heavy
         # runtime under GitHub's ~10/min code-search rate limit.
         '"@mod.gov.bd" OR "@mod.gov.np" OR "@defence.lk" OR "@mod.gov.mm" filename:.env',
+        # New confirmed domains: Pakistan MoD Production + Bangladesh
+        # state-owned defence-industrial entities — one consolidated query,
+        # same rate-limit reasoning as above.
+        '"@modp.gov.pk" OR "@bof.gov.bd" OR "@khulnashipyard.gov.bd" OR "@cddl.gov.bd" filename:.env',
+        # T1 "Defence Authentication System Compromise" gap — SSO/SAML/LDAP
+        # config leaks are a real leaked-file pattern (unlike most of the
+        # other framework gap subcategories, which are subject matter, not
+        # file patterns, so they belong in the Tor dark-web queries instead).
+        'filename:config.json "mod.gov.in" OR "mod.gov.pk" OR "mod.gov.cn" sso OR saml OR ldap OR mfa',
     ]
     headers = {
         "Authorization": f"token {token}", "Accept": "application/vnd.github.v3+json",
@@ -823,7 +962,14 @@ def fetch_hudson_rock() -> list:
                                          f"Date compromised: {record.get('date_compromised') or record.get('date') or now_utc()}",
                         "post_url":      f"{base}?domain={domain}",
                         "timestamp":     str(record.get("date_compromised") or record.get("date") or now_utc()),
-                        "location":      record.get("country") or "Unknown",
+                        # domain_to_country(domain), not the infected
+                        # machine's own reported location — an employee of an
+                        # Indian-domain org could get infected while abroad;
+                        # for consistency with how "location" is used
+                        # everywhere else (which target country this is
+                        # about), the owning domain's country wins when known.
+                        "location":      domain_to_country(domain) if domain_to_country(domain) != "Unknown"
+                                          else (record.get("country") or "Unknown"),
                         "severity":      "CRITICAL", "confidence": "HIGH",
                         "ioc_type":      "email", "ioc_value": username,
                         "tags":          f"infostealer;dark-web-market;credential-theft;{domain}",
@@ -1072,7 +1218,17 @@ def fetch_grayhatwarfare(api_key: str) -> list:
                         "source_layer":  "Deep Web", "source": "GrayhatWarfare",
                         "post_text":     f"File: {fname} | Bucket: {bucket} | Size: {size} bytes | Keyword: {q} | Tier: {tier}",
                         "post_url":      furl or f"https://buckets.grayhatwarfare.com/files?keywords={q}",
-                        "timestamp":     str(fdate), "location": "Cloud",
+                        # domain_to_country(q) — q is the search keyword,
+                        # one of our known domain strings (e.g. "bsf.gov.in"),
+                        # so this resolves correctly for the common case
+                        # instead of the previous unconditional "Cloud"
+                        # placeholder (a real BSF recruitment-portal file
+                        # showed up mislabeled as country "Cloud" in a live
+                        # run — see chat). Falls back to "Cloud" since a
+                        # bucket genuinely has no inherent country when the
+                        # keyword isn't a recognized domain.
+                        "timestamp":     str(fdate),
+                        "location":      domain_to_country(q) if domain_to_country(q) != "Unknown" else "Cloud",
                         "severity":      "HIGH" if tier == "strong" else "MEDIUM",
                         "confidence":    "HIGH" if tier == "strong" else "MEDIUM",
                         "ioc_type":      "url", "ioc_value": furl,
@@ -1121,104 +1277,179 @@ def fetch_intelx_pastes(api_key: str, query: str = ".mil") -> list:
 
 def fetch_leakix(api_key: str) -> list:
     """T2/T3 — FREE signup at leakix.net. Domain-gated: every query is filtered
-    to a specific military host, so results only include that domain's assets."""
+    to a specific military host, so results only include that domain's assets.
+
+    Query syntax rewritten after live A/B testing (see chat) found the old
+    plain `host:X` queries returned ZERO results for exact government
+    domains (mod.gov.in, drdo.gov.in, mod.gov.pk all came back empty),
+    despite the sites being real and live. Empirically, `ssl.certificate.
+    domain:"X"` (LeakIX's YQL cert-domain field, same idea as crt.sh's
+    Certificate Transparency search) reliably returned hits where `host:`
+    returned none — e.g. mod.gov.pk: 0 results via host:, 3 results via
+    ssl.certificate.domain:. Confirmed against LeakIX's own docs
+    (docs.leakix.net/docs/query/{syntax,fields}) that `+` prefixes a
+    required term and ssl.certificate.domain is a real indexed field.
+
+    Also added one broader per-country query per country
+    (+geoip.country_iso_code:CC +ssl.certificate.domain:"<gov TLD>") to
+    catch military-relevant hosts outside the ~30 specifically-named
+    targets below — this is intentionally a wide net at the SEARCH step,
+    but its results are NOT trusted directly: each hit's returned host is
+    still required to pass has_mil_domain() before becoming a row, so
+    widening the search doesn't widen what gets kept."""
     rows = []
     _seen_services: set = set()
     # Narrowed to India + neighbouring countries only (per explicit instruction).
     LEAKIX_TARGETS = [
-        ("host:indianarmy.nic.in", "Indian Army", "T2"), ("host:indiannavy.gov.in", "Indian Navy", "T2"),
-        ("host:indianairforce.nic.in", "Indian Air Force", "T2"),
-        ("host:mod.gov.in", "Indian Ministry of Defence", "T2"), ("host:drdo.gov.in", "DRDO", "T3"),
-        ("host:pakistanarmy.gov.pk", "Pakistan Army", "T2"), ("host:paknavy.gov.pk", "Pakistan Navy", "T2"),
-        ("host:paf.gov.pk", "Pakistan Air Force", "T2"), ("host:mod.gov.pk", "Pakistan Ministry of Defence", "T2"),
-        ("host:mod.gov.cn", "China Ministry of National Defense", "T2"),
-        ("host:mod.gov.bd", "Bangladesh Ministry of Defence", "T2"),
-        ("host:afd.gov.bd", "Bangladesh Armed Forces Division", "T2"),
-        ("host:ispr.gov.bd", "Bangladesh ISPR", "T3"),
-        ("host:mod.gov.np", "Nepal Ministry of Defence", "T2"),
-        ("host:nepalarmy.mil.np", "Nepal Army", "T2"),
-        ("host:defence.lk", "Sri Lanka Ministry of Defence", "T2"),
-        ("host:army.lk", "Sri Lanka Army", "T2"), ("host:navy.lk", "Sri Lanka Navy", "T2"),
-        ("host:airforce.lk", "Sri Lanka Air Force", "T2"),
-        ("host:mod.gov.mm", "Myanmar Ministry of Defence", "T2"),
+        ("indianarmy.nic.in", "Indian Army", "T2"), ("indiannavy.gov.in", "Indian Navy", "T2"),
+        ("indianairforce.nic.in", "Indian Air Force", "T2"),
+        ("mod.gov.in", "Indian Ministry of Defence", "T2"), ("drdo.gov.in", "DRDO", "T3"),
+        ("barc.gov.in", "BARC (Nuclear)", "T5"), ("npcil.nic.in", "NPCIL (Nuclear)", "T5"),
+        ("bsf.gov.in", "BSF (Border Surveillance)", "T7"),
+        ("pakistanarmy.gov.pk", "Pakistan Army", "T2"), ("paknavy.gov.pk", "Pakistan Navy", "T2"),
+        ("paf.gov.pk", "Pakistan Air Force", "T2"), ("mod.gov.pk", "Pakistan Ministry of Defence", "T2"),
+        ("modp.gov.pk", "Pakistan Ministry of Defence Production", "T2"),
+        ("paec.gov.pk", "PAEC (Nuclear)", "T5"),
+        ("mod.gov.cn", "China Ministry of National Defense", "T2"),
+        ("cnnc.com.cn", "CNNC (Nuclear)", "T5"),
+        ("mod.gov.bd", "Bangladesh Ministry of Defence", "T2"),
+        ("afd.gov.bd", "Bangladesh Armed Forces Division", "T2"),
+        ("ispr.gov.bd", "Bangladesh ISPR", "T3"),
+        ("bof.gov.bd", "Bangladesh Ordnance Factory", "T3"),
+        ("khulnashipyard.gov.bd", "Bangladesh Khulna Shipyard", "T3"),
+        ("cddl.gov.bd", "Bangladesh Chittagong Dry Dock", "T3"),
+        ("baec.gov.bd", "BAEC (Nuclear)", "T5"),
+        ("mod.gov.np", "Nepal Ministry of Defence", "T2"),
+        ("nepalarmy.mil.np", "Nepal Army", "T2"),
+        ("defence.lk", "Sri Lanka Ministry of Defence", "T2"),
+        ("army.lk", "Sri Lanka Army", "T2"), ("navy.lk", "Sri Lanka Navy", "T2"),
+        ("airforce.lk", "Sri Lanka Air Force", "T2"),
+        ("mod.gov.mm", "Myanmar Ministry of Defence", "T2"),
+    ]
+    # Broad, country-scoped nets — deliberately loose at the query level
+    # (bare ".gov.xx" TLD, not a specific org) because every hit is still
+    # gated by has_mil_domain() below before being kept.
+    LEAKIX_BROAD_TARGETS = [
+        ('+geoip.country_iso_code:IN +ssl.certificate.domain:"gov.in"', "IN"),
+        ('+geoip.country_iso_code:PK +ssl.certificate.domain:"gov.pk"', "PK"),
+        ('+geoip.country_iso_code:CN +ssl.certificate.domain:"gov.cn"', "CN"),
+        ('+geoip.country_iso_code:BD +ssl.certificate.domain:"gov.bd"', "BD"),
+        ('+geoip.country_iso_code:NP +ssl.certificate.domain:"gov.np"', "NP"),
     ]
     headers = {"api-key": api_key, "Accept": "application/json", "User-Agent": "MilOSINT/2.0"}
+
+    def _leakix_search(query: str):
+        for scope in ("leak", "service"):
+            url = f"https://leakix.net/search?scope={scope}&q={requests.utils.quote(query)}"
+            try:
+                resp = requests.get(url, headers=headers, timeout=15)
+                if resp.status_code == 401:
+                    return
+                if resp.status_code == 429:
+                    time.sleep(5)
+                    continue
+                resp.raise_for_status()
+                if not resp.text.strip():
+                    continue  # LeakIX returns an empty 200 body (not "[]") for zero results — not an error
+                items = resp.json() or []
+                if not isinstance(items, list):
+                    continue
+                for item in items[:4]:
+                    yield scope, item
+                time.sleep(CONFIG["request_delay_sec"])
+            except Exception as inner_e:
+                log.warning(f"LeakIX [{scope}] {query}: {inner_e}")
+
+    def _build_row(scope, item, label, cat, expected_domain=""):
+        plugin = item.get("plugin") or ""
+        summary = item.get("summary") or ""
+        host = item.get("host") or ""
+        ip = item.get("ip") or ""
+        port = item.get("port") or ""
+        # domain_to_country(), not LeakIX's own geoip.country_name — live test
+        # found Pakistani/Bangladeshi government hosts geolocating to France/
+        # US (CDN/cloud hosting), which would mislabel the org's actual
+        # country. Same reasoning already applied via domain_to_country() in
+        # crt.sh/urlscan elsewhere in this file — do it here too for
+        # consistency, falling back to geoip only if the domain isn't one of
+        # our recognized suffixes (e.g. the broad-net queries).
+        country = domain_to_country(host)
+        if country == "Unknown":
+            country = (item.get("geoip") or {}).get("country_name") or "Unknown"
+        severity_raw = (item.get("severity") or "medium").upper()
+        sev = severity_raw if severity_raw in ("CRITICAL", "HIGH", "MEDIUM", "LOW") else "MEDIUM"
+        cat_name = CATEGORY_NAMES.get(cat, CATEGORY_NAMES["T2"])
+
+        # Named targets: require the returned host to actually BE the
+        # expected domain (or a subdomain of it) — not just contain it as a
+        # substring. A live run found "modp.gov.pk-mail.org" (a completely
+        # unrelated domain) passing a bare `in` check because "modp.gov.pk"
+        # happens to be a text prefix of it. Proper suffix/equality check
+        # instead, same fix class as has_mil_domain()'s own bare-domain
+        # handling elsewhere in this file.
+        # Broad country nets (expected_domain=""): require has_mil_domain()
+        # instead — this is the strict filter that keeps the wide net clean.
+        if expected_domain:
+            host_lower = host.lower()
+            if not (host_lower == expected_domain or host_lower.endswith("." + expected_domain)):
+                return None
+        elif not has_mil_domain(host):
+            return None
+        svc_key = f"{host}:{port}:{plugin}:{scope}"
+        if svc_key in _seen_services:
+            return None
+        _seen_services.add(svc_key)
+
+        cve_ids = re.findall(r"CVE-\d{4}-\d+", summary + " " + plugin, re.IGNORECASE)
+        if cve_ids:
+            sev = "CRITICAL"
+        summary_lower = summary.lower()
+        plugin_lower = plugin.lower()
+        finding_tags = []
+        # word-boundary: a bare "git" substring check matches inside
+        # "digital", "legitimate" etc.
+        if _has_any(summary_lower, {"git", "git-upload-pack"}) or _has_any(plugin_lower, {"git", "git-upload-pack"}) \
+           or ".git" in summary_lower or ".git" in plugin_lower:
+            finding_tags.append("git-exposure")
+        if any(k in summary_lower or k in plugin_lower for k in ("swagger", "openapi", "api-docs")):
+            finding_tags.append("api-spec-exposed")
+        if "phpinfo" in summary_lower:
+            finding_tags.append("phpinfo-exposed")
+        if any(k in summary_lower or k in plugin.lower() for k in ("kibana", "elasticsearch", "opensearch")):
+            finding_tags.append("search-engine-exposed")
+        if ".env" in summary_lower:
+            finding_tags.append("env-file-exposed")
+        if any(k in summary_lower for k in ("directory listing", "index of")):
+            finding_tags.append("directory-listing")
+
+        return {
+            "threat_id":     f"{cat}-LIX-{short_id(host+str(port)+scope)}",
+            "threat_name":   f"LeakIX {scope.title()} — {label} — {plugin or 'Unknown Service'}",
+            "category_code": cat, "category_name": cat_name,
+            "source_layer":  "Deep Web", "source": "LeakIX",
+            "post_text":     f"Target: {label} | Host: {host}:{port} | Plugin: {plugin} | {summary[:250]}",
+            "post_url":      f"https://leakix.net/host/{ip}" if ip else "https://leakix.net",
+            "timestamp":     str(item.get("time") or now_utc()), "location": country,
+            "severity":      sev, "confidence": "HIGH",
+            "ioc_type":      "ip", "ioc_value": ip,
+            "tags":          (f"leakix;{scope};{label.lower().replace(' ','-')};military-infra"
+                               + (f";{';'.join(finding_tags)}" if finding_tags else "")
+                               + (";cve-tagged" if cve_ids else "")),
+        }
+
     try:
-        for q, label, cat in LEAKIX_TARGETS:
-            for scope in ("leak", "service"):
-                url = f"https://leakix.net/search?scope={scope}&q={requests.utils.quote(q)}"
-                try:
-                    resp = requests.get(url, headers=headers, timeout=15)
-                    if resp.status_code == 401:
-                        return rows
-                    if resp.status_code == 429:
-                        time.sleep(5)
-                        continue
-                    resp.raise_for_status()
-                    if not resp.text.strip():
-                        continue  # LeakIX returns an empty 200 body (not "[]") for zero results — not an error
-                    items = resp.json() or []
-                    if not isinstance(items, list):
-                        continue
-                    target_domain = q.split("host:", 1)[1].strip() if "host:" in q else ""
+        for domain, label, cat in LEAKIX_TARGETS:
+            q = f'+ssl.certificate.domain:"{domain}"'
+            for scope, item in _leakix_search(q):
+                row = _build_row(scope, item, label, cat, expected_domain=domain)
+                if row:
+                    rows.append(row)
 
-                    for item in items[:4]:
-                        plugin = item.get("plugin") or ""
-                        summary = item.get("summary") or ""
-                        host = item.get("host") or ""
-                        ip = item.get("ip") or ""
-                        port = item.get("port") or ""
-                        country = (item.get("geoip") or {}).get("country_name") or "Unknown"
-                        severity_raw = (item.get("severity") or "medium").upper()
-                        sev = severity_raw if severity_raw in ("CRITICAL", "HIGH", "MEDIUM", "LOW") else "MEDIUM"
-                        cat_name = "Data & Document Leakage" if cat == "T2" else CATEGORY_NAMES["T3"]
-
-                        if target_domain and target_domain not in host.lower():
-                            continue
-                        svc_key = f"{host}:{port}:{plugin}:{scope}"
-                        if svc_key in _seen_services:
-                            continue
-                        _seen_services.add(svc_key)
-
-                        cve_ids = re.findall(r"CVE-\d{4}-\d+", summary + " " + plugin, re.IGNORECASE)
-                        if cve_ids:
-                            sev = "CRITICAL"
-                        summary_lower = summary.lower()
-                        plugin_lower = plugin.lower()
-                        finding_tags = []
-                        # word-boundary: a bare "git" substring check matches inside
-                        # "digital", "legitimate" etc.
-                        if _has_any(summary_lower, {"git", "git-upload-pack"}) or _has_any(plugin_lower, {"git", "git-upload-pack"}) \
-                           or ".git" in summary_lower or ".git" in plugin_lower:
-                            finding_tags.append("git-exposure")
-                        if any(k in summary_lower or k in plugin_lower for k in ("swagger", "openapi", "api-docs")):
-                            finding_tags.append("api-spec-exposed")
-                        if "phpinfo" in summary_lower:
-                            finding_tags.append("phpinfo-exposed")
-                        if any(k in summary_lower or k in plugin.lower() for k in ("kibana", "elasticsearch", "opensearch")):
-                            finding_tags.append("search-engine-exposed")
-                        if ".env" in summary_lower:
-                            finding_tags.append("env-file-exposed")
-                        if any(k in summary_lower for k in ("directory listing", "index of")):
-                            finding_tags.append("directory-listing")
-
-                        rows.append({
-                            "threat_id":     f"{cat}-LIX-{short_id(host+str(port)+scope)}",
-                            "threat_name":   f"LeakIX {scope.title()} — {label} — {plugin or 'Unknown Service'}",
-                            "category_code": cat, "category_name": cat_name,
-                            "source_layer":  "Deep Web", "source": "LeakIX",
-                            "post_text":     f"Target: {label} | Host: {host}:{port} | Plugin: {plugin} | {summary[:250]}",
-                            "post_url":      f"https://leakix.net/host/{ip}" if ip else "https://leakix.net",
-                            "timestamp":     str(item.get("time") or now_utc()), "location": country,
-                            "severity":      sev, "confidence": "HIGH",
-                            "ioc_type":      "ip", "ioc_value": ip,
-                            "tags":          (f"leakix;{scope};{label.lower().replace(' ','-')};military-infra"
-                                               + (f";{';'.join(finding_tags)}" if finding_tags else "")
-                                               + (";cve-tagged" if cve_ids else "")),
-                        })
-                    time.sleep(CONFIG["request_delay_sec"])
-                except Exception as inner_e:
-                    log.warning(f"LeakIX [{scope}] {q}: {inner_e}")
+        for q, cc in LEAKIX_BROAD_TARGETS:
+            for scope, item in _leakix_search(q):
+                row = _build_row(scope, item, f"{cc} Government (broad net)", "T3", expected_domain="")
+                if row:
+                    rows.append(row)
     except Exception as e:
         log.error(f"LeakIX error: {e}")
     log.info(f"LeakIX: {len(rows)} exposed services/leaks found")
@@ -1227,32 +1458,126 @@ def fetch_leakix(api_key: str) -> list:
 
 # Narrowed to India + neighbouring countries only (per explicit instruction).
 _TIER1_MIL_DOMAINS = (".indianarmy.nic.in", ".indiannavy.gov.in", ".indianairforce.nic.in",
-                       ".mod.gov.in", ".drdo.gov.in",
+                       ".mod.gov.in", ".drdo.gov.in", ".barc.gov.in", ".npcil.nic.in", ".bsf.gov.in",
                        ".pakistanarmy.gov.pk", ".paknavy.gov.pk", ".paf.gov.pk",
-                       ".mod.gov.pk", ".ispr.gov.pk",
+                       ".mod.gov.pk", ".ispr.gov.pk", ".modp.gov.pk", ".paec.gov.pk",
                        ".mod.gov.cn", ".norinco.cn", ".spacechina.com", ".avic.com", ".cetc.com.cn",
+                       ".cnnc.com.cn",
                        ".mod.gov.bd", ".afd.gov.bd", ".ispr.gov.bd",
+                       ".bof.gov.bd", ".khulnashipyard.gov.bd", ".cddl.gov.bd", ".dewbn.gov.bd",
+                       ".baec.gov.bd",
                        ".mod.gov.np", ".nepalarmy.mil.np",
                        ".defence.lk", ".army.lk", ".navy.lk", ".airforce.lk",
                        ".mod.gov.mm")
 _TIER3_GENERIC_GOV_MARKER = ".gov"
 # Narrowed to India + neighbouring countries only (per explicit instruction) —
 # removed all foreign (US/UK/Germany/Israel/France/etc) contractor names.
-_TIER2_CONTRACTORS = [
-    "ministry of defence", "armed forces", "defense intelligence",
-    "naval air", "army corps",
-    # Indian defence PSUs — full names used deliberately, not 3-4 letter
-    # acronyms (hal/bel/bdl/grse) that would be far more collision-prone
-    # even with word-boundary matching
-    "hindustan aeronautics", "bharat electronics", "bharat dynamics",
-    "mazagon dock", "garden reach shipbuilders", "beml limited",
-    # Pakistani and Chinese defence contractors/SOEs — full names again,
-    # avoiding short ambiguous acronyms (norinco/avic/cetc kept since they're
-    # already distinctive enough proper nouns, unlike hal/bel/bdl were)
-    "heavy industries taxila", "pakistan ordnance factories",
-    "norinco", "china north industries", "china aerospace science and technology",
-    "aviation industry corporation of china", "china electronics technology group",
+# Builds on the module-level MIL_CONTRACTORS set instead of maintaining a
+# separate copy (previously duplicated the same ~25 entries here, which is
+# exactly how the two sets drifted apart before — MIL_CONTRACTORS still had
+# foreign contractors while this list had already been correctly narrowed;
+# see chat). Plus a few ransomware-context-specific generic phrases that
+# don't belong in the general relevance engine's contractor set.
+_TIER2_CONTRACTORS = list(MIL_CONTRACTORS) + [
+    "defense intelligence", "naval air", "army corps",
 ]
+
+
+_RANSOMWARE_LIVE_TARGET_COUNTRIES = {
+    "IN": "India", "PK": "Pakistan", "CN": "China", "BD": "Bangladesh",
+    "NP": "Nepal", "LK": "Sri Lanka", "MM": "Myanmar",
+}
+
+
+def _ransomware_live_get(url: str, timeout: int = 25, max_attempts: int = 3):
+    """GET with retry on transient connection/DNS failures only (not on HTTP
+    error codes). osint_tool_v2.log showed api.ransomware.live's DNS failing
+    to resolve from this network on roughly half of past runs
+    ("NameResolutionError... getaddrinfo failed") while succeeding on the
+    others and while a direct live check confirmed the API itself is healthy
+    — a transient local/network hiccup, not a real outage, so a short retry
+    is enough."""
+    last_exc = None
+    for attempt in range(max_attempts):
+        try:
+            resp = requests.get(url, headers={"User-Agent": "MilOSINT/2.0"}, timeout=timeout)
+            resp.raise_for_status()
+            return resp
+        except (requests.exceptions.ConnectionError, requests.exceptions.Timeout) as e:
+            last_exc = e
+            if attempt < max_attempts - 1:
+                time.sleep(8 * (attempt + 1))
+    raise last_exc
+
+
+_TIER1_MIL_DOMAIN_FRAGMENTS = tuple(d.lstrip(".") for d in _TIER1_MIL_DOMAINS)
+
+_COUNTRY_TLD_HINTS = {
+    "IN": (".in",), "PK": (".pk",), "CN": (".cn",), "BD": (".bd",),
+    "NP": (".np",), "LK": (".lk",), "MM": (".mm",),
+}
+
+# Adjective/alternate forms too — a plain "china" check misses "Chinese
+# Police" (live-tested: it does, "chinese" doesn't contain "china" as a
+# substring since the 4th letter differs). Myanmar's old name "Burma" is
+# still in common use for its police/government bodies.
+_COUNTRY_NAME_HINTS = {
+    "IN": ("india", "indian"), "PK": ("pakistan", "pakistani"),
+    "CN": ("china", "chinese"), "BD": ("bangladesh", "bangladeshi"),
+    "NP": ("nepal", "nepali", "nepalese"), "LK": ("sri lanka", "sri lankan"),
+    "MM": ("myanmar", "burma", "burmese"),
+}
+
+
+def _ransomware_live_tiers(victim_name: str, domain: str, activity: str, group: str, country_hint_cc: str = ""):
+    """Shared tier classification for one ransomware.live post — used by both
+    the global recent-victims feed and the per-country feed below. tier1 now
+    also runs the post title through STRONG_MIL_TERMS/APT_GROUPS (not just
+    the domain-suffix list), since some genuinely military listings (e.g. an
+    "Access to Indian Ministry of Defence and Military Secret (DRDO)
+    documents" post) carry no machine-parseable domain field at all — only
+    descriptive text naming the ministry directly.
+
+    country_hint_cc: pass the target country code when calling this for the
+    per-country feed. A live test found ransomware.live's own per-country
+    tagging isn't fully reliable — a Washington-state tribal government and
+    an Indiana non-profit both came back mistagged as country=IN. Since
+    tier1/tier2 are already domain/name-specific (safe regardless), only
+    tier3's generic ".gov"/Public-Sector fallback needs this extra check:
+    require the domain to end in the target country's TLD, or the country's
+    own name to appear in the text, before trusting a tier3 match."""
+    title = (victim_name + " " + domain).lower()
+    tier1_mil = (
+        # Uses the domain suffix WITHOUT its leading dot so a bare root
+        # domain (e.g. victim "drdo.gov.in" with no subdomain) still
+        # matches — the leading-dot version only matched subdomains like
+        # "portal.drdo.gov.in", silently missing the bare-domain case (the
+        # exact bug already found and fixed once for has_mil_domain()).
+        any(d in title for d in _TIER1_MIL_DOMAIN_FRAGMENTS)
+        or _has_any(title, STRONG_MIL_TERMS)
+        or _has_any(title, APT_GROUPS)
+    )
+    # word-boundary: "mitre"/"parsons"/"leonardo" are also a woodworking
+    # tool, a common surname, and a common first name respectively
+    tier2_contractor = _has_any(title, _TIER2_CONTRACTORS)
+    tier3_generic_gov = (not tier1_mil) and (not tier2_contractor) and (
+        _TIER3_GENERIC_GOV_MARKER in title or (activity or "").lower() in ("government", "public sector")
+    )
+    if tier3_generic_gov and country_hint_cc:
+        tlds = _COUNTRY_TLD_HINTS.get(country_hint_cc, ())
+        name_hints = _COUNTRY_NAME_HINTS.get(country_hint_cc, ())
+        # Check victim_name itself as a candidate domain too, not just the
+        # separate `domain`/website field — live-tested: ransomware.live
+        # sometimes puts the actual domain-looking string only in the post
+        # title (e.g. "keralapolice.gov.in" as the victim name, with an
+        # empty website field), so domain-field-only checking silently
+        # dropped a real Kerala Police hit.
+        candidate_domains = (domain, victim_name.strip().lower())
+        domain_matches_country = any(cand.endswith(t) for cand in candidate_domains if cand for t in tlds)
+        name_mentions_country = any(h in title for h in name_hints)
+        if not (domain_matches_country or name_mentions_country):
+            tier3_generic_gov = False
+    return tier1_mil, tier2_contractor, tier3_generic_gov
 
 
 def fetch_ransomwatch() -> list:
@@ -1272,8 +1597,30 @@ def fetch_ransomwatch() -> list:
     authorities, and the US Federal Reserve as "CRITICAL Government/Military"
     — 41 of 158 CRITICAL rows in that run were exactly this, not military.
     Generic .gov victims are their own MEDIUM tier, clearly labeled as
-    non-military, instead of being conflated with real military/defence hits."""
+    non-military, instead of being conflated with real military/defence hits.
+
+    Extended with a second data path: the "recentvictims" feed only covers a
+    short recent WORLDWIDE window, so India/Pakistan/etc-specific hits rarely
+    surface there at all — a live check found 473 total India victims on
+    file via /v2/countryvictims/IN, including a real "Access to Indian
+    Ministry of Defence and Military Secret (DRDO) documents" Babuk2 listing
+    that the recent-only version of this function would never have seen.
+    Added direct per-country calls (/v2/countryvictims/{cc}) for all 7 target
+    countries to close that gap. That endpoint rate-limits to ~1 request/
+    minute (confirmed live), so this module now deliberately takes several
+    extra minutes per run.
+
+    Also fixed a real noise bug found while building this: tier3 (generic
+    .gov / Government-sector) had NO country check at all on the global feed
+    — a ransomware victim tagged "Government" in, say, France or the US
+    would have been silently readmitted as "MEDIUM Government (non-military)",
+    exactly the kind of leftover foreign-country data that had to be
+    manually filtered out of the master CSV earlier this session. Tier3 on
+    the global feed now also requires the victim's country to be one of the
+    7 target countries (the per-country feed is inherently already scoped
+    correctly by construction, so it doesn't need this extra check)."""
     rows = []
+    seen_ids: set = set()
     _HIGH_PRIORITY_GROUPS = {
         "lockbit", "alphv", "blackcat", "clop", "cl0p", "revil", "darkside",
         "conti", "hive", "blackbasta", "akira", "play", "royal", "bianlian",
@@ -1281,56 +1628,105 @@ def fetch_ransomwatch() -> list:
         "salt typhoon", "silk typhoon", "vice society", "lorenz", "snatch",
         "rhysida", "medusa", "qilin", "wallstreet", "hunters international",
     }
+
+    def _make_row(sector, victim_name, group, display_group, raw_ts, url, country, sev, conf, tier_label, tag):
+        tid = f"T2-RW-{short_id(victim_name + group)}"
+        if tid in seen_ids:
+            return None
+        seen_ids.add(tid)
+        return {
+            "threat_id":     tid,
+            "threat_name":   f"Ransomware Victim — {display_group}",
+            "category_code": "T2", "category_name": CATEGORY_NAMES["T2"],
+            "source_layer":  "Dark Web", "source": "ransomware.live (ransomware leak sites)",
+            "post_text":     f"Ransomware Group: {display_group} | Victim: {victim_name} | "
+                             f"Tier: {tier_label} | Sector: {sector} | "
+                             f"Country: {country} | Discovered: {raw_ts}",
+            "post_url":      url or "https://www.ransomware.live/",
+            "timestamp":     str(raw_ts), "location": country or "Unknown",
+            "severity":      sev, "confidence": conf,
+            "ioc_type":      "url", "ioc_value": url or f"darkweb://{group.replace(' ','-')}/{short_id(victim_name)}",
+            "tags":          f"ransomware;dark-web;leak-site;{tag};{group.replace(' ','-')}",
+        }
+
+    def _sev_for(tier1_mil, tier2_contractor):
+        if tier1_mil:
+            return "CRITICAL", "HIGH", "Military/Defence", "gov-military"
+        if tier2_contractor:
+            return "HIGH", "MEDIUM", "Defence Contractor", "contractor"
+        return "MEDIUM", "MEDIUM", "Government (non-military)", "government-sector"
+
+    # ── Path 1: global recent-victims feed (fast, narrow time window) ──
     try:
-        resp = requests.get("https://api.ransomware.live/v2/recentvictims",
-                             headers={"User-Agent": "MilOSINT/2.0"}, timeout=25)
-        resp.raise_for_status()
+        resp = _ransomware_live_get("https://api.ransomware.live/v2/recentvictims")
         posts = resp.json()
-        if not isinstance(posts, list):
-            return rows
-        for post in posts:
-            victim_name = post.get("victim") or ""
-            domain      = (post.get("domain") or "").lower()
-            title       = (victim_name + " " + domain).lower()
-            group       = (post.get("group") or "Unknown").lower()
-            display_group = post.get("group") or "Unknown"
-            raw_ts      = post.get("discovered") or post.get("attackdate") or now_utc()
+        if isinstance(posts, list):
+            for post in posts:
+                victim_name = post.get("victim") or ""
+                domain      = (post.get("domain") or "").lower()
+                group       = (post.get("group") or "Unknown").lower()
+                display_group = post.get("group") or "Unknown"
+                activity    = post.get("activity") or ""
+                country     = post.get("country") or ""
+                raw_ts      = post.get("discovered") or post.get("attackdate") or now_utc()
 
-            if not any(g in group for g in _HIGH_PRIORITY_GROUPS):
-                continue
-            tier1_mil = any(d in title for d in _TIER1_MIL_DOMAINS)
-            # word-boundary: "mitre"/"parsons"/"leonardo" are also a woodworking
-            # tool, a common surname, and a common first name respectively
-            tier2_contractor = _has_any(title, _TIER2_CONTRACTORS)
-            tier3_generic_gov = (not tier1_mil) and (not tier2_contractor) and (
-                _TIER3_GENERIC_GOV_MARKER in title or (post.get("activity") or "").lower() == "government"
-            )
-            if not (tier1_mil or tier2_contractor or tier3_generic_gov):
-                continue
-
-            if tier1_mil:
-                sev, conf, tier_label, tag = "CRITICAL", "HIGH", "Military/Defence", "gov-military"
-            elif tier2_contractor:
-                sev, conf, tier_label, tag = "HIGH", "MEDIUM", "Defence Contractor", "contractor"
-            else:
-                sev, conf, tier_label, tag = "MEDIUM", "MEDIUM", "Government (non-military)", "government-sector"
-
-            rows.append({
-                "threat_id":     f"T2-RW-{short_id(victim_name + group)}",
-                "threat_name":   f"Ransomware Victim — {display_group}",
-                "category_code": "T2", "category_name": CATEGORY_NAMES["T2"],
-                "source_layer":  "Dark Web", "source": "ransomware.live (ransomware leak sites)",
-                "post_text":     f"Ransomware Group: {display_group} | Victim: {victim_name} | "
-                                 f"Tier: {tier_label} | Sector: {post.get('activity','')} | "
-                                 f"Country: {post.get('country','')} | Discovered: {raw_ts}",
-                "post_url":      post.get("url") or "https://www.ransomware.live/",
-                "timestamp":     str(raw_ts), "location": post.get("country") or "Unknown",
-                "severity":      sev, "confidence": conf,
-                "ioc_type":      "url", "ioc_value": post.get("url") or f"darkweb://{group.replace(' ','-')}/{short_id(victim_name)}",
-                "tags":          f"ransomware;dark-web;leak-site;{tag};{group.replace(' ','-')}",
-            })
+                if not any(g in group for g in _HIGH_PRIORITY_GROUPS):
+                    continue
+                tier1_mil, tier2_contractor, tier3_generic_gov = _ransomware_live_tiers(
+                    victim_name, domain, activity, group)
+                if tier3_generic_gov and country.upper() not in _RANSOMWARE_LIVE_TARGET_COUNTRIES:
+                    tier3_generic_gov = False
+                if not (tier1_mil or tier2_contractor or tier3_generic_gov):
+                    continue
+                sev, conf, tier_label, tag = _sev_for(tier1_mil, tier2_contractor)
+                row = _make_row(activity, victim_name, group, display_group, raw_ts,
+                                 post.get("url"), country, sev, conf, tier_label, tag)
+                if row:
+                    rows.append(row)
     except Exception as e:
-        log.error(f"ransomware.live error: {e}")
+        log.error(f"ransomware.live (recent feed) error: {e}")
+
+    # ── Path 2: per-country feed, one country at a time (rate-limited ~1/min) ──
+    for cc, country_name in _RANSOMWARE_LIVE_TARGET_COUNTRIES.items():
+        try:
+            time.sleep(65)  # respect the ~1 request/minute rate limit (confirmed live)
+            resp = _ransomware_live_get(f"https://api.ransomware.live/v2/countryvictims/{cc}", timeout=30)
+            posts = resp.json()
+            if not isinstance(posts, list):
+                continue
+            kept_for_country = 0
+            for post in posts:
+                if kept_for_country >= 15:
+                    break
+                victim_name = post.get("victim") or post.get("post_title") or ""
+                domain      = (post.get("domain") or post.get("website") or "").lower()
+                group       = (post.get("group") or post.get("group_name") or "Unknown").lower()
+                display_group = post.get("group") or post.get("group_name") or "Unknown"
+                activity    = post.get("activity") or ""
+                raw_ts      = post.get("discovered") or post.get("published") or post.get("attackdate") or now_utc()
+                url         = post.get("url") or post.get("post_url") or ""
+
+                # No _HIGH_PRIORITY_GROUPS gate here on purpose: this feed is
+                # requested per-country, so tier1/tier2/tier3 (domain /
+                # contractor / gov-sector) IS the noise gate — requiring a
+                # "famous gang" on top of that would drop real military hits
+                # from smaller or regional ransomware groups. country_hint_cc
+                # is passed so tier3 double-checks the country tag itself
+                # (ransomware.live's own per-country tagging isn't fully
+                # reliable — see _ransomware_live_tiers docstring).
+                tier1_mil, tier2_contractor, tier3_generic_gov = _ransomware_live_tiers(
+                    victim_name, domain, activity, group, country_hint_cc=cc)
+                if not (tier1_mil or tier2_contractor or tier3_generic_gov):
+                    continue
+                sev, conf, tier_label, tag = _sev_for(tier1_mil, tier2_contractor)
+                row = _make_row(activity, victim_name, group, display_group, raw_ts,
+                                 url, country_name, sev, conf, tier_label, tag)
+                if row:
+                    rows.append(row)
+                    kept_for_country += 1
+        except Exception as e:
+            log.warning(f"ransomware.live (country feed {cc}) error: {e}")
+
     log.info(f"ransomware.live: {len(rows)} defense-sector ransomware victims found")
     return rows
 
@@ -1476,21 +1872,121 @@ def fetch_tor_onion() -> list:
         ("south asia military apt nation state", "T6", "South Asia Nation-State APT Mention"),
         ("indian defense contractor database", "T2", "Indian Defense Contractor Data"),
         ("bangladesh nepal sri lanka myanmar military exploit", "T7", "Neighbouring Countries Exploit Mention"),
+        # Named-APT-campaign searches — these groups are actively (2025-2026)
+        # targeting exactly this region (researched specifically for this
+        # scope; see chat), so dark-web chatter naming them is high-signal.
+        ("sidewinder razor tiger south asia government breach", "T6", "SideWinder/Razor Tiger Campaign Mention"),
+        ("bitter apt pakistan kashmir data leak", "T2", "Bitter APT Pakistan Leak Mention"),
+        ("mustang panda myanmar military breach", "T6", "Mustang Panda Myanmar Breach Mention"),
+        ("donot team india government data leak", "T2", "DoNot Team India Leak Mention"),
+        # Closing gaps against sir's OSINT category framework (see chat) —
+        # these subcategories had zero search coverage before. Dark web is
+        # the right channel for them (leaked procurement/strategic/supply
+        # documents get discussed/sold on underground forums, not found in
+        # public GitHub repos), and results still go through the same
+        # relevance_check() gate as every other Torch query above.
+        ("indian military biometric fingerprint database leak", "T1", "Biometric Data Leak Mention"),
+        ("soldier geolocation tracking data leak south asia", "T1", "Geolocation Exposure Mention"),
+        ("military procurement tender leak india pakistan", "T2", "Procurement Data Leak Mention"),
+        ("defence technology transfer arms deal leak", "T2", "Technology Transfer Leak Mention"),
+        ("military strategic plan document leak south asia", "T2", "Strategic Planning Document Leak Mention"),
+        ("joint military exercise operations leak india", "T2", "Joint Operations Leak Mention"),
+        ("military supply depot ammunition leak south asia", "T2", "Supply Depot Leak Mention"),
+        ("military communications intercept sigint leak", "T3", "Comms Interception Mention"),
+        ("military secure messaging app compromise south asia", "T3", "Messaging Platform Compromise Mention"),
+        ("satellite ground station hack compromise india", "T3", "Satellite Ground Station Compromise Mention"),
+        ("battlefield tactical network disruption south asia", "T3", "Battlefield Network Disruption Mention"),
+        # T4/T5 framework gaps — same reasoning as above: incident-report
+        # based coverage via dark-web/underground chatter, since a real-time
+        # GPS-spoofing detector was already tried and reverted this session
+        # as a confirmed false positive (see fetch_gps_ew_data docstring).
+        ("gps spoofing jamming attack india pakistan border", "T4", "GPS Spoofing/Jamming Incident Mention"),
+        ("radar system hack air defence compromise south asia", "T4", "Radar/Air Defence Targeting Mention"),
+        ("electronic warfare attack military sensor network", "T4", "EW/Sensor Network Attack Mention"),
+        ("defence manufacturing plant cyber breach south asia", "T5", "Defence Manufacturing Breach Mention"),
+        ("military logistics fuel supply chain attack india", "T5", "Logistics/Fuel Supply Chain Attack Mention"),
+        ("military transportation network battlefield management breach", "T5", "Transportation/BMS Attack Mention"),
+        ("nuclear facility cyber attack india pakistan china", "T5", "Nuclear Facility Cyber Threat Mention"),
+        ("nuclear research data leak south asia", "T5", "Nuclear Research Data Leak Mention"),
+        # T6 gaps
+        ("ddos attack defence sector south asia", "T6", "Defence Sector DDoS Attack Mention"),
+        ("surveillance spyware pegasus military south asia", "T6", "Surveillance Malware Activity Mention"),
+        ("ai-enabled cyberattack military south asia", "T6", "AI-Enabled Cyber Attack Mention"),
+        ("cyber sabotage military infrastructure south asia", "T6", "Cyber Sabotage Operation Mention"),
+        # T7 gaps — the framework's real T7 subcategories had zero coverage
+        # before this (the tool's existing T7 code is unrelated generic
+        # vendor-CVE monitoring — see chat). Border Surveillance System
+        # Compromise flagged as the highest-priority one for India
+        # specifically (LoC/LAC), also given a real domain target (BSF)
+        # above, unlike the other 4 which have no identifiable single
+        # domain to target and rely on this dark-web search instead.
+        ("defence supply chain compromise hardware implant south asia", "T7", "Supply Chain Compromise Mention"),
+        ("military drone uav hijack spoofing south asia", "T7", "Drone/UAV Compromise Mention"),
+        ("weapon system vulnerability exploit india pakistan china", "T7", "Weapon System Vulnerability Mention"),
+        ("autonomous weapon system ai military threat", "T7", "Autonomous Weapon System Threat Mention"),
+        ("border surveillance system compromise loc lac india", "T7", "Border Surveillance System Compromise Mention"),
+        # T8 gaps. Social Media Influence Operations (the framework's other
+        # T8 gap) is deliberately NOT added here — it needs platform access
+        # (X/Twitter API is paid, Facebook/YouTube similarly restricted),
+        # not a dark-web search; flagging as a real, unsolved-for-free gap
+        # rather than faking coverage.
+        ("deepfake synthetic media military south asia", "T8", "Deepfake/Synthetic Identity Attack Mention"),
+        ("cyber psyop psychological operation military south asia", "T8", "Cyber PSYOP Mention"),
+        ("false flag cyber operation military attribution", "T8", "False Flag Cyber Operation Mention"),
+        # S1 — Section II of the framework (dark web marketplaces/forums).
+        # New category, doesn't retag anything existing (see chat).
+        ("military zero-day exploit for sale dark web", "S1", "Defence Zero-Day Exploit Listing"),
+        ("military pay salary fraud scam underground market", "S1", "Military Financial Fraud Underground Market Mention"),
     ]
     TORCH_URL = "http://xmh57jrknzkhv6y3ls3ubitzfqnkrwxhopf5aygthi7d6rplyvk3noyd.onion/cgi-bin/omega/omega"
     seen_urls: set = set()
-    for q, cat, label in QUERIES:
+
+    # Parallelized (was fully sequential — 43 queries x (Tor round-trip +
+    # a 3.5s artificial delay) made this the slowest module in the tool,
+    # 10-20+ minutes on some runs). Researched free/faster external
+    # alternatives first (see chat): DarkSearch.io's public API is
+    # discontinued, IntelligenceX's free tier has NO API access at all
+    # (Search API needs the EUR2,500/yr "Researcher" tier), and Apify's
+    # Tor-search actors are metered against a small $5/mo credit that a
+    # single 43-query run would mostly burn through — none of them are a
+    # real free replacement. A bounded thread pool over the SAME local Tor
+    # SOCKS5 proxy is the actual free speedup available: Tor can serve
+    # several concurrent streams over one proxy, so this cuts wall-clock
+    # time roughly by the worker count without needing any new external
+    # service. Kept deliberately modest (4 workers) rather than higher,
+    # since a local Tor daemon can get circuit-congested under heavy
+    # concurrency.
+    import concurrent.futures
+    import threading
+    session = requests.Session()
+    seen_lock = threading.Lock()
+
+    def _run_query(args):
+        q, cat, label = args
+        local_rows = []
         try:
-            resp = requests.get(TORCH_URL, params={"P": q}, proxies=proxies,
-                                 headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; rv:109.0) Gecko/20100101 Firefox/115.0"},
-                                 timeout=50)
+            resp = session.get(TORCH_URL, params={"P": q}, proxies=proxies,
+                                headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; rv:109.0) Gecko/20100101 Firefox/115.0"},
+                                timeout=50)
             resp.raise_for_status()
+            # A verification pass found a single U+FFFD replacement
+            # character in a scraped snippet ("Director General<?>: Rizwan")
+            # — Torch's proxied Tor Hidden Wiki pages don't reliably send a
+            # correct charset header, so `requests` was falling back to its
+            # ISO-8859-1 default instead of the page's real encoding.
+            # apparent_encoding sniffs the actual bytes instead of trusting
+            # the (often absent/wrong) header — same class of fix as the
+            # PDF font/mojibake issue found earlier this session, just at
+            # the scraping layer instead of the rendering layer.
+            if resp.encoding is None or resp.encoding.lower() in ("iso-8859-1", "ascii"):
+                resp.encoding = resp.apparent_encoding
             kept = 0
             for link, raw_title, raw_snippet in _TORCH_RESULT_RE.findall(resp.text):
                 if kept >= 4:
                     break
-                if link in seen_urls:
-                    continue
+                with seen_lock:
+                    if link in seen_urls:
+                        continue
                 title = re.sub(r'<[^>]+>', '', raw_title).strip()
                 snippet = re.sub(r'<[^>]+>', '', raw_snippet).strip()
                 # min_weak=2: Torch is a fully uncurated/uncensored index (unlike
@@ -1503,9 +1999,12 @@ def fetch_tor_onion() -> list:
                 passes, tier, reason = relevance_check(title + " " + snippet, min_weak=2)
                 if not passes:
                     continue
-                seen_urls.add(link)
+                with seen_lock:
+                    if link in seen_urls:
+                        continue  # another worker beat us to this link
+                    seen_urls.add(link)
                 kept += 1
-                rows.append({
+                local_rows.append({
                     "threat_id":     f"{cat}-TOR-{short_id(link + q)}",
                     "threat_name":   f"Dark Web Search (Torch .onion) — {label}",
                     "category_code": cat, "category_name": CATEGORY_NAMES.get(cat, CATEGORY_NAMES["T2"]),
@@ -1517,9 +2016,13 @@ def fetch_tor_onion() -> list:
                     "ioc_type":      "url", "ioc_value": link,
                     "tags":          f"dark-web;torch;onion-search;{reason};{q.replace(' ','-')}",
                 })
-            time.sleep(CONFIG["request_delay_sec"] + 2)
         except Exception as inner_e:
             log.warning(f"Tor/Torch [{q}]: {inner_e}")
+        return local_rows
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:
+        for local_rows in pool.map(_run_query, QUERIES):
+            rows.extend(local_rows)
     log.info(f"Dark web search (Torch .onion): {len(rows)} military-relevant results found")
     return rows
 
@@ -1776,31 +2279,54 @@ def fetch_digital_shadows(api_key: str, api_secret: str) -> list:
 # ═════════════════════════════════════════════════════════════════════════
 
 def fetch_shodan_military(api_key: str) -> list:
-    """T3 — PAID $69/mo at shodan.io. Exposed military network infrastructure."""
+    """T3 — PAID $69/mo at shodan.io. Exposed military network infrastructure.
+
+    Queries were still US Army/US Navy/UK MoD/generic .mil/DoD — completely
+    unscoped from before this session's India+neighbours narrowing (Parts
+    1-6). This module is PAID and its API key IS actually configured, so it
+    was live and actively pulling non-target-country data into the master
+    CSV on every run. Rewritten to hostname:-scope on our actual confirmed
+    domains, same pattern as every other module."""
     rows = []
     queries = [
-        ('org:"US Army"', "US Army exposed infrastructure"),
-        ('org:"US Navy"', "US Navy exposed infrastructure"),
-        ('org:"Ministry of Defence"', "UK MoD exposed infrastructure"),
-        ('ssl.cert.subject.cn:*.mil port:443', "Military TLS/HTTPS endpoints"),
-        ('product:"Cisco AnyConnect" org:"Department of Defense"', "DoD VPN endpoints"),
+        ('hostname:"mod.gov.in"', "Indian MoD exposed infrastructure"),
+        ('hostname:"drdo.gov.in"', "DRDO exposed infrastructure"),
+        ('hostname:"indianarmy.nic.in"', "Indian Army exposed infrastructure"),
+        ('hostname:"barc.gov.in"', "BARC (Nuclear) exposed infrastructure"),
+        ('hostname:"bsf.gov.in"', "BSF (Border Surveillance) exposed infrastructure"),
+        ('hostname:"mod.gov.pk"', "Pakistan MoD exposed infrastructure"),
+        ('hostname:"mod.gov.cn"', "China MoD exposed infrastructure"),
+        ('hostname:"mod.gov.bd"', "Bangladesh MoD exposed infrastructure"),
+        ('hostname:"mod.gov.np"', "Nepal MoD exposed infrastructure"),
+        ('hostname:"defence.lk"', "Sri Lanka MoD exposed infrastructure"),
+        ('hostname:"mod.gov.mm"', "Myanmar MoD exposed infrastructure"),
     ]
     for q, label in queries:
+        # Extract the target domain from the hostname:"X" query so location
+        # can be resolved via domain_to_country() — Shodan's own IP
+        # geolocation reflects where the server is physically hosted
+        # (often a foreign CDN/cloud region), not the org's actual country;
+        # same fix already applied to LeakIX this session (see chat).
+        target_domain = q.split('"')[1] if '"' in q else ""
         try:
             resp = requests.get("https://api.shodan.io/shodan/host/search",
                                  params={"key": api_key, "query": q, "limit": 10}, timeout=15)
             resp.raise_for_status()
             for m in resp.json().get("matches", []):
                 ip = m.get("ip_str", "")
+                loc = domain_to_country(target_domain)
+                if loc == "Unknown":
+                    loc = m.get("location", {}).get("country_name", "Unknown")
                 rows.append({
                     "threat_id":     f"T3-SHD-{short_id(ip + str(m.get('port','')))}",
                     "threat_name":   label,
-                    "category_code": "T3", "category_name": CATEGORY_NAMES["T3"],
+                    "category_code": _domain_scan_category(label),
+                    "category_name": CATEGORY_NAMES[_domain_scan_category(label)],
                     "source_layer":  "Deep Web", "source": "Shodan",
                     "post_text":     f"Org: {m.get('org','')} | Port: {m.get('port','')} | Banner: {str(m.get('data',''))[:300]}",
                     "post_url":      f"https://www.shodan.io/host/{ip}",
                     "timestamp":     m.get("timestamp", now_utc()),
-                    "location":      m.get("location", {}).get("country_name", "Unknown"),
+                    "location":      loc,
                     "severity":      "HIGH", "confidence": "HIGH",
                     "ioc_type":      "ip", "ioc_value": ip,
                     "tags":          "network;exposed;shodan",
@@ -1813,13 +2339,18 @@ def fetch_shodan_military(api_key: str) -> list:
 
 
 def fetch_securitytrails(api_key: str) -> list:
-    """T3 — PAID $50/mo at securitytrails.com. Military subdomain/DNS intel."""
+    """T3 — PAID $50/mo at securitytrails.com. Military subdomain/DNS intel.
+
+    Domain list was still army.mil/navy.mil/NATO/UK/Germany/Australia/
+    Canada/Israel/France/Japan/S.Korea/Taiwan/Ukraine — left over from
+    before this session's India+neighbours narrowing (Parts 1-6). Currently
+    inactive (no API key configured) so no live-data risk, but fixed for
+    consistency/correctness (see chat)."""
     rows = []
-    domains = ["army.mil", "navy.mil", "af.mil", "marines.mil", "dod.gov", "nato.int",
-               "mod.uk", "bundeswehr.de", "defence.gov.au", "forces.gc.ca",
-               "mod.gov.in", "mod.gov.pk", "mod.gov.cn",
-               "mod.gov.il", "defense.gouv.fr", "mod.go.jp", "mnd.go.kr", "mnd.gov.tw", "mod.gov.ua",
-               "mod.gov.bd", "mod.gov.np", "defence.lk", "mod.gov.mm"]
+    domains = ["mod.gov.in", "drdo.gov.in", "barc.gov.in", "npcil.nic.in", "bsf.gov.in",
+               "mod.gov.pk", "modp.gov.pk", "paec.gov.pk",
+               "mod.gov.cn", "cnnc.com.cn",
+               "mod.gov.bd", "baec.gov.bd", "mod.gov.np", "defence.lk", "mod.gov.mm"]
     headers = {"APIKEY": api_key, "Accept": "application/json", "User-Agent": "MilOSINT/2.0"}
     try:
         for domain in domains:
@@ -1834,7 +2365,8 @@ def fetch_securitytrails(api_key: str) -> list:
                 rows.append({
                     "threat_id":     f"T3-STR-{short_id(fqdn)}",
                     "threat_name":   f"Military Domain Intelligence — {domain}",
-                    "category_code": "T3", "category_name": CATEGORY_NAMES["T3"],
+                    "category_code": _domain_scan_category(label),
+                    "category_name": CATEGORY_NAMES[_domain_scan_category(label)],
                     "source_layer":  "Deep Web", "source": "SecurityTrails",
                     "post_text":     f"Subdomain: {fqdn} | Parent: {domain} | Total subdomains found: {total}",
                     "post_url":      f"https://securitytrails.com/domain/{domain}/dns",
@@ -1851,7 +2383,15 @@ def fetch_securitytrails(api_key: str) -> list:
 
 
 def fetch_censys(api_id: str, api_secret: str = "") -> list:
-    """T3 — FREE 250 queries/mo at censys.io. Military ASN internet scan."""
+    """T3 — FREE 250 queries/mo at censys.io. Military ASN internet scan.
+
+    Queries were still US Army/US Navy/US Air Force/NATO — completely
+    unscoped from before this session's India+neighbours narrowing (Parts
+    1-6), and this module's API key IS actually configured, so it was live.
+    Rewritten to dns.names:-scope on our actual confirmed domains (Censys
+    v2 hosts-search field for DNS/SAN hostnames), same pattern as every
+    other module — 250 free queries/mo is tight, so kept to one query per
+    country's primary MoD domain rather than every domain we track."""
     rows = []
     if api_id.startswith("censys_"):
         creds = base64.b64encode(f"{api_id}:".encode()).decode()
@@ -1859,14 +2399,21 @@ def fetch_censys(api_id: str, api_secret: str = "") -> list:
         creds = base64.b64encode(f"{api_id}:{api_secret}".encode()).decode()
     headers = {"Authorization": f"Basic {creds}", "Content-Type": "application/json", "User-Agent": "MilOSINT/2.0"}
     queries = [
-        ('autonomous_system.organization: "US Army"', "US Army"),
-        ('autonomous_system.organization: "US Navy"', "US Navy"),
-        ('autonomous_system.organization: "US Air Force"', "US Air Force"),
-        ('autonomous_system.organization: "NATO"', "NATO"),
-        ('services.tls.certificates.leaf_data.subject.organization: "U.S. Army"', "US Army TLS"),
+        ('dns.names: "mod.gov.in"', "Indian MoD"),
+        ('dns.names: "drdo.gov.in"', "DRDO"),
+        ('dns.names: "mod.gov.pk"', "Pakistan MoD"),
+        ('dns.names: "mod.gov.cn"', "China MoD"),
+        ('dns.names: "mod.gov.bd"', "Bangladesh MoD"),
+        ('dns.names: "mod.gov.np"', "Nepal MoD"),
+        ('dns.names: "defence.lk"', "Sri Lanka MoD"),
+        ('dns.names: "mod.gov.mm"', "Myanmar MoD"),
     ]
     try:
         for query, label in queries:
+            # Same domain-based location fix as Shodan/LeakIX this session
+            # (see chat) — Censys's location.country is IP geolocation
+            # (hosting region), not the org's actual country.
+            target_domain = query.split('"')[1] if '"' in query else ""
             resp = requests.post("https://search.censys.io/api/v2/hosts/search", headers=headers,
                                   json={"q": query, "per_page": 10,
                                         "fields": ["ip", "services.port", "services.service_name",
@@ -1878,14 +2425,18 @@ def fetch_censys(api_id: str, api_secret: str = "") -> list:
                 services = hit.get("services") or []
                 org = (hit.get("autonomous_system") or {}).get("organization") or label
                 svc_str = ", ".join(f"{s.get('service_name','?')}:{s.get('port','?')}" for s in services[:5])
+                loc = domain_to_country(target_domain)
+                if loc == "Unknown":
+                    loc = (hit.get("location") or {}).get("country") or "Unknown"
                 rows.append({
                     "threat_id":     f"T3-CNS-{short_id(ip)}",
                     "threat_name":   f"Exposed Military Network Asset — {org}",
-                    "category_code": "T3", "category_name": CATEGORY_NAMES["T3"],
+                    "category_code": _domain_scan_category(label),
+                    "category_name": CATEGORY_NAMES[_domain_scan_category(label)],
                     "source_layer":  "Deep Web", "source": "Censys",
                     "post_text":     f"IP: {ip} | Org: {org} | Services: {svc_str} | Query: {label}",
                     "post_url":      f"https://search.censys.io/hosts/{ip}",
-                    "timestamp":     now_utc(), "location": (hit.get("location") or {}).get("country") or "Unknown",
+                    "timestamp":     now_utc(), "location": loc,
                     "severity":      "HIGH", "confidence": "HIGH",
                     "ioc_type":      "ip", "ioc_value": ip,
                     "tags":          f"exposed-asset;network;censys;military-infra;{label.lower().replace(' ','-')}",
@@ -1894,6 +2445,74 @@ def fetch_censys(api_id: str, api_secret: str = "") -> list:
     except Exception as e:
         log.error(f"Censys error: {e}")
     log.info(f"Censys: {len(rows)} exposed military network assets found")
+    return rows
+
+
+def fetch_netlas(api_key: str) -> list:
+    """T3 — FREE "Community" tier at netlas.io (50 requests/day, forever
+    free, no card required — sign up at app.netlas.io, key on the profile
+    page). Added as an independent internet-scan source after Shodan (403),
+    Censys (401), and ZoomEye (credits_insufficient) were all found blocked
+    on the account/credit side this session — Netlas gives a live, working
+    path to the same class of exposed-asset data. Live-tested reachable
+    (see chat): api.netlas.io responds 200 even unauthenticated, real
+    results need a free key."""
+    rows = []
+    targets = [
+        ("mod.gov.in", "Indian MoD"), ("drdo.gov.in", "DRDO"),
+        ("barc.gov.in", "BARC (Nuclear)"), ("npcil.nic.in", "NPCIL (Nuclear)"),
+        ("bsf.gov.in", "BSF (Border Surveillance)"),
+        ("mod.gov.pk", "Pakistan MoD"), ("mod.gov.cn", "China MoD"),
+        ("mod.gov.bd", "Bangladesh MoD"), ("mod.gov.np", "Nepal MoD"),
+        ("defence.lk", "Sri Lanka MoD"), ("mod.gov.mm", "Myanmar MoD"),
+    ]
+    headers = {"Authorization": f"Bearer {api_key}", "Accept": "application/json", "User-Agent": "MilOSINT/2.0"}
+    try:
+        for domain, label in targets:
+            try:
+                # No `fields` param — an earlier version guessed at Netlas's
+                # field-name syntax ("data.http.title") and got a 400 Bad
+                # Request even with a fake key (i.e. the malformed param was
+                # rejected before auth was even checked). Requesting the
+                # default full response and parsing defensively avoids
+                # depending on unverified field-path syntax; confirm exact
+                # field names once a real key is added (see chat).
+                resp = requests.get("https://app.netlas.io/api/responses/",
+                                     params={"q": f"host:{domain}"},
+                                     headers=headers, timeout=20)
+                if resp.status_code in (401, 403, 429):
+                    log.warning(f"Netlas: {resp.status_code} — check netlas_api_key / daily quota")
+                    break
+                if resp.status_code == 400:
+                    log.warning(f"Netlas [{domain}]: 400 Bad Request — query syntax may need "
+                                f"adjusting once a real key confirms the response shape")
+                    continue
+                resp.raise_for_status()
+                for item in (resp.json().get("items") or [])[:5]:
+                    data = item.get("data") or {}
+                    ip = data.get("ip") or item.get("ip") or ""
+                    port = data.get("port") or item.get("port") or ""
+                    title = (((data.get("http") or {}).get("title"))
+                             or ((data.get("http") or {}).get("body_title")) or "")[:150]
+                    rows.append({
+                        "threat_id":     f"T3-NTL-{short_id(str(ip) + str(port) + domain)}",
+                        "threat_name":   f"Netlas Exposed Asset — {label}",
+                        "category_code": _domain_scan_category(label),
+                        "category_name": CATEGORY_NAMES[_domain_scan_category(label)],
+                        "source_layer":  "Deep Web", "source": "Netlas.io",
+                        "post_text":     f"IP: {ip}:{port} | Domain: {domain} | Title: {title}",
+                        "post_url":      f"https://app.netlas.io/host/{ip}" if ip else "https://app.netlas.io/",
+                        "timestamp":     now_utc(), "location": domain_to_country(domain),
+                        "severity":      "HIGH", "confidence": "HIGH",
+                        "ioc_type":      "ip", "ioc_value": str(ip),
+                        "tags":          f"netlas;internet-scan;exposed-asset;{label.lower().replace(' ','-')}",
+                    })
+                time.sleep(CONFIG["request_delay_sec"])
+            except Exception as inner_e:
+                log.warning(f"Netlas [{domain}]: {inner_e}")
+    except Exception as e:
+        log.error(f"Netlas error: {e}")
+    log.info(f"Netlas: {len(rows)} exposed military assets found")
     return rows
 
 
@@ -1917,15 +2536,25 @@ def fetch_crtsh() -> list:
         ("%.indianairforce.nic.in", "Indian Air Force Subdomains"),
         ("%.mod.gov.in", "Indian MoD Subdomains"),
         ("%.drdo.gov.in", "DRDO Subdomains"),
+        ("%.barc.gov.in", "BARC (Nuclear) Subdomains"), ("%.npcil.nic.in", "NPCIL (Nuclear) Subdomains"),
+        ("%.bsf.gov.in", "BSF (Border Surveillance) Subdomains"),
         # Pakistan / China
         ("%.pakistanarmy.gov.pk", "Pakistan Army Subdomains"),
         ("%.mod.gov.pk", "Pakistan MoD Subdomains"),
+        ("%.modp.gov.pk", "Pakistan MoD Production Subdomains"),
+        ("%.paec.gov.pk", "PAEC (Nuclear) Subdomains"),
         ("%.mod.gov.cn", "China MoD Subdomains"),
         ("%.avic.com", "AVIC Subdomains"),
+        ("%.cnnc.com.cn", "CNNC (Nuclear) Subdomains"),
         # India's other neighbours — all live-verified before adding.
         ("%.mod.gov.bd", "Bangladesh MoD Subdomains"),
         ("%.afd.gov.bd", "Bangladesh Armed Forces Division Subdomains"),
         ("%.ispr.gov.bd", "Bangladesh ISPR Subdomains"),
+        ("%.bof.gov.bd", "Bangladesh Ordnance Factory Subdomains"),
+        ("%.khulnashipyard.gov.bd", "Bangladesh Khulna Shipyard Subdomains"),
+        ("%.cddl.gov.bd", "Bangladesh Chittagong Dry Dock Subdomains"),
+        ("%.baec.gov.bd", "BAEC (Nuclear) Subdomains"),
+        ("%.dewbn.gov.bd", "Bangladesh Dockyard & Engineering Works Subdomains"),
         ("%.mod.gov.np", "Nepal MoD Subdomains"),
         ("%.nepalarmy.mil.np", "Nepal Army Subdomains"),
         ("%.defence.lk", "Sri Lanka MoD Subdomains"),
@@ -1935,7 +2564,15 @@ def fetch_crtsh() -> list:
         ("%.mod.gov.mm", "Myanmar MoD Subdomains"),
     ]
 
-    def _crtsh_fetch(q: str) -> list:
+    def _crtsh_fetch(q: str):
+        """Returns a list on success (possibly empty — 404 genuinely means no
+        certs), or None on failure (exhausted all retries) — the caller needs
+        to tell these apart to run a consecutive-failure circuit breaker
+        (see chat: a live check found crt.sh's backend itself intermittently
+        throwing 502s and full 40s read-timeouts across MOST domains in a
+        given run, not any single domain — grinding through all ~29 targets
+        with 3 full retries each could cost 30-60+ minutes for almost no
+        data on a bad crt.sh day)."""
         for attempt in range(3):
             try:
                 r = requests.get("https://crt.sh/", params={"q": q, "output": "json"},
@@ -1946,23 +2583,23 @@ def fetch_crtsh() -> list:
                     if attempt < 2:
                         time.sleep(10 if r.status_code == 429 else 5)
                         continue
-                    return []
+                    return None
                 r.raise_for_status()
                 if "json" not in r.headers.get("Content-Type", ""):
                     if attempt < 2:
                         time.sleep(6)
                         continue
-                    return []
+                    return None
                 return r.json() or []
             except (requests.exceptions.Timeout, requests.exceptions.JSONDecodeError):
                 if attempt < 2:
                     time.sleep(5)
                     continue
-                return []
+                return None
             except Exception as exc:
                 log.warning(f"crt.sh error for {q!r}: {type(exc).__name__}: {exc}")
-                return []
-        return []
+                return None
+        return None
 
     _SENSITIVE_PREFIXES = {
         "vpn", "remote", "portal", "gateway", "citrix", "rdweb", "gitlab", "github",
@@ -1974,11 +2611,40 @@ def fetch_crtsh() -> list:
     }
     _today = datetime.now(timezone.utc).date()
 
+    # Hard wall-clock budget, not a failure-rate/consecutiveness heuristic —
+    # two live tests showed crt.sh's failures don't cluster predictably
+    # (alternate with successes) and a 60%-failure-rate breaker never
+    # tripped even though the module still took 18-25+ minutes both times.
+    # Whatever the exact failure PATTERN is, what actually matters is
+    # bounding this module's runtime, so cap it directly: once the budget
+    # is spent, stop attempting new domains and keep whatever was already
+    # collected (crt.sh is one of ~25 modules in a full run — it shouldn't
+    # be able to eat the majority of the run's total time on a bad day).
+    _crtsh_deadline = time.time() + 480  # 8 minutes
+    attempted = 0
+    failed = 0
     for domain, label in targets:
+        if time.time() > _crtsh_deadline:
+            log.warning(f"crt.sh: 8-minute time budget exhausted after {attempted} domains "
+                        f"({failed} failed) — stopping early, skipping {label!r} and all "
+                        f"remaining targets this run")
+            break
         try:
+            attempted += 1
             certs = _crtsh_fetch(domain)
+            if certs is None:
+                failed += 1
+                continue
             if not certs:
                 continue
+            # Explicitly sort newest-first before taking the top 200 — a
+            # live check found crt.sh's own return order is only roughly
+            # date-ordered (not strictly), e.g. DRDO's results had a 2026
+            # entry, then 2024, then back to 2026. For a domain with more
+            # than 200 total certs on file, trusting crt.sh's raw order
+            # risked silently dropping some of the actual most-recent
+            # certificates in favour of older ones. See chat.
+            certs = sorted(certs, key=lambda c: c.get("not_before") or "", reverse=True)
             seen_cn = set()
             for cert in certs[:200]:
                 cn = (cert.get("common_name") or cert.get("name_value") or "").split("\n")[0].strip()
@@ -2012,7 +2678,8 @@ def fetch_crtsh() -> list:
                 rows.append({
                     "threat_id":     f"T3-CRT-{short_id(cert_id + cn)}",
                     "threat_name":   f"Cert Transparency — {label}",
-                    "category_code": "T3", "category_name": CATEGORY_NAMES["T3"],
+                    "category_code": _domain_scan_category(label),
+                    "category_name": CATEGORY_NAMES[_domain_scan_category(label)],
                     "source_layer":  "Surface Web", "source": "crt.sh (Certificate Transparency)",
                     "post_text":     (f"Domain: {cn} | Issued: {cert.get('not_before') or now_utc()} | Expires: {expires} | "
                                       f"Issuer: {(cert.get('issuer_name') or '')[:80]} | Wildcard: {is_wild} | "
@@ -2061,8 +2728,11 @@ def fetch_zoomeye(api_key: str) -> list:
         ('hostname:"drdo.gov.in"', "DRDO", "IN"),
         ('hostname:"pakistanarmy.gov.pk"', "Pakistan Army", "PK"),
         ('hostname:"mod.gov.pk"', "Pakistan MoD", "PK"),
+        ('hostname:"modp.gov.pk"', "Pakistan MoD Production", "PK"),
         ('hostname:"mod.gov.cn"', "China MoD", "CN"),
         ('hostname:"mod.gov.bd"', "Bangladesh MoD", "BD"),
+        ('hostname:"bof.gov.bd"', "Bangladesh Ordnance Factory", "BD"),
+        ('hostname:"khulnashipyard.gov.bd"', "Bangladesh Khulna Shipyard", "BD"),
         ('hostname:"mod.gov.np"', "Nepal MoD", "NP"),
         ('hostname:"defence.lk"', "Sri Lanka MoD", "LK"),
         ('hostname:"mod.gov.mm"', "Myanmar MoD", "MM"),
@@ -2089,7 +2759,8 @@ def fetch_zoomeye(api_key: str) -> list:
                     rows.append({
                         "threat_id":     f"T3-ZY-{short_id(ip + str(port))}",
                         "threat_name":   f"ZoomEye Exposed Asset — {label}",
-                        "category_code": "T3", "category_name": CATEGORY_NAMES["T3"],
+                        "category_code": _domain_scan_category(label),
+                        "category_name": CATEGORY_NAMES[_domain_scan_category(label)],
                         "source_layer":  "Deep Web", "source": "ZoomEye (Knownsec)",
                         "post_text":     (f"IP: {ip}:{port} | Hostname: {m.get('hostname') or m.get('domain') or ''} | "
                                           f"Product: {m.get('product','')} | Title: {str(m.get('title',''))[:200]} | Target: {label}"),
@@ -2115,7 +2786,10 @@ def fetch_onyphe(api_key: str) -> list:
     TARGETS = [
         ("mod.gov.in", "Indian Ministry of Defence"), ("drdo.gov.in", "DRDO"),
         ("mod.gov.pk", "Pakistan Ministry of Defence"), ("mod.gov.cn", "China Ministry of National Defense"),
-        ("mod.gov.bd", "Bangladesh Ministry of Defence"), ("mod.gov.np", "Nepal Ministry of Defence"),
+        ("modp.gov.pk", "Pakistan Ministry of Defence Production"),
+        ("mod.gov.bd", "Bangladesh Ministry of Defence"),
+        ("bof.gov.bd", "Bangladesh Ordnance Factory"), ("khulnashipyard.gov.bd", "Bangladesh Khulna Shipyard"),
+        ("mod.gov.np", "Nepal Ministry of Defence"),
         ("defence.lk", "Sri Lanka Ministry of Defence"), ("mod.gov.mm", "Myanmar Ministry of Defence"),
     ]
     headers = {"Authorization": f"apikey {api_key}", "User-Agent": "MilOSINT/2.0", "Content-Type": "application/json"}
@@ -2133,12 +2807,18 @@ def fetch_onyphe(api_key: str) -> list:
                     rows.append({
                         "threat_id":     f"T3-ONY-{short_id(ip + str(r.get('port','')) + domain)}",
                         "threat_name":   f"Onyphe Exposed Asset — {label}",
-                        "category_code": "T3", "category_name": CATEGORY_NAMES["T3"],
+                        "category_code": _domain_scan_category(label),
+                        "category_name": CATEGORY_NAMES[_domain_scan_category(label)],
                         "source_layer":  "Deep Web", "source": "Onyphe (internet scanner)",
                         "post_text":     f"IP: {ip}:{r.get('port','')} | Domain: {domain} | Product: {r.get('product','')} | CVEs: {vuln[:3]}",
                         "post_url":      f"https://www.onyphe.io/asset/{ip}",
                         "timestamp":     str(r.get("@timestamp") or now_utc()),
-                        "location":      (r.get("location") or {}).get("country_name") or "Unknown",
+                        # domain_to_country(domain) not raw geoip — same
+                        # hosting-location-vs-org-country fix as
+                        # LeakIX/Shodan/Censys this session (see chat);
+                        # `domain` is already the known target, no parsing needed.
+                        "location":      domain_to_country(domain) if domain_to_country(domain) != "Unknown"
+                                          else ((r.get("location") or {}).get("country_name") or "Unknown"),
                         "severity":      "CRITICAL" if vuln else "HIGH", "confidence": "HIGH",
                         "ioc_type":      "ip", "ioc_value": ip,
                         "tags":          f"onyphe;internet-scan;{label.lower().replace(' ','-')};{domain}",
@@ -2204,16 +2884,23 @@ def fetch_criminalip(api_key: str) -> list:
 
 
 def fetch_binaryedge(api_key: str) -> list:
-    """T3 — PAID $50/mo at binaryedge.io. Alternative internet scanner."""
+    """T3 — PAID $50/mo at binaryedge.io. Alternative internet scanner.
+
+    Targets were still army.mil/navy.mil/NATO/UK/Germany — left over from
+    before this session's India+neighbours narrowing (Parts 1-6). Currently
+    inactive (no API key configured) so no live-data risk, but fixed for
+    consistency/correctness (see chat)."""
     rows = []
     TARGETS = [
-        ("domain:army.mil", "US Army Exposed Services"), ("domain:navy.mil", "US Navy Exposed Services"),
-        ("domain:af.mil", "US Air Force Exposed Services"), ("domain:nato.int", "NATO Exposed Services"),
-        ("domain:mod.uk", "UK MoD Exposed Services"), ("domain:bundeswehr.de", "German Bundeswehr Exposed"),
+        ("domain:mod.gov.in", "Indian MoD Exposed Services"), ("domain:drdo.gov.in", "DRDO Exposed Services"),
+        ("domain:mod.gov.pk", "Pakistan MoD Exposed Services"), ("domain:mod.gov.cn", "China MoD Exposed Services"),
+        ("domain:mod.gov.bd", "Bangladesh MoD Exposed Services"), ("domain:mod.gov.np", "Nepal MoD Exposed Services"),
+        ("domain:defence.lk", "Sri Lanka MoD Exposed Services"), ("domain:mod.gov.mm", "Myanmar MoD Exposed Services"),
     ]
     headers = {"X-Key": api_key, "User-Agent": "MilOSINT/2.0", "Accept": "application/json"}
     try:
         for query, label in TARGETS:
+            target_domain = query.split("domain:", 1)[1].strip() if "domain:" in query else ""
             try:
                 resp = requests.get("https://api.binaryedge.io/v2/query/ip/search",
                                      params={"query": query, "page": 1, "pagesize": 5}, headers=headers, timeout=20)
@@ -2224,14 +2911,20 @@ def fetch_binaryedge(api_key: str) -> list:
                     target = r.get("target") or {}
                     ip = target.get("ip") or ""
                     origin = r.get("origin") or {}
+                    # domain_to_country() not raw geoip — same fix as
+                    # LeakIX/Shodan/Censys/Onyphe this session (see chat).
+                    loc = domain_to_country(target_domain)
+                    if loc == "Unknown":
+                        loc = origin.get("country") or "Unknown"
                     rows.append({
                         "threat_id":     f"T3-BE-{short_id(ip + str(target.get('port','')) + label)}",
                         "threat_name":   f"BinaryEdge — {label}",
-                        "category_code": "T3", "category_name": CATEGORY_NAMES["T3"],
+                        "category_code": _domain_scan_category(label),
+                        "category_name": CATEGORY_NAMES[_domain_scan_category(label)],
                         "source_layer":  "Deep Web", "source": "BinaryEdge (internet scanner)",
                         "post_text":     f"IP: {ip}:{target.get('port','')} | {label} | Country: {origin.get('country','Unknown')}",
                         "post_url":      f"https://app.binaryedge.io/services/query?ip={ip}",
-                        "timestamp":     str(origin.get("ts") or now_utc()), "location": origin.get("country") or "Unknown",
+                        "timestamp":     str(origin.get("ts") or now_utc()), "location": loc,
                         "severity":      "HIGH", "confidence": "HIGH",
                         "ioc_type":      "ip", "ioc_value": ip,
                         "tags":          f"binaryedge;internet-scan;exposed-service;{label.lower().replace(' ','-')}",
@@ -2253,9 +2946,17 @@ def fetch_urlscan(api_key: str = "") -> list:
     queries = [
         ("page.domain:indianarmy.nic.in", "Indian Army"), ("page.domain:indiannavy.gov.in", "Indian Navy"),
         ("page.domain:mod.gov.in", "Indian MoD"), ("page.domain:drdo.gov.in", "DRDO"),
+        ("page.domain:barc.gov.in", "BARC (Nuclear)"), ("page.domain:npcil.nic.in", "NPCIL (Nuclear)"),
+        ("page.domain:bsf.gov.in", "BSF (Border Surveillance)"),
         ("page.domain:pakistanarmy.gov.pk", "Pakistan Army"), ("page.domain:mod.gov.pk", "Pakistan MoD"),
-        ("page.domain:mod.gov.cn", "China MoD"),
+        ("page.domain:modp.gov.pk", "Pakistan MoD Production"),
+        ("page.domain:paec.gov.pk", "PAEC (Nuclear)"),
+        ("page.domain:mod.gov.cn", "China MoD"), ("page.domain:cnnc.com.cn", "CNNC (Nuclear)"),
         ("page.domain:mod.gov.bd", "Bangladesh MoD"), ("page.domain:afd.gov.bd", "Bangladesh Armed Forces Division"),
+        ("page.domain:bof.gov.bd", "Bangladesh Ordnance Factory"),
+        ("page.domain:khulnashipyard.gov.bd", "Bangladesh Khulna Shipyard"),
+        ("page.domain:cddl.gov.bd", "Bangladesh Chittagong Dry Dock"),
+        ("page.domain:baec.gov.bd", "BAEC (Nuclear)"),
         ("page.domain:mod.gov.np", "Nepal MoD"), ("page.domain:nepalarmy.mil.np", "Nepal Army"),
         ("page.domain:defence.lk", "Sri Lanka MoD"), ("page.domain:army.lk", "Sri Lanka Army"),
         ("page.domain:mod.gov.mm", "Myanmar MoD"),
@@ -2293,7 +2994,8 @@ def fetch_urlscan(api_key: str = "") -> list:
                 rows.append({
                     "threat_id":     f"T3-US-{short_id(url)}",
                     "threat_name":   f"URLScan — {label} Web Exposure",
-                    "category_code": "T3", "category_name": CATEGORY_NAMES["T3"],
+                    "category_code": _domain_scan_category(label),
+                    "category_name": CATEGORY_NAMES[_domain_scan_category(label)],
                     "source_layer":  "Surface Web", "source": "URLScan.io",
                     "post_text":     f"Domain: {page.get('domain','')} | URL: {url[:200]} | Status: {status}",
                     "post_url":      f"https://urlscan.io/result/{r.get('_id','')}/",
@@ -2398,13 +3100,19 @@ def fetch_celestrak() -> list:
     import io
     rows = []
     SATCAT_URLS = ["https://celestrak.org/pub/satcat.csv", "https://celestrak.com/pub/satcat.csv"]
+    # "US Military Satellites" ({"US"}) and "Russian Military Satellites"
+    # ({"CIS","RU","USSR"}) categories removed — left over from before this
+    # session's India+neighbours narrowing (Parts 1-6), a live run just
+    # surfaced an actual "US Military Satellites" row (NORAD 69792) that
+    # slipped through. GPS/GLONASS/Cosmos kept: those are global navigation
+    # constellations and ASAT-debris risks relevant to GPS spoofing/jamming
+    # context for every country including our 7, not foreign-military-
+    # specific categories the way the two removed ones were.
     FILTERS = [
         ("GPS Constellation", None, ["GPS"], "LOW"),
         ("GLONASS (Russian NavSat)", None, ["GLONASS"], "MEDIUM"),
         ("Cosmos Series (ASAT Risk)", None, ["COSMOS"], "HIGH"),
         ("Chinese Military Satellites", {"PRC"}, None, "HIGH"),
-        ("Russian Military Satellites", {"CIS", "RU", "USSR"}, None, "HIGH"),
-        ("US Military Satellites", {"US"}, None, "LOW"),
         # India — mixed civil/military program like GLONASS (NavIC dual-use
         # navigation, GSAT-7-series dedicated military comsats, RISAT-class
         # reconnaissance radar satellites, alongside purely civilian ISRO
@@ -2660,7 +3368,16 @@ def fetch_otx_pulses(api_key: str) -> list:
                 desc_lower = (p.get("description") or "").lower()
                 adversary = (p.get("adversary") or "").lower()
                 combined = name_lower + " " + desc_lower + " " + adversary
-                passes, tier, reason = relevance_check(combined, weak_terms=WEAK_MIL_TERMS, min_weak=1)
+                # min_weak=2 (was 1) — OTX pulses aren't country-scoped by
+                # query (searched by generic tags like "military"/"apt"), so
+                # a single incidental weak-term match let global noise
+                # through (e.g. an unrelated pulse mentioning "satellite"
+                # once). Matches the min_weak=2 standard used everywhere
+                # else in this tool (RSS, Tor). Strong-tier matches (the
+                # APT_GROUPS names researched for this region) bypass this
+                # threshold entirely, so real regional APT activity still
+                # gets through at CRITICAL/HIGH regardless.
+                passes, tier, reason = relevance_check(combined, weak_terms=WEAK_MIL_TERMS, min_weak=2)
                 if not passes:
                     continue
                 indicators = p.get("indicators", [])
@@ -3148,6 +3865,17 @@ def fetch_defence_news_rss() -> list:
         # Reporter (Australia) removed — explicitly single-country outlets for
         # non-neighbour countries, out of scope now that this tool is narrowed
         # to India + neighbouring countries only.
+        # Data-breach/cybercrime-specific outlets — researched specifically
+        # for India/South Asia coverage (see chat), each live-tested (real
+        # RSS content-type, real recent article titles, not a redirect/bot-
+        # block page — DataBreaches.net and databreachtoday.in were also
+        # tried and rejected: the former is gated behind a Cloudflare bot
+        # challenge, the latter's every guessed feed URL 404s). General
+        # cybercrime outlets, not defence-specific, so min_weak=2 like
+        # BleepingComputer/CyberScoop/Hacker News above.
+        ("https://thecyberexpress.com/feed", "The Cyber Express", 2),
+        ("https://hackread.com/feed/", "Hackread", 2),
+        ("https://therecord.media/feed", "The Record", 2),
     ]
     _RSS_WEAK_TERMS = WEAK_MIL_TERMS | {
         "disinformation", "propaganda", "psyop", "deepfake", "influence operation",
@@ -4197,7 +4925,8 @@ def run_collection():
         CONFIG.get("censys_api_id", "").startswith("censys_") or key_available("censys_api_secret"))
     log.info(f"  [T3] Censys (internet scan)            : {'ACTIVE' if censys_ready else 'SKIPPED — set censys_api_id(+secret)'}")
     log.info(f"  [T3] ZoomEye (internet scan)           : {status('zoomeye_api_key')}")
-    log.info(f"  [T3] Onyphe (EU/NATO scan)              : {status('onyphe_api_key')}")
+    log.info(f"  [T3] Netlas.io (internet scan)         : {status('netlas_api_key')}")
+    log.info(f"  [T3] Onyphe (internet scan)             : {status('onyphe_api_key')}")
     log.info(f"  [T3] Criminal IP (malicious IP intel)  : {status('criminal_ip_api_key')}")
     log.info(f"  [T3] BinaryEdge (internet scan)        : {status('binaryedge_api_key')}")
     log.info(f"  [T3] crt.sh (certificate transparency) : ACTIVE (free)")
@@ -4270,8 +4999,10 @@ def run_collection():
     run("[T3] Querying crt.sh certificate transparency for military domains...", fetch_crtsh)
     if key_available("zoomeye_api_key"):
         run("[T3] Scanning military infrastructure via ZoomEye...", fetch_zoomeye, CONFIG["zoomeye_api_key"])
+    if key_available("netlas_api_key"):
+        run("[T3] Scanning exposed military infrastructure via Netlas.io...", fetch_netlas, CONFIG["netlas_api_key"])
     if key_available("onyphe_api_key"):
-        run("[T3] Scanning NATO/EU military infrastructure via Onyphe...", fetch_onyphe, CONFIG["onyphe_api_key"])
+        run("[T3] Scanning military infrastructure via Onyphe...", fetch_onyphe, CONFIG["onyphe_api_key"])
     if key_available("criminal_ip_api_key"):
         run("[T3/T6] Fetching malicious IPs via Criminal IP...", fetch_criminalip, CONFIG["criminal_ip_api_key"])
     if key_available("binaryedge_api_key"):

@@ -30,6 +30,7 @@ CATEGORY_NAMES = {
     "T6": "Malware & Advanced Cyber Attacks",
     "T7": "Emerging & Autonomous System Threats",
     "T8": "Information Operations & Influence Threats",
+    "S1": "Dark Web Marketplaces & Forums",
 }
 
 # Report scope: India and its neighbouring countries only. Matched against

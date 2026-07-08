@@ -23,4 +23,12 @@ weekly_delta_v2_*.txt
 # into the public repo under a different filename.
 military_osint_master_*BACKUP*.csv
 run*_narrowed_*.log
-run[0-9]_*.log
+run[0-9]*_*.log
+
+# Ad-hoc diagnostic/verification scripts run during development sessions —
+# scratch output, not part of the tool itself.
+*_test.log
+*_test2.log
+*_test3.log
+*_check.log
+mojibake_context.txt
