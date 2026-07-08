@@ -1275,9 +1275,25 @@ def fetch_intelx_pastes(api_key: str, query: str = ".mil") -> list:
     return rows
 
 
-def fetch_leakix(api_key: str) -> list:
+# A live check of this session's own LeakIX data found generic HTTP
+# redirect/200-OK banners (with no other signal) sitting in the master CSV
+# at the same severity as genuine exposures — this is the "ignore normal
+# banners" distinction from a shared OSINT workflow guide (cross-checked
+# against real data before using, see chat).
+_GENERIC_BANNER_RE = re.compile(r'^\s*HTTP/1\.[01]\s+(200|301|302|307|400)\b', re.IGNORECASE)
+
+
+def fetch_leakix(api_key: str, extra_domains: list = None) -> list:
     """T2/T3 — FREE signup at leakix.net. Domain-gated: every query is filtered
     to a specific military host, so results only include that domain's assets.
+
+    extra_domains: CT-discovered sensitive subdomains (vpn./admin./git./
+    jira./kibana./etc.) pivoted in from crt.sh's own results this run —
+    a workflow from a shared OSINT guide (cross-checked, see chat): use
+    Certificate Transparency to discover interesting hostnames, then check
+    each one specifically in LeakIX rather than only checking the ~30
+    hardcoded root domains below. Same query/accept logic as the named
+    targets — only the query domain and its own subdomains can match.
 
     Query syntax rewritten after live A/B testing (see chat) found the old
     plain `host:X` queries returned ZERO results for exact government
@@ -1421,6 +1437,44 @@ def fetch_leakix(api_key: str) -> list:
             finding_tags.append("env-file-exposed")
         if any(k in summary_lower for k in ("directory listing", "index of")):
             finding_tags.append("directory-listing")
+        # Additional data-exposure-prone technologies (see chat — cross-
+        # checked against a shared OSINT workflow guide, but verified
+        # empirically first: LeakIX's own `plugin` field came back empty in
+        # live testing, so this checks summary/plugin text directly instead
+        # of trusting a plugin-name query filter that couldn't be confirmed).
+        if any(k in summary_lower or k in plugin_lower for k in ("mongodb", "redis", "postgres", "rabbitmq")):
+            finding_tags.append("database-exposed")
+        if any(k in summary_lower or k in plugin_lower for k in ("minio", "s3", "nas", "synology", "qnap")):
+            finding_tags.append("storage-exposed")
+        if "gitlab" in summary_lower or "gitlab" in plugin_lower:
+            finding_tags.append("gitlab-exposed")
+        if "phpmyadmin" in summary_lower or "phpmyadmin" in plugin_lower:
+            finding_tags.append("phpmyadmin-exposed")
+        if any(k in summary_lower for k in (".sql", ".bak", ".tar.gz", ".zip", "backup")):
+            finding_tags.append("backup-file-exposed")
+
+        # A live check of this session's own data found LeakIX results are
+        # overwhelmingly generic exposed-service banners (HTTP headers,
+        # server strings) rather than actual data exposure — 2 of 3 rows in
+        # the master CSV were "service" scope with no real leak content.
+        # These finding_tags are the signal that distinguishes "a database/
+        # git repo/backup file is actually sitting open" from "a web server
+        # responded on a port" — bumping severity here means that
+        # distinction actually affects the output instead of being a
+        # decorative tag nobody acts on.
+        _HIGH_VALUE_TAGS = {"git-exposure", "env-file-exposed", "database-exposed",
+                             "storage-exposed", "gitlab-exposed", "phpmyadmin-exposed",
+                             "backup-file-exposed", "directory-listing"}
+        if any(t in _HIGH_VALUE_TAGS for t in finding_tags):
+            sev = "CRITICAL"
+        elif not cve_ids and _GENERIC_BANNER_RE.match(summary):
+            # The other side of the same fix: a live check found both
+            # non-high-value rows in the master CSV were exactly this —
+            # a plain "301 Moved Permanently" redirect and a plain "200 OK"
+            # homepage load with standard server headers, nothing else.
+            # That's confirmation a site is reachable, not a security
+            # exposure, so it shouldn't carry the same severity as one.
+            sev = "LOW"
 
         return {
             "threat_id":     f"{cat}-LIX-{short_id(host+str(port)+scope)}",
@@ -1450,6 +1504,20 @@ def fetch_leakix(api_key: str) -> list:
                 row = _build_row(scope, item, f"{cc} Government (broad net)", "T3", expected_domain="")
                 if row:
                     rows.append(row)
+
+        pivot_count = 0
+        for pivot_domain in (extra_domains or [])[:15]:
+            pivot_domain = pivot_domain.lower().lstrip("*").lstrip(".")
+            if not pivot_domain:
+                continue
+            q = f'+ssl.certificate.domain:"{pivot_domain}"'
+            for scope, item in _leakix_search(q):
+                row = _build_row(scope, item, f"CT-Discovered: {pivot_domain}", "T2", expected_domain=pivot_domain)
+                if row:
+                    rows.append(row)
+            pivot_count += 1
+        if pivot_count:
+            log.info(f"LeakIX: checked {pivot_count} CT-discovered subdomains from crt.sh as additional pivots")
     except Exception as e:
         log.error(f"LeakIX error: {e}")
     log.info(f"LeakIX: {len(rows)} exposed services/leaks found")
@@ -4985,8 +5053,9 @@ def run_collection():
         run("[T2] Fetching document/paste leaks from IntelligenceX...", fetch_intelx_pastes, CONFIG["intelx_api_key"], ".mil")
         run("[T2] Fetching document/paste leaks from IntelligenceX (classified)...", fetch_intelx_pastes,
             CONFIG["intelx_api_key"], "classified defence")
-    if key_available("leakix_api_key"):
-        run("[T2/T3] Searching exposed services and data leaks via LeakIX...", fetch_leakix, CONFIG["leakix_api_key"])
+    # LeakIX moved below crt.sh (see [T3]) — it now takes crt.sh's
+    # CT-discovered sensitive subdomains as additional pivot targets, so it
+    # has to run after crt.sh instead of before it.
 
     # ── T3 ──
     if key_available("shodan_api_key"):
@@ -4996,7 +5065,20 @@ def run_collection():
     if censys_ready:
         run("[T3] Scanning exposed military network assets via Censys...", fetch_censys,
             CONFIG["censys_api_id"], CONFIG.get("censys_api_secret", ""))
-    run("[T3] Querying crt.sh certificate transparency for military domains...", fetch_crtsh)
+    crtsh_rows = run("[T3] Querying crt.sh certificate transparency for military domains...", fetch_crtsh)
+    if key_available("leakix_api_key"):
+        # Pivot workflow from a shared OSINT guide (cross-checked against
+        # live LeakIX behaviour first — see chat): feed crt.sh's own
+        # sensitive-subdomain discoveries (vpn./admin./git./jira./kibana./
+        # etc, already flagged via the "sensitive-subdomain" tag) into
+        # LeakIX as extra per-subdomain checks, instead of only ever
+        # checking the ~30 hardcoded root domains.
+        _ct_pivot_domains = list(dict.fromkeys(
+            r["ioc_value"] for r in crtsh_rows
+            if r.get("ioc_value") and "sensitive-subdomain" in (r.get("tags") or "")
+        ))
+        run("[T2/T3] Searching exposed services and data leaks via LeakIX...", fetch_leakix,
+            CONFIG["leakix_api_key"], _ct_pivot_domains)
     if key_available("zoomeye_api_key"):
         run("[T3] Scanning military infrastructure via ZoomEye...", fetch_zoomeye, CONFIG["zoomeye_api_key"])
     if key_available("netlas_api_key"):
