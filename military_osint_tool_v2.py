@@ -623,6 +623,44 @@ def _domain_scan_category(label: str) -> str:
     return "T3"
 
 
+# Technology fingerprinting (see chat — a workflow review flagged this as
+# missing: raw server banners were captured as free text everywhere but
+# never elevated to a structured, filterable field). Ordered so more
+# specific signatures (e.g. "citrix") are checked before generic ones
+# ("nginx") wouldn't matter here since these are independent categories,
+# but kept specific-first as a general habit.
+_TECH_SIGNATURES = {
+    "nginx": "Nginx", "openresty": "OpenResty", "apache": "Apache",
+    "microsoft-iis": "IIS", "iis/": "IIS", "cloudflare": "Cloudflare",
+    "big-ip": "F5 BIG-IP", "f5-": "F5 BIG-IP",
+    "citrix": "Citrix", "netscaler": "Citrix NetScaler",
+    "fortinet": "Fortinet", "fortigate": "Fortinet",
+    "palo alto": "Palo Alto", "pan-os": "Palo Alto",
+    "cisco asa": "Cisco ASA", "cisco adaptive security": "Cisco ASA",
+    "pulse secure": "Pulse Secure", "ivanti": "Ivanti",
+    "sonicwall": "SonicWall", "checkpoint": "Check Point",
+    "elasticsearch": "Elasticsearch", "kibana": "Kibana", "opensearch": "OpenSearch",
+    "mongodb": "MongoDB", "redis": "Redis", "postgres": "PostgreSQL",
+    "mysql": "MySQL", "rabbitmq": "RabbitMQ", "jenkins": "Jenkins",
+    "gitlab": "GitLab", "grafana": "Grafana", "prometheus": "Prometheus",
+    "minio": "MinIO", "phpmyadmin": "phpMyAdmin", "kubernetes": "Kubernetes",
+    "docker": "Docker",
+}
+
+
+def _fingerprint_technology(*texts: str) -> list:
+    """Checks free-text banners/titles/summaries against known technology
+    signatures and returns normalized tag names — used so severity/dashboard
+    filtering can act on "this is Elasticsearch" as a real field instead of
+    it only existing buried in a raw banner string."""
+    combined = " ".join((t or "") for t in texts).lower()
+    found = []
+    for sig, name in _TECH_SIGNATURES.items():
+        if sig in combined and name not in found:
+            found.append(name)
+    return found
+
+
 def relevance_check(text: str, domain_value: str = "", weak_terms=None, min_weak: int = 2):
     """
     Shared relevance gate. Returns (passes: bool, tier: str, reason: str).
@@ -1489,6 +1527,7 @@ def fetch_leakix(api_key: str, extra_domains: list = None) -> list:
             # exposure, so it shouldn't carry the same severity as one.
             sev = "LOW"
 
+        tech = _fingerprint_technology(summary, plugin)
         return {
             "threat_id":     f"{cat}-LIX-{short_id(host+str(port)+scope)}",
             "threat_name":   f"LeakIX {scope.title()} — {label} — {plugin or 'Unknown Service'}",
@@ -1501,7 +1540,8 @@ def fetch_leakix(api_key: str, extra_domains: list = None) -> list:
             "ioc_type":      "ip", "ioc_value": ip,
             "tags":          (f"leakix;{scope};{label.lower().replace(' ','-')};military-infra"
                                + (f";{';'.join(finding_tags)}" if finding_tags else "")
-                               + (";cve-tagged" if cve_ids else "")),
+                               + (";cve-tagged" if cve_ids else "")
+                               + (f";tech:{',' .join(tech)}" if tech else "")),
         }
 
     try:
@@ -2359,7 +2399,7 @@ def fetch_digital_shadows(api_key: str, api_secret: str) -> list:
 #  T3 | COMMUNICATION & NETWORK ATTACKS
 # ═════════════════════════════════════════════════════════════════════════
 
-def fetch_shodan_military(api_key: str) -> list:
+def fetch_shodan_military(api_key: str, extra_domains: list = None) -> list:
     """T3 — PAID $69/mo at shodan.io. Exposed military network infrastructure.
 
     Queries were still US Army/US Navy/UK MoD/generic .mil/DoD — completely
@@ -2367,7 +2407,11 @@ def fetch_shodan_military(api_key: str) -> list:
     1-6). This module is PAID and its API key IS actually configured, so it
     was live and actively pulling non-target-country data into the master
     CSV on every run. Rewritten to hostname:-scope on our actual confirmed
-    domains, same pattern as every other module."""
+    domains, same pattern as every other module.
+
+    extra_domains: CT-discovered sensitive subdomains pivoted in from
+    crt.sh this run — same workflow as the LeakIX pivot (see chat), now
+    extended to every actively-working scan module, not just LeakIX."""
     rows = []
     queries = [
         ('hostname:"mod.gov.in"', "Indian MoD exposed infrastructure"),
@@ -2383,6 +2427,8 @@ def fetch_shodan_military(api_key: str) -> list:
         ('hostname:"mod.gov.mm"', "Myanmar MoD exposed infrastructure"),
         ('hostname:"cincds.gov.mm"', "Myanmar CINCDS exposed infrastructure"),
     ]
+    for pivot_domain in (extra_domains or [])[:15]:
+        queries.append((f'hostname:"{pivot_domain}"', f"CT-Discovered: {pivot_domain}"))
     for q, label in queries:
         # Extract the target domain from the hostname:"X" query so location
         # can be resolved via domain_to_country() — Shodan's own IP
@@ -2399,6 +2445,7 @@ def fetch_shodan_military(api_key: str) -> list:
                 loc = domain_to_country(target_domain)
                 if loc == "Unknown":
                     loc = m.get("location", {}).get("country_name", "Unknown")
+                tech = _fingerprint_technology(str(m.get("data", "")), str(m.get("product", "")))
                 rows.append({
                     "threat_id":     f"T3-SHD-{short_id(ip + str(m.get('port','')))}",
                     "threat_name":   label,
@@ -2411,12 +2458,86 @@ def fetch_shodan_military(api_key: str) -> list:
                     "location":      loc,
                     "severity":      "HIGH", "confidence": "HIGH",
                     "ioc_type":      "ip", "ioc_value": ip,
-                    "tags":          "network;exposed;shodan",
+                    "tags":          "network;exposed;shodan" + (f";tech:{','.join(tech)}" if tech else ""),
                 })
             time.sleep(CONFIG["request_delay_sec"])
         except Exception as e:
             log.error(f"Shodan error [{q}]: {e}")
     log.info(f"Shodan: {len(rows)} exposed military assets found")
+    return rows
+
+
+def fetch_dns_records(hostnames: list) -> list:
+    """T3 — FREE, no key. DNS record enrichment (A/AAAA/MX/NS/TXT) via
+    Cloudflare's DNS-over-HTTPS JSON API, plus passive DNS history + ASN/
+    organization data via OTX (reuses the existing otx_api_key — no new
+    signup needed). Closes two gaps flagged in a workflow review (see
+    chat): this tool discovered hostnames from certificates but never
+    resolved them, and never captured ASN/organization data for
+    correlating infrastructure across sources. Both APIs live-verified
+    before adding (real MX/NS/TXT records for avic.com; real passive DNS +
+    ASN data for the same domain via OTX)."""
+    rows = []
+    otx_key = CONFIG.get("otx_api_key", "")
+    _RECORD_TYPES = ["A", "AAAA", "MX", "NS", "TXT"]
+    for hostname in hostnames[:20]:
+        try:
+            dns_findings = []
+            for rtype in _RECORD_TYPES:
+                try:
+                    resp = requests.get("https://cloudflare-dns.com/dns-query",
+                                         params={"name": hostname, "type": rtype},
+                                         headers={"Accept": "application/dns-json", "User-Agent": "MilOSINT/2.0"},
+                                         timeout=10)
+                    resp.raise_for_status()
+                    answers = resp.json().get("Answer") or []
+                    values = [a.get("data", "").strip('"') for a in answers if a.get("data")]
+                    if values:
+                        dns_findings.append(f"{rtype}={','.join(values[:5])}")
+                except Exception:
+                    pass
+                time.sleep(0.3)
+
+            passive_dns_findings = []
+            asn_seen = set()
+            if otx_key:
+                try:
+                    # 30s not 15s — a live test found OTX's passive_dns endpoint
+                    # is noticeably slower than its pulse-search endpoint used
+                    # elsewhere in this tool, and 15s timed out on every domain.
+                    presp = requests.get(f"https://otx.alienvault.com/api/v1/indicators/hostname/{hostname}/passive_dns",
+                                          headers={"X-OTX-API-KEY": otx_key, "User-Agent": "MilOSINT/2.0"}, timeout=30)
+                    if presp.status_code == 200:
+                        for rec in (presp.json().get("passive_dns") or [])[:10]:
+                            addr = rec.get("address", "")
+                            asn = rec.get("asn", "")
+                            if asn:
+                                asn_seen.add(asn)
+                            if addr:
+                                passive_dns_findings.append(f"{addr} ({rec.get('record_type','')}, first seen {rec.get('first','')[:10]})")
+                except Exception as e:
+                    log.warning(f"OTX passive DNS [{hostname}]: {e}")
+
+            if not dns_findings and not passive_dns_findings:
+                continue
+
+            rows.append({
+                "threat_id":     f"T3-DNS-{short_id(hostname)}",
+                "threat_name":   f"DNS/Passive-DNS Enrichment — {hostname}",
+                "category_code": "T3", "category_name": CATEGORY_NAMES["T3"],
+                "source_layer":  "Surface Web", "source": "Cloudflare DoH + OTX Passive DNS",
+                "post_text":     (f"Host: {hostname} | Live DNS: {'; '.join(dns_findings) or 'none resolved'} | "
+                                  f"Passive DNS history: {'; '.join(passive_dns_findings[:5]) or 'none on file'} | "
+                                  f"ASN/Org: {'; '.join(sorted(asn_seen)) or 'unknown'}"),
+                "post_url":      f"https://otx.alienvault.com/indicator/hostname/{hostname}",
+                "timestamp":     now_utc(), "location": domain_to_country(hostname),
+                "severity":      "MEDIUM", "confidence": "HIGH",
+                "ioc_type":      "domain", "ioc_value": hostname,
+                "tags":          f"dns;passive-dns;infrastructure-mapping;{';'.join(sorted(asn_seen)).replace(' ','-') if asn_seen else ''}".rstrip(";"),
+            })
+        except Exception as e:
+            log.warning(f"DNS enrichment [{hostname}]: {e}")
+    log.info(f"DNS/Passive-DNS enrichment: {len(rows)} hostnames enriched")
     return rows
 
 
@@ -2464,7 +2585,7 @@ def fetch_securitytrails(api_key: str) -> list:
     return rows
 
 
-def fetch_censys(api_id: str, api_secret: str = "") -> list:
+def fetch_censys(api_id: str, api_secret: str = "", extra_domains: list = None) -> list:
     """T3 — FREE 250 queries/mo at censys.io. Military ASN internet scan.
 
     Queries were still US Army/US Navy/US Air Force/NATO — completely
@@ -2473,7 +2594,11 @@ def fetch_censys(api_id: str, api_secret: str = "") -> list:
     Rewritten to dns.names:-scope on our actual confirmed domains (Censys
     v2 hosts-search field for DNS/SAN hostnames), same pattern as every
     other module — 250 free queries/mo is tight, so kept to one query per
-    country's primary MoD domain rather than every domain we track."""
+    country's primary MoD domain rather than every domain we track.
+
+    extra_domains: CT-discovered subdomains pivoted in from crt.sh (see
+    chat) — capped much lower than other modules (3, not 15) specifically
+    because of the tight 250/mo quota noted above."""
     rows = []
     if api_id.startswith("censys_"):
         creds = base64.b64encode(f"{api_id}:".encode()).decode()
@@ -2491,6 +2616,8 @@ def fetch_censys(api_id: str, api_secret: str = "") -> list:
         ('dns.names: "mod.gov.mm"', "Myanmar MoD"),
         ('dns.names: "cincds.gov.mm"', "Myanmar CINCDS"),
     ]
+    for pivot_domain in (extra_domains or [])[:3]:
+        queries.append((f'dns.names: "{pivot_domain}"', f"CT-Discovered: {pivot_domain}"))
     try:
         for query, label in queries:
             # Same domain-based location fix as Shodan/LeakIX this session
@@ -2506,23 +2633,28 @@ def fetch_censys(api_id: str, api_secret: str = "") -> list:
             for hit in resp.json().get("result", {}).get("hits") or []:
                 ip = hit.get("ip") or ""
                 services = hit.get("services") or []
-                org = (hit.get("autonomous_system") or {}).get("organization") or label
+                asys = hit.get("autonomous_system") or {}
+                org = asys.get("organization") or label
+                asn = asys.get("asn") or ""
                 svc_str = ", ".join(f"{s.get('service_name','?')}:{s.get('port','?')}" for s in services[:5])
                 loc = domain_to_country(target_domain)
                 if loc == "Unknown":
                     loc = (hit.get("location") or {}).get("country") or "Unknown"
+                tech = _fingerprint_technology(svc_str)
                 rows.append({
                     "threat_id":     f"T3-CNS-{short_id(ip)}",
                     "threat_name":   f"Exposed Military Network Asset — {org}",
                     "category_code": _domain_scan_category(label),
                     "category_name": CATEGORY_NAMES[_domain_scan_category(label)],
                     "source_layer":  "Deep Web", "source": "Censys",
-                    "post_text":     f"IP: {ip} | Org: {org} | Services: {svc_str} | Query: {label}",
+                    "post_text":     f"IP: {ip} | Org: {org} | ASN: AS{asn} | Services: {svc_str} | Query: {label}",
                     "post_url":      f"https://search.censys.io/hosts/{ip}",
                     "timestamp":     now_utc(), "location": loc,
                     "severity":      "HIGH", "confidence": "HIGH",
                     "ioc_type":      "ip", "ioc_value": ip,
-                    "tags":          f"exposed-asset;network;censys;military-infra;{label.lower().replace(' ','-')}",
+                    "tags":          (f"exposed-asset;network;censys;military-infra;{label.lower().replace(' ','-')}"
+                                      + (f";asn:AS{asn}" if asn else "")
+                                      + (f";tech:{','.join(tech)}" if tech else "")),
                 })
             time.sleep(CONFIG["request_delay_sec"])
     except Exception as e:
@@ -2531,7 +2663,7 @@ def fetch_censys(api_id: str, api_secret: str = "") -> list:
     return rows
 
 
-def fetch_netlas(api_key: str) -> list:
+def fetch_netlas(api_key: str, extra_domains: list = None) -> list:
     """T3 — FREE "Community" tier at netlas.io (50 requests/day, forever
     free, no card required — sign up at app.netlas.io, key on the profile
     page). Added as an independent internet-scan source after Shodan (403),
@@ -2539,7 +2671,11 @@ def fetch_netlas(api_key: str) -> list:
     on the account/credit side this session — Netlas gives a live, working
     path to the same class of exposed-asset data. Live-tested reachable
     (see chat): api.netlas.io responds 200 even unauthenticated, real
-    results need a free key."""
+    results need a free key.
+
+    extra_domains: CT-discovered subdomains pivoted in from crt.sh, capped
+    at 8 (not 15) given the 12 hardcoded targets already use a good chunk
+    of the 50/day quota."""
     rows = []
     targets = [
         ("mod.gov.in", "Indian MoD"), ("drdo.gov.in", "DRDO"),
@@ -2550,6 +2686,8 @@ def fetch_netlas(api_key: str) -> list:
         ("defence.lk", "Sri Lanka MoD"), ("mod.gov.mm", "Myanmar MoD"),
         ("cincds.gov.mm", "Myanmar CINCDS"),
     ]
+    for pivot_domain in (extra_domains or [])[:8]:
+        targets.append((pivot_domain, f"CT-Discovered: {pivot_domain}"))
     headers = {"Authorization": f"Bearer {api_key}", "Accept": "application/json", "User-Agent": "MilOSINT/2.0"}
     try:
         for domain, label in targets:
@@ -2578,6 +2716,7 @@ def fetch_netlas(api_key: str) -> list:
                     port = data.get("port") or item.get("port") or ""
                     title = (((data.get("http") or {}).get("title"))
                              or ((data.get("http") or {}).get("body_title")) or "")[:150]
+                    tech = _fingerprint_technology(title)
                     rows.append({
                         "threat_id":     f"T3-NTL-{short_id(str(ip) + str(port) + domain)}",
                         "threat_name":   f"Netlas Exposed Asset — {label}",
@@ -2589,7 +2728,8 @@ def fetch_netlas(api_key: str) -> list:
                         "timestamp":     now_utc(), "location": domain_to_country(domain),
                         "severity":      "HIGH", "confidence": "HIGH",
                         "ioc_type":      "ip", "ioc_value": str(ip),
-                        "tags":          f"netlas;internet-scan;exposed-asset;{label.lower().replace(' ','-')}",
+                        "tags":          (f"netlas;internet-scan;exposed-asset;{label.lower().replace(' ','-')}"
+                                          + (f";tech:{','.join(tech)}" if tech else "")),
                     })
                 time.sleep(CONFIG["request_delay_sec"])
             except Exception as inner_e:
@@ -2786,7 +2926,7 @@ def fetch_crtsh() -> list:
     return rows
 
 
-def fetch_zoomeye(api_key: str) -> list:
+def fetch_zoomeye(api_key: str, extra_domains: list = None) -> list:
     """T3 — FREE-tier internet-wide scanner (zoomeye.ai).
 
     Rewritten after live verification found the old api.zoomeye.org/host/search
@@ -2823,6 +2963,8 @@ def fetch_zoomeye(api_key: str) -> list:
         ('hostname:"mod.gov.mm"', "Myanmar MoD", "MM"),
         ('hostname:"cincds.gov.mm"', "Myanmar CINCDS", "MM"),
     ]
+    for pivot_domain in (extra_domains or [])[:15]:
+        TARGETS.append((f'hostname:"{pivot_domain}"', f"CT-Discovered: {pivot_domain}", domain_to_country(pivot_domain)))
     headers = {"API-KEY": api_key, "User-Agent": "MilOSINT/2.0",
                "Content-Type": "application/json", "Accept": "application/json"}
     try:
@@ -2842,6 +2984,7 @@ def fetch_zoomeye(api_key: str) -> list:
                     ip = m.get("ip") or ""
                     port = m.get("port") or ""
                     country = m.get("country") or m.get("country_name") or geo
+                    tech = _fingerprint_technology(str(m.get("product", "")), str(m.get("title", "")))
                     rows.append({
                         "threat_id":     f"T3-ZY-{short_id(ip + str(port))}",
                         "threat_name":   f"ZoomEye Exposed Asset — {label}",
@@ -2854,7 +2997,8 @@ def fetch_zoomeye(api_key: str) -> list:
                         "timestamp":     str(m.get("update_time") or m.get("timestamp") or now_utc()), "location": country,
                         "severity":      "HIGH", "confidence": "HIGH",
                         "ioc_type":      "ip", "ioc_value": ip,
-                        "tags":          f"zoomeye;internet-scan;exposed-asset;{label.lower().replace(' ','-')}",
+                        "tags":          (f"zoomeye;internet-scan;exposed-asset;{label.lower().replace(' ','-')}"
+                                          + (f";tech:{','.join(tech)}" if tech else "")),
                     })
                 time.sleep(CONFIG["request_delay_sec"] + 0.5)
             except Exception as inner_e:
@@ -3026,9 +3170,12 @@ def fetch_binaryedge(api_key: str) -> list:
     return rows
 
 
-def fetch_urlscan(api_key: str = "") -> list:
+def fetch_urlscan(api_key: str = "", extra_domains: list = None) -> list:
     """T3 — FREE 1000 searches/day at urlscan.io. Live scans of military domains
-    — catches exposed admin panels and phishing pages mimicking military sites."""
+    — catches exposed admin panels and phishing pages mimicking military sites.
+
+    extra_domains: CT-discovered subdomains pivoted in from crt.sh (see
+    chat) — 1000/day is generous, so capped the same as LeakIX (15)."""
     # Narrowed to India + neighbouring countries only (per explicit instruction).
     rows = []
     queries = [
@@ -3050,6 +3197,8 @@ def fetch_urlscan(api_key: str = "") -> list:
         ("page.domain:mod.gov.mm", "Myanmar MoD"),
         ("page.domain:cincds.gov.mm", "Myanmar CINCDS"),
     ]
+    for pivot_domain in (extra_domains or [])[:15]:
+        queries.append((f"page.domain:{pivot_domain}", f"CT-Discovered: {pivot_domain}"))
     headers = {"API-Key": api_key} if api_key else {}
     headers["User-Agent"] = "MilOSINT/2.0"
     _SENSITIVE_PATH_PATTERNS = {
@@ -4270,6 +4419,104 @@ def save_seen_threats(seen: dict):
         json.dumps(seen, indent=2, sort_keys=True), encoding="utf-8")
 
 
+_HOSTNAME_IN_TEXT_RE = re.compile(r'(?:Host|Domain|Hostname)[:\s]+([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})')
+
+
+def correlate_infrastructure(rows: list) -> list:
+    """Post-processing correlation pass — the final, most-valuable gap
+    flagged in a workflow review (see chat): every finding was an
+    independent, disconnected row; nothing ever cross-referenced an IP or
+    domain seen by multiple sources, and nothing built a consolidated
+    per-organization view the way the guide's final "Correlate" step
+    describes (cert -> hostnames -> DNS -> subdomains -> passive service
+    discovery -> tech fingerprinting -> infrastructure map). Runs once per
+    collection, over just this run's own rows (not the whole historical
+    master CSV) — two effects:
+
+    1. Any IP or domain independently confirmed by 2+ different sources
+       this run gets tagged "corroborated-multi-source" — a real
+       confidence signal no single-source row can carry on its own.
+    2. One new summary row per root domain (matched against
+       MIL_DOMAIN_SUFFIXES) consolidating every hostname/IP/ASN/
+       technology discovered for that organization across every source
+       into a single readable map, instead of leaving the reader to
+       manually cross-reference dozens of separate rows."""
+    ip_sources: dict = {}
+    domain_sources: dict = {}
+    for r in rows:
+        src = r.get("source", "")
+        itype = r.get("ioc_type")
+        iv = r.get("ioc_value", "")
+        if not iv:
+            continue
+        if itype == "ip":
+            ip_sources.setdefault(iv, set()).add(src)
+        elif itype == "domain":
+            domain_sources.setdefault(iv, set()).add(src)
+
+    for r in rows:
+        itype = r.get("ioc_type")
+        iv = r.get("ioc_value", "")
+        srcs = (ip_sources.get(iv) if itype == "ip" else domain_sources.get(iv)) or set()
+        if len(srcs) >= 2:
+            existing = r.get("tags") or ""
+            if "corroborated-multi-source" not in existing:
+                r["tags"] = (existing + ";corroborated-multi-source").lstrip(";")
+            r["confidence"] = "HIGH"
+
+    org_map: dict = {}
+    for r in rows:
+        hostnames = []
+        if r.get("ioc_type") == "domain" and r.get("ioc_value"):
+            hostnames.append(r["ioc_value"])
+        hostnames += _HOSTNAME_IN_TEXT_RE.findall(r.get("post_text", ""))
+        for host in hostnames:
+            host = host.lower().rstrip(".")
+            root = next((s.lstrip(".") for s in MIL_DOMAIN_SUFFIXES
+                         if host == s.lstrip(".") or host.endswith("." + s.lstrip("."))), None)
+            if not root:
+                continue
+            entry = org_map.setdefault(root, {"hostnames": set(), "ips": set(), "sources": set(),
+                                               "asns": set(), "tech": set(), "country": "Unknown"})
+            entry["hostnames"].add(host)
+            if r.get("source"):
+                entry["sources"].add(r["source"])
+            if r.get("location") and r["location"] != "Unknown":
+                entry["country"] = r["location"]
+            if r.get("ioc_type") == "ip" and r.get("ioc_value"):
+                entry["ips"].add(r["ioc_value"])
+            for tag in (r.get("tags") or "").split(";"):
+                if tag.startswith("asn:"):
+                    entry["asns"].add(tag[4:])
+                elif tag.startswith("tech:"):
+                    entry["tech"].update(t for t in tag[5:].split(",") if t)
+
+    summary_rows = []
+    for root, data in org_map.items():
+        if not data["sources"]:
+            continue
+        summary_rows.append({
+            "threat_id":     f"T3-MAP-{short_id(root)}",
+            "threat_name":   f"Infrastructure Map — {root}",
+            "category_code": "T3", "category_name": CATEGORY_NAMES["T3"],
+            "source_layer":  "Surface Web", "source": "Correlation (multi-source)",
+            "post_text":     (f"Organization: {root} | Hostnames discovered: {len(data['hostnames'])} "
+                              f"({', '.join(sorted(data['hostnames'])[:10])}) | "
+                              f"IPs: {', '.join(sorted(data['ips'])[:10]) or 'none this run'} | "
+                              f"ASN: {', '.join(sorted(data['asns'])) or 'unknown'} | "
+                              f"Technologies seen: {', '.join(sorted(data['tech'])) or 'none identified'} | "
+                              f"Confirmed by: {', '.join(sorted(s for s in data['sources'] if s))}"),
+            "post_url":      "", "timestamp": now_utc(), "location": data["country"],
+            "severity":      "MEDIUM", "confidence": "HIGH",
+            "ioc_type":      "domain", "ioc_value": root,
+            "tags":          f"infrastructure-map;correlation;{root}",
+        })
+    if summary_rows:
+        log.info(f"[POST] Correlation: built {len(summary_rows)} infrastructure maps "
+                 f"({sum(1 for r in rows if 'corroborated-multi-source' in (r.get('tags') or ''))} rows corroborated by 2+ sources)")
+    return rows + summary_rows
+
+
 def deduplicate_rows(rows: list, seen: dict) -> tuple:
     new_rows = []
     for row in rows:
@@ -5079,41 +5326,48 @@ def run_collection():
     # has to run after crt.sh instead of before it.
 
     # ── T3 ──
+    # crt.sh moved to the FRONT of T3 (was after Shodan/Censys) — its
+    # discovered sensitive subdomains now pivot into every actively-working
+    # scan module below, not just LeakIX. Workflow cross-checked against a
+    # shared OSINT guide, verified live before building (see chat).
+    crtsh_rows = run("[T3] Querying crt.sh certificate transparency for military domains...", fetch_crtsh)
+    _ct_pivot_domains = list(dict.fromkeys(
+        r["ioc_value"] for r in crtsh_rows
+        if r.get("ioc_value") and "sensitive-subdomain" in (r.get("tags") or "")
+    ))
     if key_available("shodan_api_key"):
-        run("[T3] Scanning exposed military infrastructure via Shodan...", fetch_shodan_military, CONFIG["shodan_api_key"])
+        run("[T3] Scanning exposed military infrastructure via Shodan...", fetch_shodan_military,
+            CONFIG["shodan_api_key"], _ct_pivot_domains)
     if key_available("securitytrails_api_key"):
         run("[T3] Fetching military DNS intelligence via SecurityTrails...", fetch_securitytrails, CONFIG["securitytrails_api_key"])
     if censys_ready:
         run("[T3] Scanning exposed military network assets via Censys...", fetch_censys,
-            CONFIG["censys_api_id"], CONFIG.get("censys_api_secret", ""))
-    crtsh_rows = run("[T3] Querying crt.sh certificate transparency for military domains...", fetch_crtsh)
+            CONFIG["censys_api_id"], CONFIG.get("censys_api_secret", ""), _ct_pivot_domains)
     if key_available("leakix_api_key"):
-        # Pivot workflow from a shared OSINT guide (cross-checked against
-        # live LeakIX behaviour first — see chat): feed crt.sh's own
-        # sensitive-subdomain discoveries (vpn./admin./git./jira./kibana./
-        # etc, already flagged via the "sensitive-subdomain" tag) into
-        # LeakIX as extra per-subdomain checks, instead of only ever
-        # checking the ~30 hardcoded root domains.
-        _ct_pivot_domains = list(dict.fromkeys(
-            r["ioc_value"] for r in crtsh_rows
-            if r.get("ioc_value") and "sensitive-subdomain" in (r.get("tags") or "")
-        ))
         run("[T2/T3] Searching exposed services and data leaks via LeakIX...", fetch_leakix,
             CONFIG["leakix_api_key"], _ct_pivot_domains)
     if key_available("zoomeye_api_key"):
-        run("[T3] Scanning military infrastructure via ZoomEye...", fetch_zoomeye, CONFIG["zoomeye_api_key"])
+        run("[T3] Scanning military infrastructure via ZoomEye...", fetch_zoomeye,
+            CONFIG["zoomeye_api_key"], _ct_pivot_domains)
     if key_available("netlas_api_key"):
-        run("[T3] Scanning exposed military infrastructure via Netlas.io...", fetch_netlas, CONFIG["netlas_api_key"])
+        run("[T3] Scanning exposed military infrastructure via Netlas.io...", fetch_netlas,
+            CONFIG["netlas_api_key"], _ct_pivot_domains)
     if key_available("onyphe_api_key"):
         run("[T3] Scanning military infrastructure via Onyphe...", fetch_onyphe, CONFIG["onyphe_api_key"])
     if key_available("criminal_ip_api_key"):
         run("[T3/T6] Fetching malicious IPs via Criminal IP...", fetch_criminalip, CONFIG["criminal_ip_api_key"])
     if key_available("binaryedge_api_key"):
         run("[T3] Scanning military exposed services via BinaryEdge...", fetch_binaryedge, CONFIG["binaryedge_api_key"])
-    urlscan_rows = run("[T3] Scanning military domain web exposures via URLScan.io...", fetch_urlscan, CONFIG.get("urlscan_api_key", ""))
+    urlscan_rows = run("[T3] Scanning military domain web exposures via URLScan.io...", fetch_urlscan,
+                        CONFIG.get("urlscan_api_key", ""), _ct_pivot_domains)
     _health_warn = update_module_health(module_health, "URLScan", len(urlscan_rows))
     if _health_warn:
         log.warning(_health_warn)
+    # DNS/passive-DNS/ASN enrichment (see chat) — pivot domains first
+    # (freshly discovered, highest value), backfilled with our own root
+    # domains up to the function's internal 20-hostname cap.
+    _dns_targets = list(dict.fromkeys(_ct_pivot_domains + [s.lstrip(".") for s in MIL_DOMAIN_SUFFIXES]))
+    run("[T3] Resolving DNS/passive-DNS/ASN data for discovered hostnames...", fetch_dns_records, _dns_targets)
 
     # ── T4 ──
     run("[T4] Scanning GPS/EW anomalies via OpenSky Network...", fetch_gps_ew_data)
@@ -5231,6 +5485,9 @@ def run_collection():
     if _before != len(deduped_this_run):
         log.info(f"[POST] Self-dedup: removed {_before - len(deduped_this_run)} exact-duplicate rows within this run")
     all_rows = deduped_this_run
+
+    log.info("[POST] Correlating infrastructure across sources (IP/domain cross-referencing + org map)...")
+    all_rows = correlate_infrastructure(all_rows)
 
     log.info("[POST] Deduplicating against previous runs (TTL: 30 days)...")
     new_rows, dup_count = deduplicate_rows(all_rows, seen_threats)

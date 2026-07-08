@@ -2279,6 +2279,10 @@
     "filter_version": "2.0",
     "ts": "2026-07-07T23:02:55Z"
   },
+  "T3-CRT-e12686c6ce26": {
+    "filter_version": "2.0",
+    "ts": "2026-07-08T14:05:09Z"
+  },
   "T3-CRT-e162339d2e1d": {
     "filter_version": "2.0",
     "ts": "2026-07-07T20:14:37Z"
@@ -2515,6 +2519,74 @@
     "filter_version": "2.0",
     "ts": "2026-07-04T22:41:22Z"
   },
+  "T3-DNS-00981ba0a204": {
+    "filter_version": "2.0",
+    "ts": "2026-07-08T14:05:09Z"
+  },
+  "T3-DNS-35bbb5f47bf3": {
+    "filter_version": "2.0",
+    "ts": "2026-07-08T14:05:09Z"
+  },
+  "T3-DNS-42b068961cb9": {
+    "filter_version": "2.0",
+    "ts": "2026-07-08T14:05:09Z"
+  },
+  "T3-DNS-6d11dad3de54": {
+    "filter_version": "2.0",
+    "ts": "2026-07-08T14:05:09Z"
+  },
+  "T3-DNS-7b455d711491": {
+    "filter_version": "2.0",
+    "ts": "2026-07-08T14:05:09Z"
+  },
+  "T3-DNS-7defa0c0c30e": {
+    "filter_version": "2.0",
+    "ts": "2026-07-08T14:05:09Z"
+  },
+  "T3-DNS-ae96dc7d542b": {
+    "filter_version": "2.0",
+    "ts": "2026-07-08T14:05:09Z"
+  },
+  "T3-DNS-b4d166a3900e": {
+    "filter_version": "2.0",
+    "ts": "2026-07-08T14:05:09Z"
+  },
+  "T3-DNS-be77bb5b5753": {
+    "filter_version": "2.0",
+    "ts": "2026-07-08T14:05:09Z"
+  },
+  "T3-DNS-c760186ac9bf": {
+    "filter_version": "2.0",
+    "ts": "2026-07-08T14:05:09Z"
+  },
+  "T3-DNS-c81b26974ebf": {
+    "filter_version": "2.0",
+    "ts": "2026-07-08T14:05:09Z"
+  },
+  "T3-DNS-caa3e175b822": {
+    "filter_version": "2.0",
+    "ts": "2026-07-08T14:05:09Z"
+  },
+  "T3-DNS-ddbc5705d2af": {
+    "filter_version": "2.0",
+    "ts": "2026-07-08T14:05:09Z"
+  },
+  "T3-DNS-ed920da1d2d1": {
+    "filter_version": "2.0",
+    "ts": "2026-07-08T14:05:09Z"
+  },
+  "T3-DNS-eee15be6e586": {
+    "filter_version": "2.0",
+    "ts": "2026-07-08T14:05:09Z"
+  },
+  "T3-DNS-f5a4805bc67f": {
+    "filter_version": "2.0",
+    "ts": "2026-07-08T14:05:09Z"
+  },
+  "T3-DNS-ffcdce1fea7c": {
+    "filter_version": "2.0",
+    "ts": "2026-07-08T14:05:09Z"
+  },
   "T3-LIX-0afd504fd4ec": {
     "filter_version": "2.0",
     "ts": "2026-07-04T21:47:29Z"
@@ -2551,6 +2623,114 @@
     "filter_version": "2.0",
     "ts": "2026-07-04T21:47:29Z"
   },
+  "T3-MAP-0064aebd2cf8": {
+    "filter_version": "2.0",
+    "ts": "2026-07-08T14:05:09Z"
+  },
+  "T3-MAP-00981ba0a204": {
+    "filter_version": "2.0",
+    "ts": "2026-07-08T14:05:09Z"
+  },
+  "T3-MAP-0bb3b042c3fd": {
+    "filter_version": "2.0",
+    "ts": "2026-07-08T14:05:09Z"
+  },
+  "T3-MAP-0e259856e3b2": {
+    "filter_version": "2.0",
+    "ts": "2026-07-08T14:05:09Z"
+  },
+  "T3-MAP-23f419c966cc": {
+    "filter_version": "2.0",
+    "ts": "2026-07-08T14:05:09Z"
+  },
+  "T3-MAP-35bbb5f47bf3": {
+    "filter_version": "2.0",
+    "ts": "2026-07-08T14:05:09Z"
+  },
+  "T3-MAP-35c3bf98815b": {
+    "filter_version": "2.0",
+    "ts": "2026-07-08T14:05:09Z"
+  },
+  "T3-MAP-3fa4eead25c0": {
+    "filter_version": "2.0",
+    "ts": "2026-07-08T14:05:09Z"
+  },
+  "T3-MAP-40e8224a40db": {
+    "filter_version": "2.0",
+    "ts": "2026-07-08T14:05:09Z"
+  },
+  "T3-MAP-42b068961cb9": {
+    "filter_version": "2.0",
+    "ts": "2026-07-08T14:05:09Z"
+  },
+  "T3-MAP-4edc70987d86": {
+    "filter_version": "2.0",
+    "ts": "2026-07-08T14:05:09Z"
+  },
+  "T3-MAP-60732a521969": {
+    "filter_version": "2.0",
+    "ts": "2026-07-08T14:05:09Z"
+  },
+  "T3-MAP-8a845da0071f": {
+    "filter_version": "2.0",
+    "ts": "2026-07-08T14:05:09Z"
+  },
+  "T3-MAP-9b3fb2a3d204": {
+    "filter_version": "2.0",
+    "ts": "2026-07-08T14:05:09Z"
+  },
+  "T3-MAP-a07227bad2d1": {
+    "filter_version": "2.0",
+    "ts": "2026-07-08T14:05:09Z"
+  },
+  "T3-MAP-b4d166a3900e": {
+    "filter_version": "2.0",
+    "ts": "2026-07-08T14:05:09Z"
+  },
+  "T3-MAP-bbe63136fd40": {
+    "filter_version": "2.0",
+    "ts": "2026-07-08T14:05:09Z"
+  },
+  "T3-MAP-be77bb5b5753": {
+    "filter_version": "2.0",
+    "ts": "2026-07-08T14:05:09Z"
+  },
+  "T3-MAP-c760186ac9bf": {
+    "filter_version": "2.0",
+    "ts": "2026-07-08T14:05:09Z"
+  },
+  "T3-MAP-d9e3e77d127a": {
+    "filter_version": "2.0",
+    "ts": "2026-07-08T14:05:09Z"
+  },
+  "T3-MAP-daeda1b8a834": {
+    "filter_version": "2.0",
+    "ts": "2026-07-08T14:05:09Z"
+  },
+  "T3-MAP-e96f5323ffd4": {
+    "filter_version": "2.0",
+    "ts": "2026-07-08T14:05:09Z"
+  },
+  "T3-MAP-ec2116c6c8fd": {
+    "filter_version": "2.0",
+    "ts": "2026-07-08T14:05:09Z"
+  },
+  "T3-MAP-ed920da1d2d1": {
+    "filter_version": "2.0",
+    "ts": "2026-07-08T14:05:09Z"
+  },
+  "T3-MAP-fc358784b7a0": {
+    "filter_version": "2.0",
+    "ts": "2026-07-08T14:05:09Z"
+  },
+  "T3-MAP-fe8c6f05738b": {
+    "filter_version": "2.0",
+    "ts": "2026-07-08T14:05:09Z"
+  },
+  "T3-MAP-ffcdce1fea7c": {
+    "filter_version": "2.0",
+    "ts": "2026-07-08T14:05:09Z"
+  },
   "T3-NTL-001726c4b1b4": {
     "filter_version": "2.0",
     "ts": "2026-07-08T09:18:02Z"
@@ -2571,6 +2751,10 @@
     "filter_version": "2.0",
     "ts": "2026-07-08T09:18:02Z"
   },
+  "T3-NTL-34c87be19316": {
+    "filter_version": "2.0",
+    "ts": "2026-07-08T14:05:09Z"
+  },
   "T3-NTL-3620863102f9": {
     "filter_version": "2.0",
     "ts": "2026-07-08T09:18:02Z"
@@ -2590,6 +2774,10 @@
   "T3-NTL-9fec2f9808c1": {
     "filter_version": "2.0",
     "ts": "2026-07-08T09:18:02Z"
+  },
+  "T3-NTL-a677482d085c": {
+    "filter_version": "2.0",
+    "ts": "2026-07-08T14:05:09Z"
   },
   "T3-NTL-b43e04f33a8b": {
     "filter_version": "2.0",
@@ -2834,6 +3022,10 @@
   "T3-US-288d14129cbe": {
     "filter_version": "2.0",
     "ts": "2026-07-04T21:47:29Z"
+  },
+  "T3-US-28f9f0007ad9": {
+    "filter_version": "2.0",
+    "ts": "2026-07-08T14:05:09Z"
   },
   "T3-US-29f8856ae7e5": {
     "filter_version": "2.0",
@@ -3183,9 +3375,17 @@
     "filter_version": "2.0",
     "ts": "2026-07-04T21:47:29Z"
   },
+  "T3-US-6829426a7bd2": {
+    "filter_version": "2.0",
+    "ts": "2026-07-08T14:05:09Z"
+  },
   "T3-US-68b1860dcab4": {
     "filter_version": "2.0",
     "ts": "2026-07-05T07:52:27Z"
+  },
+  "T3-US-6910fc3bb7ea": {
+    "filter_version": "2.0",
+    "ts": "2026-07-08T14:05:09Z"
   },
   "T3-US-694a9703599a": {
     "filter_version": "2.0",
@@ -3258,6 +3458,10 @@
   "T3-US-7b3817f68dd0": {
     "filter_version": "2.0",
     "ts": "2026-07-05T20:00:19Z"
+  },
+  "T3-US-7cff3271693a": {
+    "filter_version": "2.0",
+    "ts": "2026-07-08T14:05:09Z"
   },
   "T3-US-7d52b0b5f44a": {
     "filter_version": "2.0",
@@ -3926,6 +4130,10 @@
   "T3-US-f90d1fe04f3a": {
     "filter_version": "2.0",
     "ts": "2026-07-05T07:52:27Z"
+  },
+  "T3-US-f973d2e4d1ad": {
+    "filter_version": "2.0",
+    "ts": "2026-07-08T14:05:09Z"
   },
   "T3-US-fa16f88eaf9e": {
     "filter_version": "2.0",
@@ -4855,6 +5063,10 @@
     "filter_version": "2.0",
     "ts": "2026-07-04T21:47:29Z"
   },
+  "T6-TFX-0b05415ae82f": {
+    "filter_version": "2.0",
+    "ts": "2026-07-08T14:05:09Z"
+  },
   "T6-TFX-0b974576e12a": {
     "filter_version": "2.0",
     "ts": "2026-07-05T07:52:27Z"
@@ -4958,6 +5170,10 @@
   "T6-TFX-293896a3423b": {
     "filter_version": "2.0",
     "ts": "2026-07-04T21:47:29Z"
+  },
+  "T6-TFX-2d003fbc6b51": {
+    "filter_version": "2.0",
+    "ts": "2026-07-08T14:05:09Z"
   },
   "T6-TFX-2e85bdf246be": {
     "filter_version": "2.0",
@@ -5082,6 +5298,10 @@
   "T6-TFX-5a0f7d967d4a": {
     "filter_version": "2.0",
     "ts": "2026-07-08T09:18:02Z"
+  },
+  "T6-TFX-5a22c9edda3c": {
+    "filter_version": "2.0",
+    "ts": "2026-07-08T14:05:09Z"
   },
   "T6-TFX-5a86949a207d": {
     "filter_version": "2.0",
@@ -5299,6 +5519,10 @@
     "filter_version": "2.0",
     "ts": "2026-07-07T14:07:32Z"
   },
+  "T6-TFX-b1ba9c9be35c": {
+    "filter_version": "2.0",
+    "ts": "2026-07-08T14:05:09Z"
+  },
   "T6-TFX-b2c77edfabd7": {
     "filter_version": "2.0",
     "ts": "2026-07-04T21:47:29Z"
@@ -5442,6 +5666,10 @@
   "T6-TFX-e670e478a600": {
     "filter_version": "2.0",
     "ts": "2026-07-08T08:02:25Z"
+  },
+  "T6-TFX-e7a0681efdb3": {
+    "filter_version": "2.0",
+    "ts": "2026-07-08T14:05:09Z"
   },
   "T6-TFX-eb6e682003b3": {
     "filter_version": "2.0",
@@ -5855,6 +6083,10 @@
     "filter_version": "2.0",
     "ts": "2026-07-06T10:05:00Z"
   },
+  "T8-RSS-93fd8c6b1766": {
+    "filter_version": "2.0",
+    "ts": "2026-07-08T14:05:09Z"
+  },
   "T8-RSS-97ff9a2d7ed2": {
     "filter_version": "2.0",
     "ts": "2026-07-07T20:14:37Z"
@@ -5894,6 +6126,10 @@
   "T8-RSS-a0e20f7859f6": {
     "filter_version": "2.0",
     "ts": "2026-07-05T00:06:20Z"
+  },
+  "T8-RSS-a1ca427f9a96": {
+    "filter_version": "2.0",
+    "ts": "2026-07-08T14:05:09Z"
   },
   "T8-RSS-a34abbea13bf": {
     "filter_version": "2.0",
