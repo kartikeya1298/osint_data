@@ -1282,6 +1282,14 @@ def fetch_intelx_pastes(api_key: str, query: str = ".mil") -> list:
 # against real data before using, see chat).
 _GENERIC_BANNER_RE = re.compile(r'^\s*HTTP/1\.[01]\s+(200|301|302|307|400)\b', re.IGNORECASE)
 
+# Same noise class, different shape: Microsoft Skype for Business/Lync's
+# "Autodiscover" service (lyncdiscover.<domain>) is a standard, publicly-
+# reachable-by-design endpoint every org that ever deployed it has — its
+# root JSON response is just a list of its own sub-endpoint links (self/
+# user/xframe), no credentials or internal data. A user-flagged example
+# showed this sitting at MEDIUM despite carrying zero actual exposure.
+_AUTODISCOVER_RE = re.compile(r'autodiscoverservice\.svc|lyncdiscover|"xframe"\s*:\s*\{', re.IGNORECASE)
+
 
 def fetch_leakix(api_key: str, extra_domains: list = None) -> list:
     """T2/T3 — FREE signup at leakix.net. Domain-gated: every query is filtered
@@ -1467,7 +1475,7 @@ def fetch_leakix(api_key: str, extra_domains: list = None) -> list:
                              "backup-file-exposed", "directory-listing"}
         if any(t in _HIGH_VALUE_TAGS for t in finding_tags):
             sev = "CRITICAL"
-        elif not cve_ids and _GENERIC_BANNER_RE.match(summary):
+        elif not cve_ids and (_GENERIC_BANNER_RE.match(summary) or _AUTODISCOVER_RE.search(summary)):
             # The other side of the same fix: a live check found both
             # non-high-value rows in the master CSV were exactly this —
             # a plain "301 Moved Permanently" redirect and a plain "200 OK"
