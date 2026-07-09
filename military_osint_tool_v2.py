@@ -168,17 +168,42 @@ CONFIG = {
     # AI inference layer — generates a plain-English "what this means" for
     # every row that doesn't already get one from deterministic logic (the
     # Certificate Intel tab's inference column is hand-built and free, no
-    # AI needed there — see chat). Tried in this order, each a genuinely
-    # free tier verified at build time (no card): Groq first (fastest,
-    # largest daily quota by far — ~14,400 req/day on llama-3.1-8b-instant),
-    # falling back to Gemini (Flash-Lite, ~1,000-1,500 req/day) if Groq
-    # errors/is unavailable, falling back to OpenRouter's free models
-    # (smaller quota — 50/day unless you've ever bought $10 credit — but a
-    # different underlying provider pool as a last resort) if both of
-    # those fail too. None of these are required — if all three are empty,
-    # this enrichment pass is skipped entirely and every other module is
-    # unaffected. Sign up: console.groq.com, aistudio.google.com,
-    # openrouter.ai/keys — all free, no card.
+    # AI needed there — see chat).
+    #
+    # Ollama (local) is tried LAST, after all three cloud providers below
+    # have failed/rate-limited for a batch — not first. It runs entirely
+    # on this machine (no rate limit, no daily quota, no key to leak), but
+    # live-measured on the actual dev machine (CPU-only, integrated Intel
+    # graphics, no dedicated GPU) a single trivial 2-token reply took
+    # 24.5s, and a real 8-row/800-output-token batch didn't finish inside
+    # a 180s timeout -- so it's genuinely too slow to be a per-batch first
+    # try; it would turn a several-second batch into several minutes on
+    # hardware like this. As a last resort (only reached once Groq+Gemini+
+    # OpenRouter are all exhausted for the rest of a run) it's still a
+    # clear win -- slow-but-free beats an empty ai_inference column -- so
+    # it's kept in the chain, just at the back. On a machine with a real
+    # GPU this would be fast enough to move earlier; re-test before
+    # reordering. Only feeds the batch inference column (server-side,
+    # Python) -- NOT the dashboard's Ask AI chat, since Ollama's default
+    # CORS rejects the null origin a double-clicked HTML file sends
+    # (confirmed live: 403; works fine if the dashboard is served over
+    # http://localhost instead of opened directly). Model is auto-detected
+    # from whatever's pulled locally (ollama pull <model>), not hardcoded.
+    # Leave empty to skip entirely — e.g. on a machine without Ollama
+    # installed, or where this measured latency isn't worth it.
+    "ollama_url":              "",
+    # Three cloud fallbacks, tried in this order before Ollama, each a
+    # genuinely free tier verified at build time (no card): Groq first
+    # (fastest, largest daily quota by far — ~14,400 req/day on
+    # llama-3.1-8b-instant), falling back to Gemini (Flash-Lite,
+    # ~1,000-1,500 req/day) if Groq errors/is unavailable, falling back to
+    # OpenRouter's free models (smaller quota — 50/day unless you've ever
+    # bought $10 credit — but a different underlying provider pool as a
+    # last resort) if both of those fail too. None of these are required —
+    # if these and Ollama are all empty, this enrichment pass is skipped
+    # entirely and every other module is unaffected. Sign up:
+    # console.groq.com, aistudio.google.com, openrouter.ai/keys — all
+    # free, no card.
     "groq_api_key":            "",
     "gemini_api_key":          "",
     "openrouter_api_key":      "",
@@ -5405,6 +5430,52 @@ def _call_openrouter(api_key: str, batch: list) -> dict:
     raise last_exc
 
 
+_OLLAMA_MODEL_CACHE = {"model": None}
+
+
+def _ollama_model(base_url: str) -> str:
+    """Picks whatever model is actually pulled locally (ollama list)
+    rather than hardcoding one — 'llama3.2:latest' on the dev machine
+    might be a different model, or missing, on wherever this actually
+    runs. Cached for the process lifetime like the OpenRouter model list,
+    for the same reason: no point re-querying every batch."""
+    if _OLLAMA_MODEL_CACHE["model"] is not None:
+        return _OLLAMA_MODEL_CACHE["model"]
+    model = ""
+    try:
+        resp = requests.get(f"{base_url}/api/tags", timeout=5)
+        resp.raise_for_status()
+        models = resp.json().get("models", [])
+        if models:
+            model = models[0]["name"]
+    except Exception as e:
+        log.warning(f"Ollama model discovery failed: {e}")
+    _OLLAMA_MODEL_CACHE["model"] = model
+    return model
+
+
+def _call_ollama(base_url: str, batch: list) -> dict:
+    model = _ollama_model(base_url)
+    if not model:
+        raise RuntimeError("no Ollama model pulled locally (ollama pull <model>)")
+    prompt = _LLM_SYSTEM_PROMPT + "\n\nROWS:\n\n" + "\n\n".join(_llm_row_to_text(r) for r in batch)
+    # Live-measured on CPU-only hardware: a trivial 2-token reply took
+    # 24.5s, so a full batch (long prompt in, up to 800 tokens out) needs
+    # a much longer allowance than the 30s used for the cloud providers —
+    # this is the last-resort provider specifically because it's slow,
+    # not because it's unreliable, so it's worth waiting for.
+    resp = requests.post(
+        f"{base_url}/v1/chat/completions",
+        headers={"Content-Type": "application/json"},
+        json={"model": model,
+              "messages": [{"role": "user", "content": prompt}],
+              "temperature": 0.2, "max_tokens": _LLM_MAX_OUTPUT_TOKENS},
+        timeout=600)
+    resp.raise_for_status()
+    text = resp.json()["choices"][0]["message"]["content"]
+    return _llm_parse_response(text, batch)
+
+
 def generate_ai_inferences(rows: list) -> None:
     """Mutates rows in place, setting row["ai_inference"] for any row that
     doesn't already have a non-empty one. Skips Certificate Intel rows
@@ -5412,16 +5483,19 @@ def generate_ai_inferences(rows: list) -> None:
     get a free, instant, deterministic inference client-side in the
     dashboard, so spending API quota on them would be pure waste.
 
-    Tries Groq -> Gemini -> OpenRouter per batch, in that order (see
-    CONFIG comment for groq_api_key). If a provider errors or its key
-    isn't set, falls through to the next; if all three are unavailable for
-    a batch, that batch is silently skipped (rows just keep an empty
-    ai_inference — same graceful-degradation as every other optional
-    enrichment in this tool)."""
+    Tries Groq -> Gemini -> OpenRouter -> Ollama per batch, in that order
+    (see CONFIG comment for groq_api_key/ollama_url — Ollama is last
+    because it's local-and-unlimited but measured much slower than the
+    cloud APIs on typical CPU-only hardware). If a provider errors or
+    isn't configured/reachable, falls through to the next; if all four
+    are unavailable for a batch, that batch is silently skipped (rows
+    just keep an empty ai_inference — same graceful-degradation as every
+    other optional enrichment in this tool)."""
     providers = [
         ("Groq", _call_groq, "groq_api_key"),
         ("Gemini", _call_gemini, "gemini_api_key"),
         ("OpenRouter", _call_openrouter, "openrouter_api_key"),
+        ("Ollama", _call_ollama, "ollama_url"),
     ]
     active = [(name, fn, k) for name, fn, k in providers if key_available(k)]
     if not active:
@@ -5450,7 +5524,10 @@ def generate_ai_inferences(rows: list) -> None:
     # confirmed-exhausted source" pattern already used for OTX/GreyNoise
     # elsewhere in this tool. A free-tier per-minute/per-day cap doesn't
     # reset in the ~1s between batches, so retrying immediately is pure
-    # waste, not resilience.
+    # waste, not resilience. Same set also covers Ollama being configured
+    # but not actually running when a run starts — if it's unreachable for
+    # batch 1, it's not coming up mid-run either, so drop it rather than
+    # eating a connection-refused (or a long connect delay) every batch.
     rate_limited: set = set()
     for batch in batches:
         result = {}
@@ -5467,6 +5544,9 @@ def generate_ai_inferences(rows: list) -> None:
                     log.warning(f"AI inference [{name}]: rate-limited (429) — dropping for rest of this run")
                 else:
                     log.warning(f"AI inference [{name}]: {e} — trying next provider")
+            except requests.exceptions.ConnectionError as e:
+                rate_limited.add(name)
+                log.warning(f"AI inference [{name}]: unreachable ({e}) — dropping for rest of this run")
             except Exception as e:
                 log.warning(f"AI inference [{name}]: {e} — trying next provider")
         for r in batch:
@@ -6248,8 +6328,8 @@ def run_collection():
     log.info(f"  [T8] Defence RSS feeds                 : ACTIVE (free)")
     log.info(f"  [T8] Telegram channels                 : ACTIVE (free — {len(CONFIG.get('telegram_channels',[]))} channels)")
     log.info(f"  [--] VirusTotal enrichment              : {status('virustotal_api_key')}")
-    ai_providers = [n for n, k in [("Groq","groq_api_key"),("Gemini","gemini_api_key"),("OpenRouter","openrouter_api_key")] if key_available(k)]
-    log.info(f"  [--] AI inference (plain-English 'so what') : {'ACTIVE — ' + '/'.join(ai_providers) if ai_providers else 'SKIPPED — set groq_api_key, gemini_api_key, or openrouter_api_key'}")
+    ai_providers = [n for n, k in [("Groq","groq_api_key"),("Gemini","gemini_api_key"),("OpenRouter","openrouter_api_key"),("Ollama","ollama_url")] if key_available(k)]
+    log.info(f"  [--] AI inference (plain-English 'so what') : {'ACTIVE — ' + '/'.join(ai_providers) if ai_providers else 'SKIPPED — set groq_api_key, gemini_api_key, openrouter_api_key, or ollama_url'}")
     log.info(f"  [--] Discord alerts                    : {'ACTIVE' if CONFIG.get('discord_webhook_url') else 'DISABLED'}")
     wa_ready = CONFIG.get("twilio_account_sid") and CONFIG.get("twilio_auth_token") and CONFIG.get("whatsapp_to")
     log.info(f"  [--] WhatsApp alerts (Twilio)          : {'ACTIVE' if wa_ready else 'DISABLED'}")
@@ -6472,7 +6552,8 @@ def run_collection():
     save_module_health(module_health)
     log.info(f"[POST] {dup_count} duplicates suppressed | {len(new_rows)} new threats this run")
 
-    if key_available("groq_api_key") or key_available("gemini_api_key") or key_available("openrouter_api_key"):
+    if (key_available("groq_api_key") or key_available("gemini_api_key")
+            or key_available("openrouter_api_key") or key_available("ollama_url")):
         log.info("[POST] Generating AI inference for new rows...")
         generate_ai_inferences(new_rows)
 
