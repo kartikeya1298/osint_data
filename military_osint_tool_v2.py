@@ -1126,7 +1126,22 @@ def fetch_hudson_rock(extra_domains: list = None) -> list:
     extra_domains: CT-discovered sensitive subdomains pivoted in from
     crt.sh (see fetch_leakix's docstring for the same pattern) — an
     infostealer infection on e.g. vpn.mod.gov.in wouldn't be caught by
-    only checking the root mod.gov.in domain."""
+    only checking the root mod.gov.in domain.
+
+    Real bug found and fixed (see chat): this had produced ZERO rows,
+    ever, across every run this session. Root cause -- this free OSINT-
+    tools endpoint returns "employees"/"users" as INTEGER COUNTS, not
+    arrays of individual records (confirmed live across all 7 real
+    target domains: mod.gov.in=223, mod.gov.pk=302, drdo.gov.in=917,
+    mod.gov.bd=102, etc. -- all real, all nonzero). The old code only
+    handled the case where those fields were lists, so `isinstance(...,
+    list)` silently failed for every domain and discarded a real,
+    substantial finding (nearly 1,000 compromised accounts tied to DRDO
+    alone) every single run. No documented way was found to get
+    individual records for free -- Hudson Rock's paid Cavalier product
+    presumably covers that -- so this now reports the aggregate count as
+    its own finding instead of silently dropping it, and still handles
+    the list case too in case some domain ever returns full records."""
     rows = []
     domains = list(CONFIG.get("hudson_rock_domains") or ["mod.gov.in", "mod.gov.pk", "mod.gov.cn"])
     domains.extend((extra_domains or [])[:10])
@@ -1146,12 +1161,54 @@ def fetch_hudson_rock(extra_domains: list = None) -> list:
                 if data:
                     _save_raw_response("Hudson Rock Cavalier (infostealer intelligence)", domain, data)
                 container = data.get("stealerLogsResults", data)
-                employees = container.get("employees") if isinstance(container, dict) else None
-                users = container.get("users") if isinstance(container, dict) else None
-                if not isinstance(employees, list):
-                    employees = []
-                if not isinstance(users, list):
-                    users = []
+                raw_employees = container.get("employees") if isinstance(container, dict) else None
+                raw_users = container.get("users") if isinstance(container, dict) else None
+                total = (container.get("total") if isinstance(container, dict) else 0) or 0
+
+                if (isinstance(raw_employees, int) or isinstance(raw_users, int)) and total:
+                    emp_n = raw_employees if isinstance(raw_employees, int) else 0
+                    usr_n = raw_users if isinstance(raw_users, int) else 0
+                    # stealerFamilies is {"total": N, "FamilyName": count, ...}
+                    # (confirmed live, see chat) -- a dict, not a list; drop
+                    # its own "total" key and sort the rest by count.
+                    fam_dict = container.get("stealerFamilies")
+                    families = []
+                    if isinstance(fam_dict, dict):
+                        families = [k for k, _ in sorted(
+                            ((k, v) for k, v in fam_dict.items() if k != "total"),
+                            key=lambda kv: -kv[1])[:5]]
+                    # 1970-01-01 is this API's sentinel for "none on record",
+                    # not a real date (confirmed live, see chat) -- e.g.
+                    # drdo.gov.in's last_employee_compromised came back as
+                    # exactly that while last_user_compromised was a real,
+                    # recent date. Treat it as unknown, not an actual event.
+                    def _real_date(v):
+                        return v if v and not str(v).startswith("1970-01-01") else ""
+                    last_emp = _real_date(container.get("last_employee_compromised"))
+                    last_usr = _real_date(container.get("last_user_compromised"))
+                    sev = "CRITICAL" if total >= 50 else "HIGH"
+                    rows.append({
+                        "threat_id":     f"T1-HR-{short_id('count_' + domain)}",
+                        "threat_name":   f"Infostealer Compromise — {domain} ({total} accounts on file)",
+                        "category_code": "T1", "category_name": CATEGORY_NAMES["T1"],
+                        "source_layer":  "Dark Web", "source": "Hudson Rock Cavalier (infostealer intelligence)",
+                        "post_text":     (f"Domain: {domain} | Total compromised accounts: {total} "
+                                          f"({emp_n} employees, {usr_n} other users) | "
+                                          f"Stealer families: {', '.join(families) if families else 'Unknown'} | "
+                                          f"Most recent employee compromise: {last_emp or 'Unknown'} | "
+                                          f"Most recent user compromise: {last_usr or 'Unknown'} | "
+                                          f"NOTE: aggregate count only -- free tier doesn't expose individual "
+                                          f"records, only Hudson Rock's paid Cavalier product does"),
+                        "post_url":      f"{base}?domain={domain}",
+                        "timestamp":     str(last_emp or last_usr or now_utc()),
+                        "location":      domain_to_country(domain) if domain_to_country(domain) != "Unknown" else "Unknown",
+                        "severity":      sev, "confidence": "MEDIUM",
+                        "ioc_type":      "domain", "ioc_value": domain,
+                        "tags":          f"infostealer;dark-web-market;credential-theft;aggregate-count;{domain}",
+                    })
+
+                employees = raw_employees if isinstance(raw_employees, list) else []
+                users = raw_users if isinstance(raw_users, list) else []
                 for record in (employees + users)[:10]:
                     username = record.get("username") or record.get("email") or ""
                     rows.append({
