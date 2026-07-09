@@ -363,6 +363,7 @@
         <table id="cert-data-table">
           <thead><tr>
             <th>Stage</th>
+            <th>Inference</th>
             <th>ID</th>
             <th>Cat</th>
             <th>Threat</th>
@@ -679,8 +680,65 @@ const _CERT_STAGE_LABELS = {
   cert: '🔗 Cert Discovery', dns: '🌐 DNS Resolution',
   pivot: '↳ Pivot Hit', correlation: '🧩 Correlation',
 };
+const _SENSITIVE_SUBDOMAIN_RE = /^(vpn|admin|dev|staging|test|git|jira|kibana|grafana|jenkins|api|sso|webmail|mail|remote|internal|backup|db|portal)\./i;
+
+// Builds the set of hostnames that a crt.sh discovery actually got
+// pivoted into (LeakIX/Shodan/urlscan/etc all tag their pivot rows'
+// threat_name with "CT-Discovered: {hostname}") — lets a 'cert' row say
+// whether it was ever followed up on, not just that it exists.
+function _certPivotedDomainSet(certRows) {
+  const set = new Set();
+  certRows.forEach(r => {
+    const m = (r.threat_name || '').match(/CT-Discovered:\s*([^\s]+)/);
+    if (m) set.add(m[1].toLowerCase());
+  });
+  return set;
+}
+
+// Answers "what does this row actually mean" instead of just restating
+// the raw fields — the gap flagged in chat. Each stage's post_text has a
+// different shape (see fetch_crtsh/fetch_dns_records/correlate_infrastructure
+// in the Python side), so this is parsed per-stage rather than one generic
+// summarizer. Falls back to a plain description if a field is missing —
+// never blank, but never invents a conclusion the data doesn't support.
+function _certInference(r, stage, pivotedDomains) {
+  const text = r.post_text || '';
+  if (stage === 'cert') {
+    const domain = (r.ioc_value || '').toLowerCase();
+    const expired = /Expired:\s*True/i.test(text);
+    const wasPivoted = pivotedDomains.has(domain);
+    const sensitive = _SENSITIVE_SUBDOMAIN_RE.test(domain);
+    if (wasPivoted) return '✓ Pivoted into exposure checks (see Pivot Hit rows below)';
+    if (expired) return 'Certificate expired — possibly abandoned infrastructure';
+    if (sensitive) return '⚠ Sensitive-looking subdomain, not yet pivoted';
+    return 'Subdomain discovered, not pivoted this run';
+  }
+  if (stage === 'dns') {
+    const asn = text.match(/ASN\/Org:\s*(AS\d+[^|]*)/i);
+    const noLive = /Live DNS: none/i.test(text);
+    if (asn) return `Hosted via ${asn[1].trim()}`;
+    if (noLive) return 'No current DNS record — historical/passive data only';
+    return 'DNS record resolved';
+  }
+  if (stage === 'pivot') {
+    if (r.severity === 'CRITICAL') return `⚠ CRITICAL exposure confirmed via ${r.source}`;
+    if (r.severity === 'HIGH') return `Exposure confirmed via ${r.source}`;
+    return `Checked via ${r.source} — no significant exposure found`;
+  }
+  if (stage === 'correlation') {
+    const confirmedBy = text.match(/Confirmed by:\s*(.+)$/);
+    const hostCount = text.match(/Hostnames discovered:\s*(\d+)/);
+    const sources = confirmedBy ? confirmedBy[1].split(',').map(s=>s.trim()).filter(Boolean) : [];
+    const hosts = hostCount ? hostCount[1] : '?';
+    if (sources.length >= 2) return `✓ Corroborated by ${sources.length} sources — ${hosts} hostnames mapped`;
+    return `Single-source finding — ${hosts} hostnames mapped`;
+  }
+  return '';
+}
+
 function renderCertPanel() {
   const certRows = allRows.filter(r => _certStageOf(r) !== null);
+  const pivotedDomains = _certPivotedDomainSet(certRows);
 
   const q = (document.getElementById('cert-search').value||'').toLowerCase();
   const stageFilter = document.getElementById('cert-filter-stage').value;
@@ -717,8 +775,10 @@ function renderCertPanel() {
   const tbody = document.getElementById('cert-table-body');
   tbody.innerHTML = shown.map(r=>{
     const stage = _certStageOf(r);
+    const inference = _certInference(r, stage, pivotedDomains);
     return `<tr>
       <td style="white-space:nowrap;font-size:11px">${_CERT_STAGE_LABELS[stage]||''}</td>
+      <td><span class="cell-truncate" style="max-width:230px;font-weight:600" title="${esc(inference)}">${esc(inference)}</span></td>
       <td><span class="ioc-val" style="font-size:10px">${esc(r.threat_id||'')}</span></td>
       <td><span class="cat cat-${esc(r.category_code)}">${esc(r.category_code)}</span></td>
       <td><span class="cell-truncate" style="max-width:200px" title="${esc(r.threat_name)}">${esc(r.threat_name)}</span></td>
