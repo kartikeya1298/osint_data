@@ -25,6 +25,11 @@ military_osint_master_*BACKUP*.csv
 run*_narrowed_*.log
 run[0-9]*_*.log
 
+# Raw API responses kept for chain-of-custody / independent re-verification
+# (see _save_raw_response). Rawer and more sensitive than the master CSV
+# itself -- never push this, same reasoning as the master CSV backups above.
+raw_responses/
+
 # Ad-hoc diagnostic/verification scripts run during development sessions —
 # scratch output, not part of the tool itself.
 *_test.log

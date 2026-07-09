@@ -405,6 +405,39 @@ def short_id(text: str) -> str:
     return hashlib.md5(text.encode()).hexdigest()[:12]
 
 
+# Chain-of-custody: stash the raw API response a finding was built from,
+# not just the transformed CSV row -- so a finding can be independently
+# re-verified later even if the source patches, denies, or takes down the
+# original data. Scoped to sources that deal in actual exposure/leak
+# findings where that matters (Shodan, LeakIX, Tavily, dark web sources,
+# etc.) -- not wired into stable public reference feeds (NVD, CISA KEV,
+# abuse.ch) where the source itself is already the durable public record,
+# or into paid-tier stubs that have never actually run (see chat).
+# Gitignored (raw_responses/) -- this is rawer and more sensitive than the
+# already-sensitive master CSV, same reasoning as why that file must never
+# be public (see chat, the repo-visibility incident).
+_RAW_RESPONSE_DIR = Path("raw_responses")
+
+
+def _save_raw_response(source: str, context: str, data) -> None:
+    """data can be a JSON-shaped dict/list (most sources) or a raw HTML/
+    text string (dark web search engines like Torch return scraped HTML,
+    not a JSON API) -- written as-is either way rather than forcing HTML
+    through json.dump's escaping."""
+    try:
+        source_dir = _RAW_RESPONSE_DIR / re.sub(r"[^\w.-]", "_", source)
+        source_dir.mkdir(parents=True, exist_ok=True)
+        ts = now_utc().replace(":", "-")
+        if isinstance(data, str):
+            with open(source_dir / f"{ts}_{short_id(context)}.html", "w", encoding="utf-8") as f:
+                f.write(data)
+        else:
+            with open(source_dir / f"{ts}_{short_id(context)}.json", "w", encoding="utf-8") as f:
+                json.dump(data, f, ensure_ascii=False, default=str)
+    except Exception as e:
+        log.warning(f"Raw response save failed [{source}]: {e}")
+
+
 # ═════════════════════════════════════════════════════════════════════════
 #  RELEVANCE ENGINE — the core fix for "specific keywords load a lot of junk"
 #
@@ -997,12 +1030,15 @@ def fetch_github_leaks(token: str, extra_domains: list = None) -> list:
                     time.sleep(2)
                     continue
                 resp.raise_for_status()
+                github_data = resp.json()
+                if github_data.get("items"):
+                    _save_raw_response("GitHub Code Search", q, github_data)
             except Exception as req_e:
                 log.warning(f"GitHub [{q[:50]}]: {req_e}")
                 time.sleep(5)
                 continue
 
-            for item in resp.json().get("items") or []:
+            for item in github_data.get("items") or []:
                 html_url = item.get("html_url") or ""
                 if not html_url or html_url in seen_urls:
                     continue
@@ -1082,6 +1118,8 @@ def fetch_hudson_rock(extra_domains: list = None) -> list:
                     break
                 resp.raise_for_status()
                 data = resp.json()
+                if data:
+                    _save_raw_response("Hudson Rock Cavalier (infostealer intelligence)", domain, data)
                 container = data.get("stealerLogsResults", data)
                 employees = container.get("employees") if isinstance(container, dict) else None
                 users = container.get("users") if isinstance(container, dict) else None
@@ -1144,7 +1182,10 @@ def fetch_breachdirectory(api_key: str) -> list:
                 if resp.status_code == 429:
                     break
                 resp.raise_for_status()
-                for r in (resp.json().get("result") or [])[:5]:
+                bd_data = resp.json()
+                if bd_data.get("result"):
+                    _save_raw_response("BreachDirectory (dark web breach dumps)", term, bd_data)
+                for r in (bd_data.get("result") or [])[:5]:
                     email = r.get("email") or r.get("username") or term
                     rows.append({
                         "threat_id":     f"T1-BD-{short_id(email + str(r.get('sources') or []))}",
@@ -1354,7 +1395,10 @@ def fetch_tavily_search(api_key: str) -> list:
                 log.warning("Tavily: monthly credit quota exhausted — stopping remaining queries")
                 break
             resp.raise_for_status()
-            for item in resp.json().get("results", []):
+            tavily_data = resp.json()
+            if tavily_data.get("results"):
+                _save_raw_response("Tavily Search API", query, tavily_data)
+            for item in tavily_data.get("results", []):
                 link = item.get("url", "")
                 if not link or link in seen_urls:
                     continue
@@ -1464,12 +1508,15 @@ def fetch_grayhatwarfare(api_key: str) -> list:
                 try:
                     resp = requests.get(url, timeout=15, headers={"User-Agent": "MilOSINT/2.0"})
                     resp.raise_for_status()
+                    ghw_data = resp.json()
+                    if ghw_data.get("files"):
+                        _save_raw_response("GrayhatWarfare", q, ghw_data)
                 except Exception as req_e:
                     log.warning(f"GrayhatWarfare [{q}]: {req_e}")
                     time.sleep(CONFIG["request_delay_sec"])
                     continue
 
-                for f in resp.json().get("files") or []:
+                for f in ghw_data.get("files") or []:
                     fname = f.get("filename") or ""
                     bucket = f.get("bucket") or ""
                     furl = f.get("url") or ""
@@ -1619,6 +1666,11 @@ def fetch_leakix(api_key: str, extra_domains: list = None) -> list:
     widening the search doesn't widen what gets kept."""
     rows = []
     _seen_services: set = set()
+    # Per-run cache for _leakix_host_detail() -- the same IP can surface
+    # from multiple named-target/broad/pivot queries in one run, and the
+    # /host/:ip call it makes is expensive enough (one real host returned
+    # over 1MB) that it's only worth paying once per IP per run.
+    _host_detail_cache: dict = {}
     # Narrowed to India + neighbouring countries only (per explicit instruction).
     LEAKIX_TARGETS = [
         ("indianarmy.nic.in", "Indian Army", "T2"), ("indiannavy.gov.in", "Indian Navy", "T2"),
@@ -1675,11 +1727,67 @@ def fetch_leakix(api_key: str, extra_domains: list = None) -> list:
                 items = resp.json() or []
                 if not isinstance(items, list):
                     continue
+                if items:
+                    _save_raw_response("LeakIX", f"search_{scope}_{query}", items)
                 for item in items[:4]:
                     yield scope, item
                 time.sleep(CONFIG["request_delay_sec"])
             except Exception as inner_e:
                 log.warning(f"LeakIX [{scope}] {query}: {inner_e}")
+
+    def _leakix_detail_summary(data: dict) -> str:
+        """Pulls the highest-value text out of a /host/:ip response.
+        Confirmed live (see chat) that this dedicated detail endpoint --
+        separate from /search, same free api-key, no login/session
+        needed -- returns dramatically more than /search's own summary
+        field (one real host: 1MB+ vs. a few hundred chars). Leaks first,
+        since that's LeakIX's own higher-severity bucket (actual exposed
+        data/credentials, not just a service banner); Services as a
+        fallback, deduped by port+protocol since a frequently-rescanned
+        host can carry 100+ near-identical historical entries for the
+        same one or two open ports."""
+        leaks = data.get("Leaks") or []
+        if leaks:
+            parts = []
+            for leak in leaks[:2]:
+                for ev in (leak.get("events") or [])[:2]:
+                    s = (ev.get("summary") or "").strip()
+                    if s:
+                        parts.append(s[:400])
+            if parts:
+                return " || ".join(parts)[:800]
+
+        seen_svc: set = set()
+        parts = []
+        for svc in (data.get("Services") or []):
+            key = (svc.get("port"), svc.get("protocol"))
+            if key in seen_svc:
+                continue
+            seen_svc.add(key)
+            s = (svc.get("summary") or "").strip()
+            if s:
+                parts.append(f"[{svc.get('port')}/{svc.get('protocol')}] {s[:300]}")
+            if len(parts) >= 3:
+                break
+        return " || ".join(parts)[:800]
+
+    def _leakix_host_detail(ip: str) -> str:
+        if not ip:
+            return ""
+        if ip in _host_detail_cache:
+            return _host_detail_cache[ip]
+        detail = ""
+        try:
+            resp = requests.get(f"https://leakix.net/host/{ip}", headers=headers, timeout=20)
+            if resp.status_code == 200 and resp.text.strip():
+                host_data = resp.json()
+                _save_raw_response("LeakIX", f"host_{ip}", host_data)
+                detail = _leakix_detail_summary(host_data)
+            time.sleep(CONFIG["request_delay_sec"])
+        except Exception as e:
+            log.warning(f"LeakIX host detail [{ip}]: {e}")
+        _host_detail_cache[ip] = detail
+        return detail
 
     def _build_row(scope, item, label, cat, expected_domain=""):
         plugin = item.get("plugin") or ""
@@ -1782,12 +1890,20 @@ def fetch_leakix(api_key: str, extra_domains: list = None) -> list:
             sev = "LOW"
 
         tech = _fingerprint_technology(summary, plugin)
+        # One extra call per distinct IP (cached per run, see
+        # _host_detail_cache) to /host/:ip -- the dedicated detail
+        # endpoint, same free api-key, no login needed -- which carries
+        # the real leak content/full service banners that /search's own
+        # summary field only shows a fraction of.
+        detail = _leakix_host_detail(ip)
+        base_text = f"Target: {label} | Host: {host}:{port} | Plugin: {plugin} | {summary[:600]}"
+        full_text = f"{base_text} | Full record: {detail}" if detail else base_text
         return {
             "threat_id":     f"{cat}-LIX-{short_id(host+str(port)+scope)}",
             "threat_name":   f"LeakIX {scope.title()} — {label} — {plugin or 'Unknown Service'}",
             "category_code": cat, "category_name": cat_name,
             "source_layer":  "Deep Web", "source": "LeakIX",
-            "post_text":     f"Target: {label} | Host: {host}:{port} | Plugin: {plugin} | {summary[:600]}",
+            "post_text":     full_text,
             "post_url":      f"https://leakix.net/host/{ip}" if ip else "https://leakix.net",
             "timestamp":     str(item.get("time") or now_utc()), "location": country,
             "severity":      sev, "confidence": "HIGH",
@@ -2134,6 +2250,8 @@ def fetch_ransomwatch() -> list:
     try:
         resp = _ransomware_live_get("https://api.ransomware.live/v2/recentvictims")
         posts = resp.json()
+        if posts:
+            _save_raw_response("ransomware.live (ransomware leak sites)", "recentvictims", posts)
         if isinstance(posts, list):
             for post in posts:
                 victim_name = post.get("victim") or ""
@@ -2166,6 +2284,8 @@ def fetch_ransomwatch() -> list:
             time.sleep(65)  # respect the ~1 request/minute rate limit (confirmed live)
             resp = _ransomware_live_get(f"https://api.ransomware.live/v2/countryvictims/{cc}", timeout=30)
             posts = resp.json()
+            if posts:
+                _save_raw_response("ransomware.live (ransomware leak sites)", f"countryvictims_{cc}", posts)
             if not isinstance(posts, list):
                 continue
             kept_for_country = 0
@@ -2489,6 +2609,7 @@ def fetch_tor_onion() -> list:
             # the scraping layer instead of the rendering layer.
             if resp.encoding is None or resp.encoding.lower() in ("iso-8859-1", "ascii"):
                 resp.encoding = resp.apparent_encoding
+            _save_raw_response("Torch dark web search (.onion)", search_q, resp.text)
             kept = 0
             for link, raw_title, raw_snippet in _TORCH_RESULT_RE.findall(resp.text):
                 if kept >= 4:
@@ -2590,6 +2711,9 @@ def fetch_telethon_private() -> list:
                         continue
                     sev = "CRITICAL" if any(k in msg.text.lower() for k in
                           ("breach", "credentials", "leak", "dump", "classified", "zero day")) else "HIGH"
+                    _save_raw_response(f"Telegram Private (Telethon) — {chan_name}", f"{channel}_{msg.id}",
+                                        {"id": msg.id, "sender_id": msg.sender_id, "date": str(msg.date),
+                                         "text": msg.text, "channel": str(channel)})
                     rows.append({
                         "threat_id":     f"T2-TGP-{short_id(str(msg.id) + str(channel))}",
                         "threat_name":   f"Telegram Private — {chan_name[:40]}",
@@ -2836,7 +2960,10 @@ def fetch_shodan_military(api_key: str, extra_domains: list = None) -> list:
             resp = requests.get("https://api.shodan.io/shodan/host/search",
                                  params={"key": api_key, "query": q, "limit": 10}, timeout=15)
             resp.raise_for_status()
-            for m in resp.json().get("matches", []):
+            shodan_data = resp.json()
+            if shodan_data.get("matches"):
+                _save_raw_response("Shodan", q, shodan_data)
+            for m in shodan_data.get("matches", []):
                 ip = m.get("ip_str", "")
                 loc = domain_to_country(target_domain)
                 if loc == "Unknown":
@@ -3026,7 +3153,10 @@ def fetch_censys(api_id: str, api_secret: str = "", extra_domains: list = None) 
                                                    "location.country", "autonomous_system.organization"]},
                                   timeout=20)
             resp.raise_for_status()
-            for hit in resp.json().get("result", {}).get("hits") or []:
+            censys_data = resp.json()
+            if censys_data.get("result", {}).get("hits"):
+                _save_raw_response("Censys", query, censys_data)
+            for hit in censys_data.get("result", {}).get("hits") or []:
                 ip = hit.get("ip") or ""
                 services = hit.get("services") or []
                 asys = hit.get("autonomous_system") or {}
@@ -3106,7 +3236,10 @@ def fetch_netlas(api_key: str, extra_domains: list = None) -> list:
                                 f"adjusting once a real key confirms the response shape")
                     continue
                 resp.raise_for_status()
-                for item in (resp.json().get("items") or [])[:5]:
+                netlas_resp = resp.json()
+                if netlas_resp.get("items"):
+                    _save_raw_response("Netlas.io", f"host_{domain}", netlas_resp)
+                for item in (netlas_resp.get("items") or [])[:5]:
                     data = item.get("data") or {}
                     ip = data.get("ip") or item.get("ip") or ""
                     port = data.get("port") or item.get("port") or ""
@@ -3376,7 +3509,10 @@ def fetch_zoomeye(api_key: str, extra_domains: list = None) -> list:
                                 f"check zoomeye.ai dashboard) — stopping after [{label}]")
                     break
                 resp.raise_for_status()
-                for m in (resp.json().get("data") or [])[:6]:
+                zoomeye_data = resp.json()
+                if zoomeye_data.get("data"):
+                    _save_raw_response("ZoomEye", query, zoomeye_data)
+                for m in (zoomeye_data.get("data") or [])[:6]:
                     ip = m.get("ip") or ""
                     port = m.get("port") or ""
                     country = m.get("country") or m.get("country_name") or geo
@@ -3627,7 +3763,10 @@ def fetch_urlscan(api_key: str = "", extra_domains: list = None) -> list:
                 time.sleep(30)
                 continue
             resp.raise_for_status()
-            for r in resp.json().get("results", []):
+            urlscan_data = resp.json()
+            if urlscan_data.get("results"):
+                _save_raw_response("URLScan.io", q, urlscan_data)
+            for r in urlscan_data.get("results", []):
                 page = r.get("page", {})
                 url = page.get("url", "")
                 if not url or url in seen_urls:
