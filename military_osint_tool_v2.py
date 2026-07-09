@@ -304,6 +304,18 @@ CONFIG = {
     "stix_export":             True,
     "request_delay_sec":       1.5,
     "urlscan_api_key":         "",
+    # Session-cookie auth for urlscan.io's /result/{uuid}/ detail endpoint --
+    # confirmed live (see chat) this 403s with "You're not logged in!" even
+    # WITH a valid free API key, so urlscan_api_key alone can't reach it.
+    # Same pattern discussed for any gated site: log into urlscan.io in a
+    # normal browser, open DevTools -> Network tab, reload, click any
+    # request to urlscan.io, copy the full value of the "cookie" request
+    # header, paste it here whole (multiple "name=value; name2=value2"
+    # pairs, not just one). Never the account password -- this only reuses
+    # a session you created yourself, expires/refreshes like any browser
+    # session, and is revoked the moment you log out. Leave empty to skip;
+    # the module still works off the free /search/ endpoint without it.
+    "urlscan_session_cookie":  "",
     "nvd_api_key":             "",
     "whatsapp_alert_threshold": "high",
     "whatsapp_alert_mode":      "digest",
@@ -3719,11 +3731,19 @@ def fetch_urlscan(api_key: str = "", extra_domains: list = None) -> list:
     subdomains — a real phishing-clone signal that was previously
     discarded), the screenshot URL (the guide's "document evidence with
     screenshots" step — nothing else in this tool captures screenshots),
-    and request-footprint stats. If api_key is ever set, it additionally
-    fetches the detail endpoint for the highest-value hits to pull
-    technology signatures via the shared fingerprinter — that path is
-    best-effort/schema-unverified (no key was available to test it live)
-    and fails silently if the shape doesn't match."""
+    and request-footprint stats.
+
+    If urlscan_session_cookie is set (see CONFIG comment — a session
+    cookie exported from a normal logged-in browser, not the account
+    password), it additionally fetches the detail endpoint for the
+    highest-value hits: the api_key-only path here was tried first and
+    confirmed live to still 403 with "You're not logged in!" even with a
+    valid free key, so the cookie is the actual gate, not the key. Pulls
+    technology signatures via the shared fingerprinter plus a couple of
+    extra fields the detail record has that /search/ doesn't (page IP,
+    ASN). Best-effort either way — fails silently per-hit if the cookie's
+    expired or the response shape doesn't match, same as every other
+    optional enrichment in this tool."""
     # Narrowed to India + neighbouring countries only (per explicit instruction).
     rows = []
     queries = [
@@ -3749,6 +3769,10 @@ def fetch_urlscan(api_key: str = "", extra_domains: list = None) -> list:
         queries.append((f"page.domain:{pivot_domain}", f"CT-Discovered: {pivot_domain}"))
     headers = {"API-Key": api_key} if api_key else {}
     headers["User-Agent"] = "MilOSINT/2.0"
+    session_cookie = CONFIG.get("urlscan_session_cookie", "")
+    detail_headers = dict(headers)
+    if session_cookie:
+        detail_headers["Cookie"] = session_cookie
     _SENSITIVE_PATH_PATTERNS = {
         "admin", "login", "portal", "vpn", "api", "kibana", "jenkins", "gitlab",
         "confluence", "jira", "sonarqube", "swagger", "phpmyadmin", "shell", "upload", "config",
@@ -3808,16 +3832,20 @@ def fetch_urlscan(api_key: str = "", extra_domains: list = None) -> list:
                     tags += ";newly-added-subdomain"
 
                 tech_tags = ""
-                # Best-effort enrichment — only fires if a free urlscan.io
-                # API key is later added to .env; unverified against a
-                # live key (none available this session), fails silently.
-                if api_key and (is_sensitive or is_new_domain) and detail_calls < 5:
+                detail_extra = ""
+                # Gated on session_cookie, not api_key -- confirmed live
+                # (see docstring) that a bare API key still 403s "You're
+                # not logged in!" on this endpoint. api_key alone was the
+                # old (unverified, never-fired) gate; session_cookie is
+                # the credential actually shown to matter.
+                if session_cookie and (is_sensitive or is_new_domain) and detail_calls < 5:
                     detail_calls += 1
                     try:
                         d = requests.get(f"https://urlscan.io/api/v1/result/{uuid}/",
-                                          headers=headers, timeout=15)
+                                          headers=detail_headers, timeout=15)
                         if d.ok:
                             dj = d.json()
+                            _save_raw_response("URLScan.io", f"detail_{uuid}", dj)
                             server_hdr = ""
                             for h in dj.get("data", {}).get("requests", []):
                                 resp_headers = (h.get("response", {}).get("response", {}).get("headers", {}) or {})
@@ -3828,6 +3856,17 @@ def fetch_urlscan(api_key: str = "", extra_domains: list = None) -> list:
                                 fp = _fingerprint_technology(server_hdr)
                                 if fp:
                                     tech_tags = ";" + ";".join(f"tech:{t}" for t in fp)
+                            # Page IP/ASN -- only in the detail record, not
+                            # /search/, per the same live schema check that
+                            # found /search/ missing them entirely.
+                            page_detail = dj.get("page", {}) or {}
+                            det_ip = page_detail.get("ip") or ""
+                            det_asn = (page_detail.get("asnname") or page_detail.get("asn") or "")
+                            if det_ip or det_asn:
+                                detail_extra = f" | IP: {det_ip} | ASN: {det_asn}"
+                        elif d.status_code in (401, 403):
+                            log.warning(f"URLScan detail [{uuid}]: {d.status_code} -- "
+                                        f"urlscan_session_cookie may have expired, re-export it")
                     except Exception as detail_e:
                         log.warning(f"URLScan detail [{uuid}]: {detail_e}")
                 tags += tech_tags
@@ -3837,6 +3876,7 @@ def fetch_urlscan(api_key: str = "", extra_domains: list = None) -> list:
                     post_text += f" | Domain age: {domain_age}d"
                 if stats:
                     post_text += f" | Requests: {stats.get('requests','?')}, IPs: {stats.get('uniqIPs','?')}, Countries: {stats.get('uniqCountries','?')}"
+                post_text += detail_extra
                 if screenshot:
                     post_text += f" | Screenshot: {screenshot}"
 
