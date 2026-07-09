@@ -1319,6 +1319,23 @@ def fetch_tavily_search(api_key: str) -> list:
                 passes, tier, reason = relevance_check(text, min_weak=1)
                 if not passes:
                     continue
+                if tier == "weak":
+                    # min_weak=1 is a low bar for Tavily's broad semantic
+                    # search across the open web — a live run found real
+                    # false positives this way: a US Indiana COVID-tracing-
+                    # database story (matched on generic breach/leak
+                    # language) and a generic breach-search-tool listing
+                    # (unrelated companies). Same fix as the Telegram/
+                    # deepdarkCTI module (see chat) — require a target-
+                    # country anchor for anything below "strong" tier.
+                    # Uses _has_any() (word-boundary-safe), NOT a naive
+                    # substring check — a naive check on this exact text
+                    # would have matched "india" inside "Indiana", the very
+                    # false positive this is meant to catch.
+                    text_low = text.lower()
+                    has_country = any(_has_any(text_low, hints) for hints in _COUNTRY_NAME_HINTS.values())
+                    if not has_country:
+                        continue
                 seen_urls.add(link)
                 is_exposed_file = bool(_EXPOSED_FILE_RE.search(link))
                 sev = "CRITICAL" if is_exposed_file else ("HIGH" if tier == "strong" else "MEDIUM")
