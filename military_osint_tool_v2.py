@@ -124,8 +124,17 @@ CONFIG = {
     "dehashed_email":          "",   # $15/mo  — T1: dehashed.com
     "dehashed_api_key":        "",   # $15/mo
     "securitytrails_api_key":  "",   # $50/mo  — T3
-    "censys_api_id":           "",   # new single-key format
-    "censys_api_secret":       "",
+    # A Censys Platform Personal Access Token (api.platform.censys.io/v3),
+    # not the old API-ID+Secret pair -- Censys retired the legacy Search
+    # API (search.censys.io/api/v2, Basic Auth) this session (see chat).
+    # Confirmed live: free accounts can no longer search by domain via the
+    # API at all ("Free users can only access this endpoint through the
+    # Platform UI"), but CAN still look up a specific known IP's full
+    # record for free (asset/host/{ip}) -- so this now only feeds
+    # fetch_censys_enrichment (enriches IPs other modules found this run),
+    # not domain-based discovery. Sign up free at platform.censys.io,
+    # generate a PAT from account settings.
+    "censys_api_id":           "",
 
     # FREE-TIER — sign up, paste key
     "otx_api_key":             "",
@@ -3124,85 +3133,47 @@ def fetch_securitytrails(api_key: str) -> list:
     return rows
 
 
-def fetch_censys(api_id: str, api_secret: str = "", extra_domains: list = None) -> list:
-    """T3 — FREE 250 queries/mo at censys.io. Military ASN internet scan.
+def fetch_censys_enrichment(ip_list: list, token: str) -> dict:
+    """Censys migrated from the legacy Search API (Basic Auth, API ID +
+    Secret, search.censys.io/api/v2) to a new Platform API (Bearer PAT,
+    api.platform.censys.io/v3) -- confirmed live (see chat) the old
+    domain-search approach this module used to run now 401s outright,
+    and even switched to correct Bearer auth, the new search/query
+    endpoint 403s specifically for free accounts: "This endpoint
+    requires an organization ID for API access. Free users can only
+    access this endpoint through the Platform UI." Free-tier API access
+    to SEARCH BY DOMAIN is gone -- no auth fix restores it.
 
-    Queries were still US Army/US Navy/US Air Force/NATO — completely
-    unscoped from before this session's India+neighbours narrowing (Parts
-    1-6), and this module's API key IS actually configured, so it was live.
-    Rewritten to dns.names:-scope on our actual confirmed domains (Censys
-    v2 hosts-search field for DNS/SAN hostnames), same pattern as every
-    other module — 250 free queries/mo is tight, so kept to one query per
-    country's primary MoD domain rather than every domain we track.
-
-    extra_domains: CT-discovered subdomains pivoted in from crt.sh (see
-    chat) — capped much lower than other modules (3, not 15) specifically
-    because of the tight 250/mo quota noted above."""
-    rows = []
-    if api_id.startswith("censys_"):
-        creds = base64.b64encode(f"{api_id}:".encode()).decode()
-    else:
-        creds = base64.b64encode(f"{api_id}:{api_secret}".encode()).decode()
-    headers = {"Authorization": f"Basic {creds}", "Content-Type": "application/json", "User-Agent": "MilOSINT/2.0"}
-    queries = [
-        ('dns.names: "mod.gov.in"', "Indian MoD"),
-        ('dns.names: "drdo.gov.in"', "DRDO"),
-        ('dns.names: "mod.gov.pk"', "Pakistan MoD"),
-        ('dns.names: "mod.gov.cn"', "China MoD"),
-        ('dns.names: "mod.gov.bd"', "Bangladesh MoD"),
-        ('dns.names: "mod.gov.np"', "Nepal MoD"),
-        ('dns.names: "defence.lk"', "Sri Lanka MoD"),
-        ('dns.names: "mod.gov.mm"', "Myanmar MoD"),
-        ('dns.names: "cincds.gov.mm"', "Myanmar CINCDS"),
-    ]
-    for pivot_domain in (extra_domains or [])[:3]:
-        queries.append((f'dns.names: "{pivot_domain}"', f"CT-Discovered: {pivot_domain}"))
-    try:
-        for query, label in queries:
-            # Same domain-based location fix as Shodan/LeakIX this session
-            # (see chat) — Censys's location.country is IP geolocation
-            # (hosting region), not the org's actual country.
-            target_domain = query.split('"')[1] if '"' in query else ""
-            resp = requests.post("https://search.censys.io/api/v2/hosts/search", headers=headers,
-                                  json={"q": query, "per_page": 10,
-                                        "fields": ["ip", "services.port", "services.service_name",
-                                                   "location.country", "autonomous_system.organization"]},
-                                  timeout=20)
+    The single-host lookup endpoint (asset/host/{ip}) has no such
+    restriction (confirmed 200 with the same free token), so this is now
+    an IP-enrichment module, same shape as fetch_greynoise_enrichment
+    above -- it can no longer discover NEW hosts by domain, but it adds
+    real detail (location, ASN/org, DNS names Censys has observed for
+    that IP) to IPs this run already found via other sources. Same
+    censys_api_id value as before still works -- it was always a valid
+    Platform PAT, just pointed at the wrong (deprecated) endpoint."""
+    if not token or not ip_list:
+        return {}
+    headers = {"Authorization": f"Bearer {token}"}
+    results = {}
+    for ip in ip_list[:30]:
+        try:
+            resp = requests.get(f"https://api.platform.censys.io/v3/global/asset/host/{ip}",
+                                 headers=headers, timeout=10)
+            if resp.status_code == 429:
+                log.warning(f"Censys: rate-limited after {len(results)} IPs — stopping")
+                break
+            if resp.status_code == 404:
+                continue
             resp.raise_for_status()
-            censys_data = resp.json()
-            if censys_data.get("result", {}).get("hits"):
-                _save_raw_response("Censys", query, censys_data)
-            for hit in censys_data.get("result", {}).get("hits") or []:
-                ip = hit.get("ip") or ""
-                services = hit.get("services") or []
-                asys = hit.get("autonomous_system") or {}
-                org = asys.get("organization") or label
-                asn = asys.get("asn") or ""
-                svc_str = ", ".join(f"{s.get('service_name','?')}:{s.get('port','?')}" for s in services[:5])
-                loc = domain_to_country(target_domain)
-                if loc == "Unknown":
-                    loc = (hit.get("location") or {}).get("country") or "Unknown"
-                tech = _fingerprint_technology(svc_str)
-                rows.append({
-                    "threat_id":     f"T3-CNS-{short_id(ip)}",
-                    "threat_name":   f"Exposed Military Network Asset — {org}",
-                    "category_code": _domain_scan_category(label),
-                    "category_name": CATEGORY_NAMES[_domain_scan_category(label)],
-                    "source_layer":  "Deep Web", "source": "Censys",
-                    "post_text":     f"IP: {ip} | Org: {org} | ASN: AS{asn} | Services: {svc_str} | Query: {label}",
-                    "post_url":      f"https://search.censys.io/hosts/{ip}",
-                    "timestamp":     now_utc(), "location": loc,
-                    "severity":      "HIGH", "confidence": "HIGH",
-                    "ioc_type":      "ip", "ioc_value": ip,
-                    "tags":          (f"exposed-asset;network;censys;military-infra;{label.lower().replace(' ','-')}"
-                                      + (f";asn:AS{asn}" if asn else "")
-                                      + (f";tech:{','.join(tech)}" if tech else "")),
-                })
+            resource = resp.json().get("result", {}).get("resource", {})
+            if resource:
+                results[ip] = resource
+                _save_raw_response("Censys", ip, resource)
             time.sleep(CONFIG["request_delay_sec"])
-    except Exception as e:
-        log.error(f"Censys error: {e}")
-    log.info(f"Censys: {len(rows)} exposed military network assets found")
-    return rows
+        except Exception as e:
+            log.debug(f"Censys [{ip}]: {e}")
+    return results
 
 
 def fetch_netlas(api_key: str, extra_domains: list = None) -> list:
@@ -6502,9 +6473,7 @@ def run_collection():
     log.info(f"  [T2] LeakIX (exposed services/leaks)   : {status('leakix_api_key')}")
     log.info(f"  [T3] Shodan (network scan)             : {status('shodan_api_key')}")
     log.info(f"  [T3] SecurityTrails (DNS intel)        : {status('securitytrails_api_key')}")
-    censys_ready = key_available("censys_api_id") and (
-        CONFIG.get("censys_api_id", "").startswith("censys_") or key_available("censys_api_secret"))
-    log.info(f"  [T3] Censys (internet scan)            : {'ACTIVE' if censys_ready else 'SKIPPED — set censys_api_id(+secret)'}")
+    log.info(f"  [--] Censys (IP enrichment, Platform API) : {status('censys_api_id')}")
     log.info(f"  [T3] ZoomEye (internet scan)           : {status('zoomeye_api_key')}")
     log.info(f"  [T3] Netlas.io (internet scan)         : {status('netlas_api_key')}")
     log.info(f"  [T3] Onyphe (internet scan)             : {status('onyphe_api_key')}")
@@ -6591,9 +6560,6 @@ def run_collection():
             CONFIG["shodan_api_key"], _ct_pivot_domains)
     if key_available("securitytrails_api_key"):
         run("[T3] Fetching military DNS intelligence via SecurityTrails...", fetch_securitytrails, CONFIG["securitytrails_api_key"])
-    if censys_ready:
-        run("[T3] Scanning exposed military network assets via Censys...", fetch_censys,
-            CONFIG["censys_api_id"], CONFIG.get("censys_api_secret", ""), _ct_pivot_domains)
     if key_available("leakix_api_key"):
         run("[T2/T3] Searching exposed services and data leaks via LeakIX...", fetch_leakix,
             CONFIG["leakix_api_key"], _ct_pivot_domains)
@@ -6716,6 +6682,27 @@ def run_collection():
                 elif gn.get("riot"):
                     row["tags"] = row.get("tags", "") + ";greynoise-riot"
         log.info(f"[POST] GreyNoise enrichment complete — {len(gn_data)} IPs classified")
+
+    if ip_iocs and key_available("censys_api_id"):
+        log.info(f"[POST] Censys enrichment for {len(ip_iocs)} IPs...")
+        censys_data = fetch_censys_enrichment(ip_iocs, CONFIG["censys_api_id"])
+        for row in all_rows:
+            if row.get("ioc_type") == "ip" and row.get("ioc_value") in censys_data:
+                c = censys_data[row["ioc_value"]]
+                asn = (c.get("autonomous_system") or {}).get("description", "")
+                loc = c.get("location") or {}
+                dns_names = (c.get("dns") or {}).get("names") or []
+                extra = f" | [Censys] "
+                parts = []
+                if asn:
+                    parts.append(f"ASN: {asn}")
+                if loc.get("city") or loc.get("country"):
+                    parts.append(f"Location: {loc.get('city','')}, {loc.get('country','')}")
+                if dns_names:
+                    parts.append(f"DNS: {', '.join(dns_names[:3])}")
+                if parts:
+                    row["post_text"] = row.get("post_text", "") + extra + " | ".join(parts)
+        log.info(f"[POST] Censys enrichment complete — {len(censys_data)} IPs enriched")
 
     if key_available("virustotal_api_key"):
         log.info("[POST] VirusTotal enrichment on this run's real IOCs...")
