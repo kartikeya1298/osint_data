@@ -4102,7 +4102,11 @@ def fetch_otx_pulses(api_key: str) -> list:
                 if not passes:
                     continue
                 indicators = p.get("indicators", [])
-                ioc_type = indicators[0].get("type", "hash") if indicators else "hash"
+                # "hash" as the no-indicators fallback falsely claimed a
+                # hash-type IOC existed for pulses with none at all (10 live
+                # rows: ioc_type="hash" but ioc_value="" — found via the
+                # same dashboard audit as the location fix above).
+                ioc_type = indicators[0].get("type", "hash") if indicators else "unknown"
                 ioc_value = indicators[0].get("indicator", "") if indicators else ""
                 rows.append({
                     "threat_id":     f"T6-OTX-{short_id(p.get('id',''))}",
@@ -4112,7 +4116,15 @@ def fetch_otx_pulses(api_key: str) -> list:
                     "post_text":     f"Pulse: {p.get('name','')} | Adversary: {p.get('adversary','Unknown')} | {desc_lower[:400]}",
                     "post_url":      f"https://otx.alienvault.com/pulse/{p.get('id','')}",
                     "timestamp":     p.get("created", now_utc()),
-                    "location":      ", ".join(p.get("targeted_countries", ["Unknown"])),
+                    # p.get(key, default) only falls back to default when
+                    # the key is ABSENT — OTX returns "targeted_countries":
+                    # [] (present, empty) for a lot of older/general pulses,
+                    # so .get() with a default silently produced "".join([])
+                    # = "" instead of "Unknown". Live-found via a dashboard
+                    # data audit: 10 rows (Sofacy, Operation Armageddon,
+                    # APT28 domains, etc.) had a completely empty location
+                    # field rather than "Unknown".
+                    "location":      ", ".join(p.get("targeted_countries") or ["Unknown"]),
                     "severity":      "CRITICAL" if tier == "strong" else "HIGH",
                     "confidence":    "HIGH" if tier in ("domain", "strong") else "MEDIUM",
                     "ioc_type":      ioc_type, "ioc_value": ioc_value,
