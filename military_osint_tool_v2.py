@@ -303,27 +303,22 @@ CONFIG = {
     "dashboard_html":          "osint_dashboard.html",        # refreshed with the master dataset embedded after every run
     "stix_export":             True,
     "request_delay_sec":       1.5,
+    # CONFIRMED LIVE: a real free urlscan.io API key alone unlocks the
+    # /result/{uuid}/ detail endpoint (page IP/ASN, tech fingerprint) --
+    # no session cookie needed. Matches what urlscan.io's own pricing page
+    # says (10,000 Result API requests/day on the FREE tier, not paid-
+    # gated); the earlier assumption that a cookie was required came from
+    # testing only fully anonymous requests, never a real key. Sign up
+    # free at urlscan.io, grab the key from account settings.
     "urlscan_api_key":         "",
-    # Try urlscan_api_key first for the /result/{uuid}/ detail endpoint --
-    # urlscan.io's own pricing page lists 10,000 Result API requests/day
-    # on the FREE tier, not gated behind a paid plan, so a real free key
-    # (same account you'd sign up for either way) may be all that's
-    # needed. What's actually confirmed live (see chat) is only that
-    # ANONYMOUS requests -- no key, no cookie -- 403 with "You're not
-    # logged in!"; no real key was ever tested here to know for sure.
-    # urlscan_session_cookie below is the verified-working fallback if a
-    # bare key isn't enough. If you end up setting both, use the SAME
-    # account for both -- no reason to split them, and mixing accounts
-    # isn't a scenario urlscan.io's auth is built to expect.
-    #
-    # Session-cookie auth: log into urlscan.io in a normal browser, open
-    # DevTools -> Network tab, reload, click any request to urlscan.io,
-    # copy the full value of the "cookie" request header, paste it here
-    # whole (multiple "name=value; name2=value2" pairs, not just one).
-    # Never the account password -- this only reuses a session you
-    # created yourself, expires/refreshes like any browser session, and
-    # is revoked the moment you log out. Leave both empty to skip; the
-    # module still works off the free /search/ endpoint either way.
+    # Fallback only -- not needed in the normal case now that a bare
+    # urlscan_api_key is confirmed sufficient (see above). Log into
+    # urlscan.io in a normal browser, open DevTools -> Network tab,
+    # reload, click any request to urlscan.io, copy the full value of the
+    # "cookie" request header, paste it here whole (multiple "name=value;
+    # name2=value2" pairs, not just one). Never the account password --
+    # this only reuses a session you created yourself, expires/refreshes
+    # like any browser session, and is revoked the moment you log out.
     "urlscan_session_cookie":  "",
     "nvd_api_key":             "",
     "whatsapp_alert_threshold": "high",
@@ -3733,31 +3728,25 @@ def fetch_urlscan(api_key: str = "", extra_domains: list = None) -> list:
     Rebuilt the per-row extraction after a live schema check (see chat):
     the public /search/ endpoint is genuinely sparse (no page.ip/server/
     asn/verdicts fields for an anonymous caller — verified against 3 real
-    scans, all missing), and the richer /result/{uuid}/ endpoint 403s with
-    "You're not logged in!" even for public scans without an API key. So
-    this pulls everything that IS free: domainAgeDays/apexDomainAgeDays
-    (flags newly-registered look-alike domains and freshly-added
-    subdomains — a real phishing-clone signal that was previously
-    discarded), the screenshot URL (the guide's "document evidence with
-    screenshots" step — nothing else in this tool captures screenshots),
-    and request-footprint stats.
+    scans, all missing) and anonymous requests to /result/{uuid}/ 403 with
+    "You're not logged in!". So without a key/cookie this pulls everything
+    that IS free: domainAgeDays/apexDomainAgeDays (flags newly-registered
+    look-alike domains and freshly-added subdomains — a real phishing-
+    clone signal that was previously discarded), the screenshot URL (the
+    guide's "document evidence with screenshots" step — nothing else in
+    this tool captures screenshots), and request-footprint stats.
 
-    If urlscan_api_key or urlscan_session_cookie is set, additionally
-    fetches the detail endpoint for the highest-value hits. Correction
-    (see chat): an earlier version of this docstring claimed a real API
-    key was "confirmed" insufficient here -- that's overstated. What was
-    actually confirmed live is that ANONYMOUS requests (no key, no
-    cookie) 403 with "You're not logged in!"; no real urlscan_api_key was
-    ever configured to test whether a genuine free key alone satisfies
-    it. urlscan.io's own pricing page explicitly includes 10,000 Result
-    API requests/day on the Free tier, not gated behind a paid plan, so
-    a plain free key may well be enough on its own. urlscan_session_cookie
-    (a session cookie exported from a normal logged-in browser, never the
-    account password) is the verified-working fallback if a bare key
-    turns out not to be. Pulls technology signatures via the shared
-    fingerprinter plus page IP/ASN, fields the detail record has that
-    /search/ doesn't. Best-effort either way — fails silently per-hit if
-    the credential's invalid/expired or the response shape doesn't
+    If urlscan_api_key is set, additionally fetches the detail endpoint
+    for the highest-value hits — CONFIRMED LIVE (see chat) that a real
+    free API key alone is enough; no session cookie needed despite an
+    earlier, now-corrected version of this docstring assuming otherwise
+    (that assumption was based on the anonymous-request 403 above, not on
+    ever actually testing a real key). Pulls technology signatures via
+    the shared fingerprinter plus page IP/ASN, fields the detail record
+    has that /search/ doesn't. urlscan_session_cookie exists as a fallback
+    for the rare case a key alone somehow isn't enough, but isn't needed
+    in the normal case. Best-effort either way — fails silently per-hit
+    if the credential's invalid/expired or the response shape doesn't
     match, same as every other optional enrichment in this tool."""
     # Narrowed to India + neighbouring countries only (per explicit instruction).
     rows = []
@@ -3886,8 +3875,9 @@ def fetch_urlscan(api_key: str = "", extra_domains: list = None) -> list:
                             if det_ip or det_asn:
                                 detail_extra = f" | IP: {det_ip} | ASN: {det_asn}"
                         elif d.status_code in (401, 403):
-                            log.warning(f"URLScan detail [{uuid}]: {d.status_code} -- "
-                                        f"urlscan_session_cookie may have expired, re-export it")
+                            log.warning(f"URLScan detail [{uuid}]: {d.status_code} -- check "
+                                        f"urlscan_api_key is still valid, or urlscan_session_cookie "
+                                        f"hasn't expired if that's what's set")
                     except Exception as detail_e:
                         log.warning(f"URLScan detail [{uuid}]: {detail_e}")
                 tags += tech_tags
