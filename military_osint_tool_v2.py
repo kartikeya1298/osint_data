@@ -60,10 +60,32 @@ import argparse
 import xml.etree.ElementTree as ET
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
+from urllib.parse import quote
 
 import requests
 
-FILTER_VERSION = "2.0"
+FILTER_VERSION = "2.1"
+# Bumped from 2.0 (see chat) — a live audit found 1,146 of 1,627
+# seen_threats_v2.json entries (70%) were "orphaned": marked seen so
+# deduplicate_rows() would never re-offer them, but absent from
+# military_osint_master.csv entirely (across nearly every module —
+# crt.sh, urlscan, ThreatFox, Celestrak, RSS, LeakIX, ransomware.live,
+# GrayhatWarfare, OTX, OpenSky, MalwareBazaar, NVD, correlation, CISA,
+# DNS, Netlas, Feodo, Tor, URLhaus). Root cause: master CSV was rebuilt/
+# filtered during this session's India+neighbours narrowing work, but
+# the separate dedup store was never correspondingly cleared, and
+# neither self-healing mechanism this store already has (30-day TTL;
+# version-stamp invalidation on filter-logic changes) had kicked in yet
+# — the entries are only ~1-2 days old, and FILTER_VERSION was never
+# bumped despite this session's substantial filter-logic changes
+# (LeakIX severity, 8-module category fix, CVE fail-open fix, vendor
+# term narrowing, etc.), each of which was exactly the scenario this
+# version stamp exists to force a re-evaluation for. Bumping it here
+# invalidates the entire stale store at once; append_to_master()'s own
+# independent check against the CURRENT master CSV (by threat_id AND
+# ioc_value+category_code) still protects against real duplicates, so
+# this only lets the 1,146 orphaned entries' live equivalents back in,
+# not anything already correctly recorded."
 
 
 def _load_dotenv(path: str = ".env") -> None:
@@ -131,6 +153,16 @@ CONFIG = {
     # so this gives a live, working path to the same class of exposed-
     # asset data even while those three stay broken.
     "netlas_api_key":          "",
+    # Tavily Search API — genuinely free "forever free" tier, 1,000 credits/
+    # month, no card required. Sign up at https://app.tavily.com — the key
+    # is on the dashboard immediately after signup (starts with "tvly-").
+    # Used for dork-style queries (see fetch_tavily_search) that reach
+    # surface web content (pastebins, doc-sharing sites, forum posts) our
+    # infrastructure-focused sources (Shodan/Censys/LeakIX) don't index.
+    # Chosen after Google's Custom Search JSON API (the original build)
+    # turned out to be closed to new signups — see chat and
+    # fetch_tavily_search's docstring.
+    "tavily_api_key":          "",
 
     # DEEP / DARK WEB — PAID (stubs ready, activate by pasting key)
     "darkowl_api_key":         "",
@@ -488,7 +520,17 @@ MIL_VENDOR_TERMS = {
     "schneider electric", "abb", "emerson", "yokogawa", "beckhoff",
     "inductive automation", "aveva",
     "microsoft", "oracle", "vmware", "solarwinds", "bmc software",
-    "openssl", "apache", "nginx",
+    "openssl", "nginx",
+    # Bare "apache" was matching ANY CVE mentioning the Apache Software
+    # Foundation (30+ largely unrelated projects) — live example: a
+    # CVSS-7.5 ActiveMQ Artemis DoS with no military-specific angle
+    # (flagged as noise in chat). Narrowed to the specific sub-projects
+    # that are either genuinely common in government/critical-infra
+    # backends (Tomcat, Kafka, HTTP Server) or have a track record of
+    # severe, broadly-exploited RCEs (Struts/Equifax, Log4j/Log4Shell) —
+    # still catches a real Log4Shell-class event, not a routine DoS.
+    "apache tomcat", "apache struts", "apache kafka", "apache http server",
+    "apache airflow", "apache log4j", "log4j", "apache camel", "apache solr",
     "viasat", "hughes", "iridium", "inmarsat",
 }
 
@@ -848,12 +890,15 @@ def fetch_dehashed(email: str, api_key: str) -> list:
     return rows
 
 
-def fetch_github_leaks(token: str) -> list:
+def fetch_github_leaks(token: str, extra_domains: list = None) -> list:
     """T1/T2 — FREE GitHub token. Filename-scoped dork queries for leaked .mil
     credentials/configs. Candidate hits are additionally content-verified: the
     raw file is fetched and scanned for an actual secret-shaped pattern before
     being called CRITICAL. A bare keyword match without a real secret pattern
-    (e.g. a dork wordlist mentioning army.mil) is downgraded, not dropped."""
+    (e.g. a dork wordlist mentioning army.mil) is downgraded, not dropped.
+
+    extra_domains: CT-discovered sensitive subdomains pivoted in from
+    crt.sh — same pattern as fetch_leakix/fetch_hudson_rock."""
     # Narrowed to India + neighbouring countries only (per explicit instruction).
     rows = []
     queries = [
@@ -884,6 +929,9 @@ def fetch_github_leaks(token: str) -> list:
         # file patterns, so they belong in the Tor dark-web queries instead).
         'filename:config.json "mod.gov.in" OR "mod.gov.pk" OR "mod.gov.cn" sso OR saml OR ldap OR mfa',
     ]
+    if extra_domains:
+        pivot_terms = " OR ".join(f'"@{d}"' for d in extra_domains[:8])
+        queries.append(f'{pivot_terms} filename:.env')
     headers = {
         "Authorization": f"token {token}", "Accept": "application/vnd.github.v3+json",
         "User-Agent": "MilOSINT/2.0", "X-GitHub-Api-Version": "2022-11-28",
@@ -966,10 +1014,16 @@ def fetch_github_leaks(token: str) -> list:
     return rows
 
 
-def fetch_hudson_rock() -> list:
-    """T1 — FREE. Infostealer-compromised .mil accounts via Hudson Rock Cavalier."""
+def fetch_hudson_rock(extra_domains: list = None) -> list:
+    """T1 — FREE. Infostealer-compromised .mil accounts via Hudson Rock Cavalier.
+
+    extra_domains: CT-discovered sensitive subdomains pivoted in from
+    crt.sh (see fetch_leakix's docstring for the same pattern) — an
+    infostealer infection on e.g. vpn.mod.gov.in wouldn't be caught by
+    only checking the root mod.gov.in domain."""
     rows = []
-    domains = CONFIG.get("hudson_rock_domains") or ["mod.gov.in", "mod.gov.pk", "mod.gov.cn"]
+    domains = list(CONFIG.get("hudson_rock_domains") or ["mod.gov.in", "mod.gov.pk", "mod.gov.cn"])
+    domains.extend((extra_domains or [])[:10])
     base = "https://cavalier.hudsonrock.com/api/json/v2/osint-tools/search-by-domain"
     try:
         for domain in domains:
@@ -1147,6 +1201,144 @@ def fetch_paste_leaks() -> list:
     except Exception as e:
         log.error(f"Paste monitor error: {e}")
     log.info(f"Paste monitor: {len(rows)} paste leaks found")
+    return rows
+
+
+def fetch_tavily_search(api_key: str) -> list:
+    """T1/T2/T3 — FREE, 1,000 credits/month, at api.tavily.com. Needs a free
+    Tavily API key (no credit card) — see the CONFIG comment for
+    tavily_api_key.
+
+    Replaces an earlier Google Custom Search JSON API build for the same
+    purpose (see chat): live-checked Google's own docs and found "The
+    Custom Search JSON API is closed to new customers" — existing users
+    only, no new signups possible, so that version was dead on arrival
+    for anyone without prior access. Tavily was verified as a genuine,
+    currently-open alternative (real "forever free" tier, no card, still
+    open as of this check) but works differently — it's semantic/AI-
+    agent search, not a raw index with site:/filetype:/intitle: operator
+    support the way Google was, so the query set below is a best-effort
+    natural-language translation of the original dork angles, not a
+    literal 1:1 port. Two angles translate cleanly onto Tavily's real
+    include_domains parameter (a proper structured filter, arguably more
+    reliable than a site: text operator ever was): paste-site and doc-
+    sharing-site leak mentions. The filetype:/intitle:"index of" angles
+    (exposed config files, open directories) have no equivalent
+    structured parameter on Tavily, so those are just natural-language
+    queries with no guarantee semantic search surfaces the same kind of
+    hit a literal file-type index would have — kept because they cost
+    nothing extra to try, not because precision here is confirmed.
+
+    Also functions as a real replacement for fetch_paste_leaks (psbdmp —
+    confirmed dead, see that function's docstring): this is the only
+    active source in the tool that can reach pastebin/doc-sharing-site
+    content at all, since Shodan/Censys/LeakIX all find exposed SERVICES,
+    not documents. Kept to 16 queries at search_depth="basic" (1 credit
+    each = 16/run) to stay far under the monthly budget even at a daily
+    collection cadence."""
+    rows = []
+    if not api_key:
+        return rows
+    QUERIES = [
+        ("Indian Ministry of Defence DRDO Army BSF leaked data breach credentials",
+         ["pastebin.com"], "T1", "India Paste Leak Mention"),
+        ("Pakistan military mod.gov.pk army navy air force leaked data breach credentials",
+         ["pastebin.com"], "T1", "Pakistan Paste Leak Mention"),
+        ("China PLA military mod.gov.cn CNNC leaked data breach credentials",
+         ["pastebin.com"], "T1", "China Paste Leak Mention"),
+        ("Bangladesh Nepal Sri Lanka Myanmar military ministry of defence leaked data breach",
+         ["pastebin.com"], "T1", "Neighbouring Countries Paste Leak Mention"),
+        ("DRDO BSF Indian Army leaked credentials database dump",
+         ["trello.com", "justpaste.it"], "T1", "India Alternate Paste-Site Leak Mention"),
+        ("Pakistan army mod.gov.pk leaked credentials database dump",
+         ["trello.com", "justpaste.it"], "T1", "Pakistan Alternate Paste-Site Leak Mention"),
+        ("exposed .env or .sql database dump mod.gov.in drdo.gov.in bsf.gov.in leaked",
+         None, "T3", "India Exposed Config/Database File"),
+        ("exposed .env or .sql database dump mod.gov.pk mod.gov.cn mod.gov.bd mod.gov.np defence.lk mod.gov.mm leaked",
+         None, "T3", "Neighbouring Countries Exposed Config/Database File"),
+        ("index of directory listing mod.gov.in drdo.gov.in indianarmy.nic.in bsf.gov.in exposed files",
+         None, "T3", "India Open Directory Listing"),
+        ("index of directory listing mod.gov.pk mod.gov.cn mod.gov.bd mod.gov.np defence.lk mod.gov.mm exposed files",
+         None, "T3", "Neighbouring Countries Open Directory Listing"),
+        ("Ministry of Defence India confidential classified document",
+         ["scribd.com", "docs.google.com"], "T2", "India Leaked Document Mention"),
+        ("Ministry of Defence Pakistan confidential classified document",
+         ["scribd.com", "docs.google.com"], "T2", "Pakistan Leaked Document Mention"),
+        ("top secret classified India government defence document leaked pdf",
+         None, "T2", "India Classified Document Mention"),
+        ("top secret classified Pakistan government defence document leaked pdf",
+         None, "T2", "Pakistan Classified Document Mention"),
+        ("personnel employee database DRDO BSF Indian Army leaked spreadsheet",
+         None, "T1", "India Personnel/Employee Data Exposure"),
+        ("personnel employee database Pakistan China Bangladesh military leaked spreadsheet",
+         None, "T1", "Neighbouring Countries Personnel/Employee Data Exposure"),
+    ]
+    _EXPOSED_FILE_RE = re.compile(r'\.(sql|env|bak|xls|xlsx|pdf)(\?|$)', re.IGNORECASE)
+    _LABEL_COUNTRY = {"india": "India", "pakistan": "Pakistan", "china": "China"}
+
+    def _tavily_location(label: str, text: str) -> str:
+        # domain_to_country() needs a bare hostname ending in the suffix —
+        # useless here (link is a full pastebin/scribd URL with a random
+        # path, and text is free-text search-result content, not a
+        # hostname) — see chat. Each query already targets one specific
+        # country (except the "Neighbouring Countries" ones, which cover
+        # 4-6 at once), so derive location from the query's own label
+        # first — reliable, no parsing needed — and only fall back to
+        # scanning the actual result text for the ambiguous ones.
+        low = label.lower()
+        for kw, country in _LABEL_COUNTRY.items():
+            if kw in low:
+                return country
+        text_low = text.lower()
+        for cc, hints in _COUNTRY_NAME_HINTS.items():
+            if any(h in text_low for h in hints):
+                return _RANSOMWARE_LIVE_TARGET_COUNTRIES.get(cc, cc)
+        return "Unknown"
+
+    seen_urls: set = set()
+    headers = {"Content-Type": "application/json", "Authorization": f"Bearer {api_key}",
+               "User-Agent": "MilOSINT/2.0"}
+    for query, include_domains, cat, label in QUERIES:
+        try:
+            payload = {"query": query, "search_depth": "basic", "max_results": 10}
+            if include_domains:
+                payload["include_domains"] = include_domains
+            resp = requests.post("https://api.tavily.com/search", json=payload,
+                                  headers=headers, timeout=20)
+            if resp.status_code == 432:
+                log.warning("Tavily: monthly credit quota exhausted — stopping remaining queries")
+                break
+            resp.raise_for_status()
+            for item in resp.json().get("results", []):
+                link = item.get("url", "")
+                if not link or link in seen_urls:
+                    continue
+                title = item.get("title", "")
+                snippet = item.get("content", "")
+                text = f"{title} {snippet}"
+                passes, tier, reason = relevance_check(text, min_weak=1)
+                if not passes:
+                    continue
+                seen_urls.add(link)
+                is_exposed_file = bool(_EXPOSED_FILE_RE.search(link))
+                sev = "CRITICAL" if is_exposed_file else ("HIGH" if tier == "strong" else "MEDIUM")
+                rows.append({
+                    "threat_id":     f"{cat}-TVLY-{short_id(link)}",
+                    "threat_name":   f"Tavily Search — {label}",
+                    "category_code": cat, "category_name": CATEGORY_NAMES[cat],
+                    "source_layer":  "Surface Web", "source": "Tavily Search API",
+                    "post_text":     f"Query: {query} | Title: {title[:150]} | Snippet: {snippet[:250]}",
+                    "post_url":      link,
+                    "timestamp":     now_utc(), "location": _tavily_location(label, text),
+                    "severity":      sev, "confidence": "MEDIUM",
+                    "ioc_type":      "url", "ioc_value": link[:300],
+                    "tags":          f"tavily-search;{reason};{label.lower().replace(' ','-')}"
+                                     + (";exposed-file" if is_exposed_file else ""),
+                })
+            time.sleep(CONFIG["request_delay_sec"])
+        except Exception as e:
+            log.error(f"Tavily search [{label}]: {e}")
+    log.info(f"Tavily search: {len(rows)} military-relevant results found")
     return rows
 
 
@@ -1631,6 +1823,75 @@ def _ransomware_live_get(url: str, timeout: int = 25, max_attempts: int = 3):
     raise last_exc
 
 
+def _ransomware_live_enrich(victim_name: str, domain: str) -> dict:
+    """Looks up one victim on /v2/searchvictims/{term} to answer "how do I
+    verify this CSV row" (see chat): the bulk /v2/recentvictims and
+    /v2/countryvictims/{cc} feeds this module otherwise runs on only
+    return a raw .onion post_url (needs Tor, and dark-web leak-site posts
+    routinely go offline/get seized). searchvictims returns a richer
+    per-victim record with a clearnet ransomware.live permalink
+    ("https://www.ransomware.live/id/...") and a screenshot hosted on
+    their own CDN — both viewable in a normal browser, no Tor required.
+    Live-tested at ~1s/call with no rate-limit hit across 5 rapid calls,
+    unlike countryvictims' confirmed ~1/min limit, so this is affordable
+    to call once per already-filtered (military/defence-relevant) row
+    rather than for all ~470+ raw victims per country.
+
+    Matches defensively: searchvictims does a substring/fuzzy search, so
+    a generic term can return several unrelated victims. Only returns
+    enrichment when a result's own domain or victim name matches ours —
+    otherwise returns {} rather than risk attaching the wrong screenshot/
+    permalink to this row."""
+    term = (domain or victim_name or "").strip()
+    if not term:
+        return {}
+    try:
+        # A live full-run found this endpoint DOES rate-limit under
+        # sustained back-to-back calls (429s appeared once several
+        # countries' worth of kept rows queued up enrichment calls in
+        # quick succession) — not visible in an earlier small isolated
+        # test (5 calls, no 429s), so this only showed up at real
+        # per-country-loop scale. One retry after a short pause is cheap
+        # insurance; a second 429 just means no enrichment for this row
+        # (falls back to the raw post_url — not fatal, see caller).
+        resp = requests.get(f"https://api.ransomware.live/v2/searchvictims/{quote(term, safe='')}",
+                             headers={"User-Agent": "MilOSINT/2.0"}, timeout=15)
+        if resp.status_code == 429:
+            time.sleep(5)
+            resp = requests.get(f"https://api.ransomware.live/v2/searchvictims/{quote(term, safe='')}",
+                                 headers={"User-Agent": "MilOSINT/2.0"}, timeout=15)
+        if resp.status_code == 404:
+            return {}
+        resp.raise_for_status()
+        results = resp.json()
+        if not isinstance(results, list):
+            return {}
+        target_domain = (domain or "").lower()
+        target_name = (victim_name or "").lower()
+        for entry in results:
+            e_domain = (entry.get("domain") or "").lower()
+            e_victim = (entry.get("victim") or "").lower()
+            if (target_domain and e_domain == target_domain) or \
+               (target_name and e_victim == target_name):
+                out = {}
+                if entry.get("url"):
+                    out["clearnet_url"] = entry["url"]
+                if entry.get("screenshot"):
+                    out["screenshot"] = entry["screenshot"]
+                infostealer = entry.get("infostealer")
+                if isinstance(infostealer, dict) and infostealer.get("users"):
+                    stats = infostealer.get("infostealer_stats") or {}
+                    top = sorted(stats.items(), key=lambda kv: kv[1], reverse=True)[:3]
+                    breakdown = ", ".join(f"{k} ({v})" for k, v in top)
+                    out["infostealer_summary"] = (f"{infostealer['users']} compromised users"
+                                                   + (f" via {breakdown}" if breakdown else ""))
+                return out
+        return {}
+    except Exception as enrich_e:
+        log.warning(f"ransomware.live enrich [{term}]: {enrich_e}")
+        return {}
+
+
 _TIER1_MIL_DOMAIN_FRAGMENTS = tuple(d.lstrip(".") for d in _TIER1_MIL_DOMAINS)
 
 _COUNTRY_TLD_HINTS = {
@@ -1739,7 +2000,18 @@ def fetch_ransomwatch() -> list:
     manually filtered out of the master CSV earlier this session. Tier3 on
     the global feed now also requires the victim's country to be one of the
     7 target countries (the per-country feed is inherently already scoped
-    correctly by construction, so it doesn't need this extra check)."""
+    correctly by construction, so it doesn't need this extra check).
+
+    Verification: the site's own homepage/browse view only surfaces recent
+    activity (the "shows just the recent 100" issue raised in chat), but
+    this module was never sourced from that view — /v2/countryvictims/{cc}
+    is a full historical per-country feed (live-confirmed: 474 India
+    victims on file, not ~100). To manually spot-check any CSV row, use
+    _make_row's enriched post_url instead of eyeballing the site's front
+    page: it's a clearnet ransomware.live permalink (via
+    /v2/searchvictims/{term} — see _ransomware_live_enrich), openable in
+    any browser with no Tor needed, and includes an actual screenshot of
+    the leak-site post when ransomware.live has one on file."""
     rows = []
     seen_ids: set = set()
     _HIGH_PRIORITY_GROUPS = {
@@ -1750,24 +2022,43 @@ def fetch_ransomwatch() -> list:
         "rhysida", "medusa", "qilin", "wallstreet", "hunters international",
     }
 
-    def _make_row(sector, victim_name, group, display_group, raw_ts, url, country, sev, conf, tier_label, tag):
+    def _make_row(sector, victim_name, group, display_group, raw_ts, url, country, sev, conf, tier_label, tag, domain=""):
         tid = f"T2-RW-{short_id(victim_name + group)}"
         if tid in seen_ids:
             return None
         seen_ids.add(tid)
+        # Enrich only kept (already tier-filtered) rows — see
+        # _ransomware_live_enrich docstring for why this is affordable
+        # per-row here but wasn't for the full ~470+/country raw feed.
+        enrich = _ransomware_live_enrich(victim_name, domain)
+        post_text = (f"Ransomware Group: {display_group} | Victim: {victim_name} | "
+                     f"Tier: {tier_label} | Sector: {sector} | "
+                     f"Country: {country} | Discovered: {raw_ts}")
+        tags = f"ransomware;dark-web;leak-site;{tag};{group.replace(' ','-')}"
+        if enrich.get("screenshot"):
+            post_text += f" | Screenshot: {enrich['screenshot']}"
+            tags += ";has-screenshot"
+        if enrich.get("infostealer_summary"):
+            post_text += f" | Infostealer exposure: {enrich['infostealer_summary']}"
+            tags += ";infostealer-exposure"
+        # Prefer the clearnet ransomware.live permalink as the primary
+        # verifiable link (viewable in any browser) over the raw .onion
+        # leak-site post (needs Tor, and routinely goes offline/seized) —
+        # the original post_url is kept in post_text either way.
+        verify_url = enrich.get("clearnet_url") or url or "https://www.ransomware.live/"
+        if enrich.get("clearnet_url") and url:
+            post_text += f" | Original leak-site post: {url}"
         return {
             "threat_id":     tid,
             "threat_name":   f"Ransomware Victim — {display_group}",
             "category_code": "T2", "category_name": CATEGORY_NAMES["T2"],
             "source_layer":  "Dark Web", "source": "ransomware.live (ransomware leak sites)",
-            "post_text":     f"Ransomware Group: {display_group} | Victim: {victim_name} | "
-                             f"Tier: {tier_label} | Sector: {sector} | "
-                             f"Country: {country} | Discovered: {raw_ts}",
-            "post_url":      url or "https://www.ransomware.live/",
+            "post_text":     post_text,
+            "post_url":      verify_url,
             "timestamp":     str(raw_ts), "location": country or "Unknown",
             "severity":      sev, "confidence": conf,
             "ioc_type":      "url", "ioc_value": url or f"darkweb://{group.replace(' ','-')}/{short_id(victim_name)}",
-            "tags":          f"ransomware;dark-web;leak-site;{tag};{group.replace(' ','-')}",
+            "tags":          tags,
         }
 
     def _sev_for(tier1_mil, tier2_contractor):
@@ -1801,7 +2092,7 @@ def fetch_ransomwatch() -> list:
                     continue
                 sev, conf, tier_label, tag = _sev_for(tier1_mil, tier2_contractor)
                 row = _make_row(activity, victim_name, group, display_group, raw_ts,
-                                 post.get("url"), country, sev, conf, tier_label, tag)
+                                 post.get("url"), country, sev, conf, tier_label, tag, domain=domain)
                 if row:
                     rows.append(row)
     except Exception as e:
@@ -1841,7 +2132,7 @@ def fetch_ransomwatch() -> list:
                     continue
                 sev, conf, tier_label, tag = _sev_for(tier1_mil, tier2_contractor)
                 row = _make_row(activity, victim_name, group, display_group, raw_ts,
-                                 url, country_name, sev, conf, tier_label, tag)
+                                 url, country_name, sev, conf, tier_label, tag, domain=domain)
                 if row:
                     rows.append(row)
                     kept_for_country += 1
@@ -1987,12 +2278,18 @@ def fetch_tor_onion() -> list:
     # Narrowed to India + neighbouring countries only (per explicit instruction)
     # — the queries below replace the original US/NATO-focused set.
     QUERIES = [
-        ("indian army credentials", "T1", "Indian Military Credential Exposure"),
-        ("pakistan military leak", "T2", "Pakistan Military Leak"),
-        ("china pla hack breach", "T2", "China PLA Breach Mention"),
-        ("south asia military apt nation state", "T6", "South Asia Nation-State APT Mention"),
-        ("indian defense contractor database", "T2", "Indian Defense Contractor Data"),
-        ("bangladesh nepal sri lanka myanmar military exploit", "T7", "Neighbouring Countries Exploit Mention"),
+        # These 6 "seed" queries were previously bare generic phrases
+        # (literally "pakistan military leak" etc.) — the exact pattern
+        # flagged as producing noisy/generic matches. Rewritten with the
+        # same level of qualifying detail (branch/data-type/asset)
+        # already used in the 37 category-gap queries below, so ranking
+        # is driven by multiple specific terms instead of 2-3 generic ones.
+        ("indian army soldier login credential database exposed", "T1", "Indian Army Credential Database Exposure"),
+        ("pakistan army isi military personnel data leak", "T2", "Pakistan Military Personnel Data Leak"),
+        ("china pla unit network breach compromise data", "T2", "China PLA Network Breach Mention"),
+        ("south asia military cyber espionage nation state actor", "T6", "South Asia Nation-State Cyber Espionage Mention"),
+        ("indian defence contractor employee database exposed leak", "T2", "Indian Defense Contractor Data"),
+        ("bangladesh nepal sri lanka myanmar military network exploit vulnerability", "T7", "Neighbouring Countries Exploit Mention"),
         # Named-APT-campaign searches — these groups are actively (2025-2026)
         # targeting exactly this region (researched specifically for this
         # scope; see chat), so dark-web chatter naming them is high-signal.
@@ -2086,7 +2383,36 @@ def fetch_tor_onion() -> list:
         q, cat, label = args
         local_rows = []
         try:
-            resp = session.get(TORCH_URL, params={"P": q}, proxies=proxies,
+            # -wiki -wikipedia: live-verified against Torch's Omega/Xapian
+            # backend (see chat) — every current result was "The Hidden
+            # Wiki" (an onion index/directory site, not real leak/breach
+            # content). Xapian supports server-side -term exclusion;
+            # tested "pakistan military leak -wiki" and got 0 Hidden Wiki
+            # hits vs 100% before, with genuinely different alternative
+            # .onion links returned. q itself (used for tagging/threat_id)
+            # stays clean — only the actual request param gets the filter.
+            #
+            # DEFAULTOP=or: Omega's search form defaults to DEFAULTOP=and
+            # (confirmed by inspecting the actual HTML — the "Matching all
+            # words" radio button ships pre-checked). That means every one
+            # of our 5-9-word queries was silently requiring EVERY term to
+            # appear in the same document — live-tested and found this
+            # collapses several queries (including pre-existing ones, not
+            # just ones added this round) to "No documents match your
+            # query" outright, and explains why Hidden Wiki dominated the
+            # results that DID come through: broad encyclopedia-style
+            # index pages are the only documents comprehensive enough to
+            # contain every query term at once, so strict AND-mode was
+            # structurally biased toward exactly that noise. Switching to
+            # OR-mode (probabilistic ranking on any term) restored real
+            # results (e.g. "sidewinder razor tiger south asia government
+            # breach -wiki -wikipedia" went from 0 matches to ~20,000
+            # ranked matches, still 0 Hidden Wiki hits) and relies on the
+            # existing relevance_check(min_weak=2) gate below — same as
+            # every other keyword-search module — to do the actual
+            # precision filtering instead of Torch's own AND matching.
+            search_q = f"{q} -wiki -wikipedia"
+            resp = session.get(TORCH_URL, params={"P": search_q, "DEFAULTOP": "or"}, proxies=proxies,
                                 headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; rv:109.0) Gecko/20100101 Firefox/115.0"},
                                 timeout=50)
             resp.raise_for_status()
@@ -2110,6 +2436,14 @@ def fetch_tor_onion() -> list:
                         continue
                 title = re.sub(r'<[^>]+>', '', raw_title).strip()
                 snippet = re.sub(r'<[^>]+>', '', raw_snippet).strip()
+                # Defense-in-depth on top of the server-side -wiki/-wikipedia
+                # exclusion above — catches it client-side too in case a
+                # Torch mirror/cache doesn't fully honor the query-time
+                # exclusion. These are onion index/directory pages, not
+                # leak or breach content, regardless of which term matched.
+                title_low = title.lower()
+                if "hidden wiki" in title_low or "wikipedia" in title_low:
+                    continue
                 # min_weak=2: Torch is a fully uncurated/uncensored index (unlike
                 # the defense-specific RSS outlets elsewhere in this tool), so a
                 # single incidental term match is weak evidence — e.g. a Tor-
@@ -3175,7 +3509,23 @@ def fetch_urlscan(api_key: str = "", extra_domains: list = None) -> list:
     — catches exposed admin panels and phishing pages mimicking military sites.
 
     extra_domains: CT-discovered subdomains pivoted in from crt.sh (see
-    chat) — 1000/day is generous, so capped the same as LeakIX (15)."""
+    chat) — 1000/day is generous, so capped the same as LeakIX (15).
+
+    Rebuilt the per-row extraction after a live schema check (see chat):
+    the public /search/ endpoint is genuinely sparse (no page.ip/server/
+    asn/verdicts fields for an anonymous caller — verified against 3 real
+    scans, all missing), and the richer /result/{uuid}/ endpoint 403s with
+    "You're not logged in!" even for public scans without an API key. So
+    this pulls everything that IS free: domainAgeDays/apexDomainAgeDays
+    (flags newly-registered look-alike domains and freshly-added
+    subdomains — a real phishing-clone signal that was previously
+    discarded), the screenshot URL (the guide's "document evidence with
+    screenshots" step — nothing else in this tool captures screenshots),
+    and request-footprint stats. If api_key is ever set, it additionally
+    fetches the detail endpoint for the highest-value hits to pull
+    technology signatures via the shared fingerprinter — that path is
+    best-effort/schema-unverified (no key was available to test it live)
+    and fails silently if the shape doesn't match."""
     # Narrowed to India + neighbouring countries only (per explicit instruction).
     rows = []
     queries = [
@@ -3206,6 +3556,7 @@ def fetch_urlscan(api_key: str = "", extra_domains: list = None) -> list:
         "confluence", "jira", "sonarqube", "swagger", "phpmyadmin", "shell", "upload", "config",
     }
     seen_urls: set = set()
+    detail_calls = 0
     for q, label in queries:
         try:
             resp = requests.get("https://urlscan.io/api/v1/search/", params={"q": q, "size": 20},
@@ -3223,20 +3574,79 @@ def fetch_urlscan(api_key: str = "", extra_domains: list = None) -> list:
                 status = page.get("status", 200)
                 is_sensitive = any(p in url.lower() for p in _SENSITIVE_PATH_PATTERNS)
                 is_error = status in (401, 403, 500, 502, 503) if isinstance(status, int) else False
-                sev = "HIGH" if is_sensitive else ("MEDIUM" if is_error else "LOW")
+
+                # Domain-age anomaly check — a freely-available field the
+                # old code discarded entirely. A young apex domain matching
+                # a government/military name pattern is a strong
+                # phishing-clone signal; a young subdomain under a much
+                # older, legitimate apex just means recently-stood-up
+                # infrastructure (informational, not inherently malicious).
+                domain_age = page.get("domainAgeDays")
+                apex_age = page.get("apexDomainAgeDays")
+                is_new_domain = isinstance(apex_age, int) and apex_age < 30
+                is_new_subdomain = (isinstance(domain_age, int) and isinstance(apex_age, int)
+                                     and domain_age < 90 and (apex_age - domain_age) > 180)
+
+                uuid = r.get("_id", "")
+                screenshot = f"https://urlscan.io/screenshots/{uuid}.png" if uuid else ""
+                stats = r.get("stats", {})
+
+                sev = "MEDIUM" if is_error else "LOW"
+                if is_sensitive:
+                    sev = "HIGH"
+                if is_new_domain:
+                    sev = "CRITICAL"
                 tags = f"urlscan;web-exposure;{label.lower().replace(' ', '-')}"
                 if is_sensitive:
                     tags += ";sensitive-path"
                 if is_error:
                     tags += f";http-{status}"
+                if is_new_domain:
+                    tags += ";newly-registered-domain;possible-phishing-clone"
+                if is_new_subdomain:
+                    tags += ";newly-added-subdomain"
+
+                tech_tags = ""
+                # Best-effort enrichment — only fires if a free urlscan.io
+                # API key is later added to .env; unverified against a
+                # live key (none available this session), fails silently.
+                if api_key and (is_sensitive or is_new_domain) and detail_calls < 5:
+                    detail_calls += 1
+                    try:
+                        d = requests.get(f"https://urlscan.io/api/v1/result/{uuid}/",
+                                          headers=headers, timeout=15)
+                        if d.ok:
+                            dj = d.json()
+                            server_hdr = ""
+                            for h in dj.get("data", {}).get("requests", []):
+                                resp_headers = (h.get("response", {}).get("response", {}).get("headers", {}) or {})
+                                server_hdr = resp_headers.get("Server", resp_headers.get("server", ""))
+                                if server_hdr:
+                                    break
+                            if server_hdr:
+                                fp = _fingerprint_technology(server_hdr)
+                                if fp:
+                                    tech_tags = ";" + ";".join(f"tech:{t}" for t in fp)
+                    except Exception as detail_e:
+                        log.warning(f"URLScan detail [{uuid}]: {detail_e}")
+                tags += tech_tags
+
+                post_text = f"Domain: {page.get('domain','')} | URL: {url[:200]} | Status: {status}"
+                if isinstance(domain_age, int):
+                    post_text += f" | Domain age: {domain_age}d"
+                if stats:
+                    post_text += f" | Requests: {stats.get('requests','?')}, IPs: {stats.get('uniqIPs','?')}, Countries: {stats.get('uniqCountries','?')}"
+                if screenshot:
+                    post_text += f" | Screenshot: {screenshot}"
+
                 rows.append({
                     "threat_id":     f"T3-US-{short_id(url)}",
-                    "threat_name":   f"URLScan — {label} Web Exposure",
+                    "threat_name":   f"URLScan — {label} Web Exposure" + (" (Possible Phishing Clone)" if is_new_domain else ""),
                     "category_code": _domain_scan_category(label),
                     "category_name": CATEGORY_NAMES[_domain_scan_category(label)],
                     "source_layer":  "Surface Web", "source": "URLScan.io",
-                    "post_text":     f"Domain: {page.get('domain','')} | URL: {url[:200]} | Status: {status}",
-                    "post_url":      f"https://urlscan.io/result/{r.get('_id','')}/",
+                    "post_text":     post_text[:500],
+                    "post_url":      f"https://urlscan.io/result/{uuid}/",
                     "timestamp":     str(r.get("task", {}).get("time", now_utc())), "location": domain_to_country(page.get("domain", "")),
                     "severity":      sev, "confidence": "MEDIUM",
                     "ioc_type":      "url", "ioc_value": url[:300],
@@ -3271,20 +3681,30 @@ def fetch_gps_ew_data() -> list:
     validate it tonight — the region-traffic-volume monitoring below is
     unaffected and still honest."""
     rows = []
+    # Narrowed to India + neighbouring countries only (per explicit
+    # instruction) — Eastern Europe/Middle East/Baltic/Black Sea/Taiwan
+    # Strait/Korean Peninsula regions removed. These were a leftover this
+    # session's earlier narrowing pass (Parts 1-6) missed entirely — they
+    # were still being actively monitored and their "GPS/EW Region
+    # Monitored" rows were showing up on the dashboard threat map outside
+    # our target countries. Replaced the single broad South Asia box with
+    # 4 more specific ones so all 7 target countries get real coverage
+    # instead of Bangladesh/Nepal/Sri Lanka/Myanmar being an afterthought
+    # inside one huge India/Pakistan/China-centered box.
     regions = [
-        {"name": "Eastern Europe (Ukraine/Russia)", "bbox": (44.0, 22.0, 52.0, 40.0)},
-        {"name": "Middle East (Israel/Lebanon/Syria)", "bbox": (29.0, 33.0, 37.0, 42.0)},
-        {"name": "Baltic Region", "bbox": (53.0, 14.0, 60.0, 28.0)},
-        {"name": "Black Sea", "bbox": (40.5, 27.5, 46.5, 41.5)},
-        # Covers the India-Pakistan border (Punjab/Rajasthan/Kashmir) and the
+        # India-Pakistan border (Punjab/Rajasthan/Kashmir/Sindh) + the
         # India-China LAC (Ladakh, Arunachal Pradesh) — both have documented
-        # GPS jamming/spoofing incidents, same as the other conflict zones here.
-        {"name": "South Asia (India/Pakistan/China border)", "bbox": (24.0, 69.0, 36.0, 97.0)},
-        # Taiwan Strait — documented GPS jamming/spoofing tied to PLA exercises
-        # around Taiwan; Korean Peninsula — North Korea has repeatedly jammed
-        # GPS into South Korean airspace/shipping. Both free (OpenSky, no key).
-        {"name": "Taiwan Strait", "bbox": (21.0, 118.0, 26.0, 123.0)},
-        {"name": "Korean Peninsula", "bbox": (33.0, 124.0, 43.0, 131.0)},
+        # GPS jamming/spoofing incidents.
+        {"name": "India-Pakistan-China Border (Kashmir/Ladakh/LAC)", "bbox": (24.0, 69.0, 36.0, 97.0)},
+        # Bangladesh + Northeast India border corridor.
+        {"name": "Bangladesh & Northeast India Border", "bbox": (20.0, 88.0, 27.0, 93.0)},
+        # Myanmar — full territory (the old broad box's lon range stopped at
+        # 97, missing roughly a third of Myanmar's actual territory further east).
+        {"name": "Myanmar", "bbox": (9.0, 92.0, 28.5, 101.2)},
+        # Sri Lanka + southern India (Tamil Nadu/Kerala) + Palk Strait —
+        # relevant given repeated Indian security concerns over Chinese
+        # research/survey vessel port calls in Sri Lanka.
+        {"name": "Sri Lanka & Southern India (Palk Strait)", "bbox": (5.5, 74.0, 14.0, 82.0)},
     ]
     for region in regions:
         lamin, lomin, lamax, lomax = region["bbox"]
@@ -3390,9 +3810,12 @@ def fetch_celestrak() -> list:
                 if norad_id in seen_norads:
                     continue
                 seen_norads.add(norad_id)
-                matched.append(obj)
+                # Track WHY this matched — a global-constellation match
+                # (GPS/GLONASS/Cosmos, name_kw) needs a different location
+                # than a country-specific match (owner_set). See below.
+                matched.append((obj, bool(name_kw)))
 
-            for obj in matched[-20:]:
+            for obj, is_global_constellation in matched[-20:]:
                 norad_id = (obj.get("NORAD_CAT_ID") or "").strip()
                 name = (obj.get("OBJECT_NAME") or "").strip()
                 owner = (obj.get("OWNER") or "Unknown").strip()
@@ -3400,9 +3823,38 @@ def fetch_celestrak() -> list:
                 launch = (obj.get("LAUNCH_DATE") or now_utc()).strip()
                 is_debris = "DEB" in obj_type.upper() or "DEB" in name.upper()
                 sev = "CRITICAL" if (is_debris and base_sev == "HIGH") else base_sev
+
+                # GPS/GLONASS/Cosmos are global-infrastructure risks (relevant
+                # to every country including ours, regardless of which
+                # country happens to own the specific satellite sampled) —
+                # tagging one "Orbit — United States" made it look like a
+                # US-specific finding and put non-target countries back on
+                # the dashboard map. Only the two owner-gated buckets
+                # (Chinese/Indian Military Satellites) get a real country.
+                loc = "Global" if is_global_constellation else f"Orbit — {_SATCAT_OWNER_NAME.get(owner.upper(), owner)}"
+
+                # Recently-launched + orbital inclination check (see chat) —
+                # inclination between ~8 deg and 100 deg means the ground
+                # track's latitude coverage INCLUDES India's ~8-37 deg N
+                # band (necessary, not sufficient — doesn't confirm a
+                # specific overflight without full SGP4 propagation, which
+                # this tool doesn't do). Flagged as "may overfly", never as
+                # confirmed targeting — no public OSINT source can establish
+                # sensor-pointing intent from TLE data alone.
+                extra_tags = ""
+                if owner.upper() == "PRC" and not is_debris:
+                    try:
+                        incl = float((obj.get("INCLINATION") or "").strip())
+                        launch_dt = datetime.fromisoformat(launch) if launch and launch != now_utc() else None
+                        days_old = (datetime.now(timezone.utc) - launch_dt.replace(tzinfo=timezone.utc)).days if launch_dt else 9999
+                        if 8.0 <= incl <= 100.0 and days_old <= 120:
+                            extra_tags = ";recently-launched;may-overfly-india-latitude-band"
+                    except (ValueError, TypeError):
+                        pass
+
                 rows.append({
                     "threat_id":     f"T4-CTK-{short_id(norad_id + name)}",
-                    "threat_name":   f"Satellite Intelligence — {label}",
+                    "threat_name":   f"Satellite Intelligence — {label}" + (" (Recent Launch)" if extra_tags else ""),
                     "category_code": "T4", "category_name": CATEGORY_NAMES["T4"],
                     "source_layer":  "Deep Web", "source": "Celestrak SATCAT (US Space Command)",
                     "post_text":     (f"Object: {name} | NORAD: {norad_id} | Owner: {owner} | Type: {obj_type} | "
@@ -3410,12 +3862,16 @@ def fetch_celestrak() -> list:
                                       f"Apogee: {(obj.get('APOGEE') or '').strip()}km | "
                                       f"Perigee: {(obj.get('PERIGEE') or '').strip()}km | "
                                       f"Inclination: {(obj.get('INCLINATION') or '').strip()}° | "
-                                      f"Launch: {launch} | Category: {label}"),
+                                      f"Launch: {launch} | Category: {label}"
+                                      + (" | Recently launched, orbital inclination allows overflight of India's "
+                                         "latitude band (not confirmed targeting — no sensor-pointing data available)"
+                                         if extra_tags else "")),
                     "post_url":      f"https://celestrak.org/satcat/search.php?CATNR={norad_id}",
-                    "timestamp":     launch, "location": f"Orbit — {_SATCAT_OWNER_NAME.get(owner.upper(), owner)}",
-                    "severity":      sev, "confidence": "HIGH",
+                    "timestamp":     launch, "location": loc,
+                    "severity":      "HIGH" if extra_tags and sev not in ("CRITICAL",) else sev,
+                    "confidence":    "HIGH",
                     "ioc_type":      "satellite", "ioc_value": f"NORAD-{norad_id}",
-                    "tags":          f"satellite;space;{owner.lower()};{obj_type.lower().replace(' ','-')};celestrak",
+                    "tags":          f"satellite;space;{owner.lower()};{obj_type.lower().replace(' ','-')};celestrak{extra_tags}",
                 })
     except Exception as e:
         log.error(f"Celestrak SATCAT error: {e}")
@@ -3496,7 +3952,17 @@ def fetch_cisa_ics_advisories() -> list:
                 "source_layer":  "Surface Web", "source": "CISA KEV",
                 "post_text":     f"{v.get('vulnerabilityName','')} | {v.get('shortDescription','')}",
                 "post_url":      "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
-                "timestamp":     v.get("dateAdded", now_utc()) + "T00:00:00Z", "location": "United States",
+                # "United States" was wrong — conflates "CISA (a US agency)
+                # publishes this catalog" with "this vulnerability is a
+                # US-specific threat". A SCADA/critical-infra CVE is a risk
+                # wherever the affected vendor's products are deployed,
+                # including our 7 target countries — same class of bug as
+                # the hosting-location-vs-org-country issue fixed elsewhere
+                # this session, just for a data SOURCE's origin instead of
+                # a server's hosting location. Found via a live dashboard
+                # data audit (see chat) — 15 CISA rows were plotting on the
+                # threat map as United States.
+                "timestamp":     v.get("dateAdded", now_utc()) + "T00:00:00Z", "location": "Global",
                 "severity":      "CRITICAL", "confidence": "HIGH",
                 "ioc_type":      "cve", "ioc_value": v.get("cveID", ""),
                 "tags":          "ics;scada;critical-infra;cisa;cve",
@@ -3726,7 +4192,15 @@ def fetch_feodo_c2() -> list:
                 "post_text":     (f"C2 IP: {ip}:{item.get('port','')} | Malware: {item.get('malware','Unknown')} | "
                                   f"Status: {status} | Last Online: {item.get('last_online','')}"),
                 "post_url":      f"https://feodotracker.abuse.ch/browse/host/{ip}/",
-                "timestamp":     item.get("first_seen") or now_utc(), "location": item.get("country") or "Unknown",
+                # item.get("country") is the C2 SERVER's hosting country
+                # (IP geolocation) — not who the botnet targets. Commodity
+                # malware C2 (Emotet/QakBot/etc, unlike APT-specific
+                # infrastructure) gets hosted wherever is cheap/resistant to
+                # takedown, unrelated to victim geography — same hosting-
+                # location-vs-relevance bug fixed elsewhere this session.
+                # Found via a live dashboard data audit (see chat): US/GB/JP
+                # were plotting on the threat map from this field.
+                "timestamp":     item.get("first_seen") or now_utc(), "location": "Global",
                 "severity":      "CRITICAL" if status == "online" else "HIGH", "confidence": "HIGH",
                 "ioc_type":      "ip", "ioc_value": f"{ip}:{item.get('port','')}",
                 "tags":          f"c2;botnet;{(item.get('malware') or '').lower().replace(' ','-')};feodo",
@@ -3917,8 +4391,31 @@ def fetch_recorded_future(api_key: str) -> list:
 # ═════════════════════════════════════════════════════════════════════════
 
 def fetch_osv_cves() -> list:
-    """T7 — FREE, no key. CIRCL CVE API, last 50 CVEs, filtered to CVSS >= 9.0
-    AND a military-supply-chain vendor match. Cross-references CISA KEV."""
+    """T7 — FREE, no key. CIRCL CVE API, last 50 advisories, filtered to
+    CVSS >= 9.0 AND a military-supply-chain vendor match. Cross-references
+    CISA KEV.
+
+    Rewritten after a live schema check (see chat) found CIRCL has migrated
+    /api/last/50 entirely to CSAF 2.0 (Common Security Advisory Framework)
+    — confirmed 50/50 real entries in a live pull, 0 in the old flat
+    {id, summary, cvss} shape this code used to expect. Each item is now a
+    full vendor advisory (document.title/tracking, product_tree, etc.) that
+    can BUNDLE several CVEs in a vulnerabilities[] array, each with its own
+    cve id, notes[] (description), and scores[] (per-product CVSS blocks) —
+    not a 1:1 "one item = one CVE" list anymore.
+
+    Under the old parsing, every field lookup (item.get("id")/("summary")/
+    ("cvss")) silently returned nothing against the new shape, which combined
+    with a real pre-existing bug — `if score_f is not None and score_f < 9.0`
+    only rejects a LOW score, so a CVE whose score extraction failed
+    entirely (score_f=None) bypassed the >=9.0 gate rather than being
+    excluded by it — to let anything with a vendor-term-matching
+    description through regardless of actual severity. That's exactly how
+    a CVSS-7.5 (High, not Critical) Apache ActiveMQ Artemis DoS got flagged
+    as "Critical CVE — Military Supply Chain" (raised in chat): the module
+    was fail-open on missing CVSS data instead of fail-closed. Fixed here:
+    unresolvable severity is now treated as NOT meeting the bar, not as
+    meeting it by default."""
     rows = []
     _kev_cves: set = set()
     try:
@@ -3929,44 +4426,69 @@ def fetch_osv_cves() -> list:
     except Exception:
         pass
     try:
-        resp = requests.get("https://cve.circl.lu/api/last/50", timeout=25, headers={"User-Agent": "MilOSINT/2.0"})
+        resp = requests.get("https://cve.circl.lu/api/last/50", timeout=45, headers={"User-Agent": "MilOSINT/2.0"})
         resp.raise_for_status()
-        all_cves = resp.json() or []
-        if not isinstance(all_cves, list):
+        advisories = resp.json() or []
+        if not isinstance(advisories, list):
             return rows
-        for item in all_cves:
+        seen_cves: set = set()
+        for item in advisories:
             if not isinstance(item, dict):
                 continue
-            cve_id = item.get("id") or item.get("CVE") or ""
-            summary = item.get("summary") or item.get("description") or item.get("Summary") or ""
-            cvss_raw = item.get("cvss") or item.get("cvss3") or item.get("CVSS") or 0
-            cpes = " ".join(item.get("vulnerable_configuration_cpe_2_2") or []).lower()
-            try:
-                score_f = float(str(cvss_raw)) if cvss_raw else None
-            except Exception:
+            doc = item.get("document") or {}
+            advisory_title = doc.get("title", "")
+            for vuln in (item.get("vulnerabilities") or []):
+                if not isinstance(vuln, dict):
+                    continue
+                cve_id = vuln.get("cve") or ""
+                if not cve_id or cve_id in seen_cves:
+                    continue
+
+                notes = vuln.get("notes") or []
+                desc = next((n.get("text", "") for n in notes if n.get("category") == "description"), "")
+                if not desc:
+                    desc = next((n.get("text", "") for n in notes if n.get("category") == "summary"), "")
+                desc = desc or vuln.get("title", "") or advisory_title
+
+                # A CVE can carry several CVSS blocks (one per affected
+                # product/config) — take the highest baseScore found.
                 score_f = None
-            if score_f is not None and score_f < 9.0:
-                continue
-            summary_lower = summary.lower()
-            # word-boundary match — a bare substring check would let "f5" match
-            # inside any stray hex/version string in a CVE summary
-            if not (_has_any(summary_lower, MIL_VENDOR_TERMS) or _has_any(cpes, MIL_VENDOR_TERMS)):
-                continue
-            in_kev = cve_id in _kev_cves
-            severity = "CRITICAL" if (in_kev or (score_f and score_f >= 9.5)) else "HIGH"
-            rows.append({
-                "threat_id":     f"T7-CIRCL-{short_id(cve_id or summary[:20])}",
-                "threat_name":   f"Critical CVE — Military Supply Chain{'  ★KEV' if in_kev else ''}",
-                "category_code": "T7", "category_name": CATEGORY_NAMES["T7"],
-                "source_layer":  "Deep Web", "source": "CIRCL CVE API",
-                "post_text":     (f"{cve_id} | CVSS {score_f if score_f is not None else 'N/A'}"
-                                  f"{' | IN CISA KEV (actively exploited)' if in_kev else ''} | {summary[:350]}"),
-                "post_url":      f"https://cve.circl.lu/cve/{cve_id}",
-                "timestamp":     str(item.get("Published") or item.get("published") or item.get("date") or now_utc()),
-                "location":      "Global", "severity": severity, "confidence": "HIGH",
-                "ioc_type":      "cve", "ioc_value": cve_id,
-                "tags":          f"cve;critical;military-supply-chain;{'kev;actively-exploited' if in_kev else 'high-cvss'}",
-            })
+                for s in (vuln.get("scores") or []):
+                    if not isinstance(s, dict):
+                        continue
+                    cvss_block = s.get("cvss_v4") or s.get("cvss_v3") or s.get("cvss_v2")
+                    if isinstance(cvss_block, dict) and cvss_block.get("baseScore") is not None:
+                        try:
+                            bs = float(cvss_block["baseScore"])
+                        except (TypeError, ValueError):
+                            continue
+                        if score_f is None or bs > score_f:
+                            score_f = bs
+
+                # Fail-closed: unknown severity does NOT meet a >=9.0 bar.
+                if score_f is None or score_f < 9.0:
+                    continue
+
+                desc_lower = desc.lower()
+                if not _has_any(desc_lower, MIL_VENDOR_TERMS):
+                    continue
+
+                seen_cves.add(cve_id)
+                in_kev = cve_id in _kev_cves
+                severity = "CRITICAL" if (in_kev or score_f >= 9.5) else "HIGH"
+                rows.append({
+                    "threat_id":     f"T7-CIRCL-{short_id(cve_id)}",
+                    "threat_name":   f"Critical CVE — Military Supply Chain{'  ★KEV' if in_kev else ''}",
+                    "category_code": "T7", "category_name": CATEGORY_NAMES["T7"],
+                    "source_layer":  "Deep Web", "source": "CIRCL CVE API",
+                    "post_text":     (f"{cve_id} | CVSS {score_f} | Advisory: {advisory_title[:100]}"
+                                      f"{' | IN CISA KEV (actively exploited)' if in_kev else ''} | {desc[:300]}"),
+                    "post_url":      f"https://cve.circl.lu/cve/{cve_id}",
+                    "timestamp":     str(vuln.get("release_date") or vuln.get("discovery_date") or now_utc()),
+                    "location":      "Global", "severity": severity, "confidence": "HIGH",
+                    "ioc_type":      "cve", "ioc_value": cve_id,
+                    "tags":          f"cve;critical;military-supply-chain;{'kev;actively-exploited' if in_kev else 'high-cvss'}",
+                })
     except Exception as e:
         log.error(f"CIRCL CVE error: {e}")
     log.info(f"CIRCL CVE: {len(rows)} high-severity CVEs found")
@@ -4166,13 +4688,99 @@ def fetch_defence_news_rss() -> list:
     return rows
 
 
+_DEEPDARKCTI_TELEGRAM_URL = "https://raw.githubusercontent.com/fastfire/deepdarkCTI/main/telegram_threat_actors.md"
+_DEEPDARKCTI_RELEVANT_TYPES = ("leak", "breach", "combo", "infostealer", "forum",
+                                "ransomware", "database", "stealer", "dump")
+_DEEPDARKCTI_COUNTRY_KW = ("india", "pakistan", "kashmir", "bangladesh", "nepal",
+                            "lanka", "myanmar", "china", "pla", "hindustan", "bharat")
+
+
+def _fetch_deepdarkcti_leak_channels(cap: int = 40) -> list:
+    """Live-fetches deepfire/deepdarkCTI's community-maintained Telegram
+    threat-actor list (see chat — researched as the answer to "how do we
+    get S1 marketplace data") instead of hardcoding channel names. That
+    list churns constantly — a live pull found 464 already OFFLINE and
+    134 EXPIRED out of 965 total entries — so a static copy would go
+    stale almost immediately, the same trap RansomWatch's archived repo
+    already caught out earlier this session.
+
+    Filters to entries that are actually usable by this tool's free,
+    unauthenticated t.me/s/{channel} scraper: status ONLINE/VALID (skips
+    OFFLINE/EXPIRED/PRIVATE), and a plain public t.me/{username} link —
+    the majority of the list (live-checked: 171 of ~1019 rows) are
+    t.me/+{invite-code} private-invite links, which are a fundamentally
+    different, unscrapable format (need to actually join via the Telegram
+    app/API, not a public HTTP GET).
+
+    Then narrows to channels actually relevant here: either the
+    "type of attacks" column mentions leak/breach/combo/infostealer/forum/
+    ransomware-type activity (this is what makes them S1 marketplace-
+    adjacent instead of generic hacktivist/DDoS chatter), or the channel's
+    own name references one of our 7 target countries. This is a much
+    broader net than a country-name match alone would give (most
+    channel names don't literally name a country), relying on the
+    existing relevance_check() gate in the caller to do the actual
+    per-post military/target-country filtering — same division of labour
+    as Torch (broad uncurated source, narrow content filter)."""
+    try:
+        resp = requests.get(_DEEPDARKCTI_TELEGRAM_URL, timeout=20,
+                             headers={"User-Agent": "MilOSINT/2.0"})
+        resp.raise_for_status()
+    except Exception as e:
+        log.warning(f"deepdarkCTI Telegram list fetch failed: {e} — using static channel list only")
+        return []
+
+    channels = []
+    for line in resp.text.splitlines():
+        line = line.strip()
+        if not line.startswith("|") or "---" in line or "Telegram|Status" in line:
+            continue
+        parts = [p.strip() for p in line.strip("|").split("|")]
+        if len(parts) < 3:
+            continue
+        url, status = parts[0], parts[1]
+        name = parts[2] if len(parts) > 2 else ""
+        attack_type = parts[3] if len(parts) > 3 else ""
+        if status not in ("ONLINE", "VALID"):
+            continue
+        if not url.startswith("https://t.me/") or "/+" in url:
+            continue
+        type_l, name_l = attack_type.lower(), name.lower()
+        if not (any(k in type_l for k in _DEEPDARKCTI_RELEVANT_TYPES)
+                or any(k in name_l for k in _DEEPDARKCTI_COUNTRY_KW)):
+            continue
+        username = url.rsplit("/", 1)[-1]
+        if username:
+            channels.append(username)
+
+    channels = list(dict.fromkeys(channels))[:cap]
+    log.info(f"deepdarkCTI: {len(channels)} candidate leak/breach Telegram channels selected")
+    return channels
+
+
 def fetch_telegram_channels() -> list:
-    """T8 — FREE, no key. Public Telegram channel scraper (t.me/s/{channel}).
+    """T8/S1 — FREE, no key. Public Telegram channel scraper (t.me/s/{channel}).
     Keyword-density scoring (unchanged from v1 — it was already solid): a
     single high-value hit or several context hits are required, and posts
-    with zero forwards on non-OSINT channels are treated as background noise."""
+    with zero forwards on non-OSINT channels are treated as background noise.
+
+    Extended with a second channel set from deepdarkCTI (see
+    _fetch_deepdarkcti_leak_channels and chat — this was in direct response
+    to "how do we get marketplace data in S1", since generic Tor search
+    can't reach registration-gated marketplaces/forums but a lot of real
+    leak/database-sale activity has moved to public Telegram channels that
+    a plain HTTP scrape CAN reach). Those channels get the shared
+    relevance_check() engine (military/government/target-country terms)
+    instead of the geopolitical-commentary density scorer below, since
+    that scorer's vocabulary (missile, sigint, bundeswehr, ...) targets
+    war/conflict news, not leak-marketplace listings — a post like
+    "fresh dump: govt.pk emails + passwords, DM to buy" would score 0 on
+    it despite being exactly the S1 content this is meant to find."""
     rows = []
     channels = CONFIG.get("telegram_channels") or []
+    leak_channels = _fetch_deepdarkcti_leak_channels()
+    leak_channel_set = set(c.lower() for c in leak_channels)
+    all_channels = list(dict.fromkeys(channels + leak_channels))
     _HIGH_VALUE_KW = [
         "missile", "classified", "breach", "espionage", "cyber attack",
         "coordinates", "nato", "apt", "hack", "intercept", "warfare",
@@ -4200,7 +4808,8 @@ def fetch_telegram_channels() -> list:
                        "(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"),
         "Accept-Language": "en-US,en;q=0.9",
     }
-    for channel in channels:
+    for channel in all_channels:
+        is_leak_channel = channel.lower() in leak_channel_set
         try:
             resp = requests.get(f"https://t.me/s/{channel}", headers=headers, timeout=15)
             if resp.status_code == 404:
@@ -4216,15 +4825,46 @@ def fetch_telegram_channels() -> list:
                 if not clean_text:
                     continue
                 text_lower = clean_text.lower()
-                high_hits = sum(1 for k in _HIGH_VALUE_KW if k in text_lower)
-                context_hits = sum(1 for k in _CONTEXT_KW if k in text_lower)
-                density_score = (high_hits * 3) + context_hits
-                if density_score < 3:
-                    continue
+
+                if is_leak_channel:
+                    # Leak/breach/marketplace-type channels: the shared
+                    # military/target-country relevance engine is the right
+                    # gate here, not the geopolitical-commentary word list
+                    # below — see fetch_telegram_channels docstring.
+                    passes, tier, reason = relevance_check(clean_text, min_weak=2)
+                    if not passes:
+                        continue
+                    if tier == "weak":
+                        # Live-tested and found a real false positive here:
+                        # a US government-surveillance/privacy news repost
+                        # on a ransomware channel matched purely on generic
+                        # "government"+"federal" weak terms, with zero
+                        # connection to any of our 7 target countries. These
+                        # channels post about all kinds of unrelated global
+                        # topics (unlike the defense-specific RSS outlets
+                        # elsewhere, where an incidental weak-term hit is
+                        # much more likely to be genuinely relevant), so
+                        # weak-tier alone isn't enough evidence here — also
+                        # require a target-country name/adjective. Strong-
+                        # tier (military domain/contractor/APT name) is
+                        # specific enough to trust without this extra check.
+                        has_country = any(kw in text_lower for kws in _COUNTRY_NAME_HINTS.values() for kw in kws)
+                        if not has_country:
+                            continue
+                    density_score = 9 if tier == "strong" else 5
+                    label = f"[{reason}"
+                else:
+                    high_hits = sum(1 for k in _HIGH_VALUE_KW if k in text_lower)
+                    context_hits = sum(1 for k in _CONTEXT_KW if k in text_lower)
+                    density_score = (high_hits * 3) + context_hits
+                    if density_score < 3:
+                        continue
+                    label = f"[Score:{density_score}"
+
                 fwd_match = re.search(r'(\d[\d,]*)\s*(?:forward|view|repost)', block, re.IGNORECASE)
                 fwd_count = int(fwd_match.group(1).replace(",", "")) if fwd_match else 0
                 osint_channels = {"osintdefender", "militaryosint", "csis_canada", "intelslava"}
-                if fwd_count == 0 and channel.lower() not in osint_channels and density_score < 6:
+                if not is_leak_channel and fwd_count == 0 and channel.lower() not in osint_channels and density_score < 6:
                     continue
                 dt_match = re.search(r'datetime="([^"]+)"', block)
                 url_match = re.search(r'href="(https://t\.me/[^"]+)"', block)
@@ -4235,12 +4875,13 @@ def fetch_telegram_channels() -> list:
                     sev = "MEDIUM"
                 else:
                     sev = "LOW"
+                cat = "S1" if is_leak_channel else "T8"
                 rows.append({
-                    "threat_id":     f"T8-TG-{short_id(msg_url)}",
-                    "threat_name":   f"Telegram Intelligence — @{channel}",
-                    "category_code": "T8", "category_name": CATEGORY_NAMES["T8"],
+                    "threat_id":     f"{cat}-TG-{short_id(msg_url)}",
+                    "threat_name":   f"Telegram {'Leak/Marketplace' if is_leak_channel else 'Intelligence'} — @{channel}",
+                    "category_code": cat, "category_name": CATEGORY_NAMES[cat],
                     "source_layer":  "Deep Web", "source": f"Telegram @{channel}",
-                    "post_text":     f"[Score:{density_score} Fwd:{fwd_count}] {clean_text}",
+                    "post_text":     f"{label} Fwd:{fwd_count}] {clean_text}",
                     "post_url":      msg_url,
                     "timestamp":     dt_match.group(1) if dt_match else now_utc(),
                     "location":      "Global", "severity": sev,
@@ -4249,12 +4890,15 @@ def fetch_telegram_channels() -> list:
                     # a per-channel ioc_value caps each channel at 1 row in the
                     # master file forever. Use the actual per-message URL.
                     "ioc_type":      "url", "ioc_value": msg_url,
-                    "tags":          f"telegram;info-ops;{channel};density-{density_score}",
+                    "tags":          (f"telegram;dark-web-marketplace;leak-channel;{channel};deepdarkcti"
+                                       if is_leak_channel else
+                                       f"telegram;info-ops;{channel};density-{density_score}"),
                 })
             time.sleep(CONFIG["request_delay_sec"])
         except Exception as e:
             log.error(f"Telegram error [{channel}]: {e}")
-    log.info(f"Telegram: {len(rows)} relevant posts found across {len(channels)} channels")
+    log.info(f"Telegram: {len(rows)} relevant posts found across {len(all_channels)} channels "
+             f"({len(channels)} static + {len(leak_channels)} deepdarkCTI leak-type)")
     return rows
 
 
@@ -5252,6 +5896,7 @@ def run_collection():
     log.info(f"  [T1] HIBP (credential breaches)        : ACTIVE (free)")
     log.info(f"  [T1] DeHashed (breach DB .mil emails)  : {status('dehashed_email','dehashed_api_key')}")
     log.info(f"  [T1] GitHub Dorking (leaked creds)     : {status('github_token')}")
+    log.info(f"  [T1/T2/T3] Tavily Search (dork-style)  : {status('tavily_api_key')}")
     log.info(f"  [T2] GrayhatWarfare (exposed buckets)  : {status('grayhatwarfare_api_key')}")
     log.info(f"  [T2] IntelligenceX (dark web docs)     : {status('intelx_api_key')}")
     log.info(f"  [T2] LeakIX (exposed services/leaks)   : {status('leakix_api_key')}")
@@ -5311,8 +5956,12 @@ def run_collection():
     if key_available("dehashed_email") and key_available("dehashed_api_key"):
         run("[T1] Searching military email credentials in DeHashed...", fetch_dehashed,
             CONFIG["dehashed_email"], CONFIG["dehashed_api_key"])
-    if key_available("github_token"):
-        run("[T1/T2] Dorking GitHub for leaked military credentials/configs...", fetch_github_leaks, CONFIG["github_token"])
+    if key_available("tavily_api_key"):
+        run("[T1/T2/T3] Running dork-style Tavily search queries...", fetch_tavily_search,
+            CONFIG["tavily_api_key"])
+    # GitHub leaks moved below crt.sh (see [T3]) — it now takes crt.sh's
+    # CT-discovered sensitive subdomains as extra pivot targets, same
+    # reasoning as LeakIX/Hudson Rock, so it has to run after crt.sh.
 
     # ── T2 ──
     if key_available("grayhatwarfare_api_key"):
@@ -5346,6 +5995,11 @@ def run_collection():
     if key_available("leakix_api_key"):
         run("[T2/T3] Searching exposed services and data leaks via LeakIX...", fetch_leakix,
             CONFIG["leakix_api_key"], _ct_pivot_domains)
+    if key_available("github_token"):
+        run("[T1/T2] Dorking GitHub for leaked military credentials/configs...", fetch_github_leaks,
+            CONFIG["github_token"], _ct_pivot_domains)
+    run("[T1] Querying Hudson Rock Cavalier for infostealer-compromised .mil accounts...", fetch_hudson_rock,
+        _ct_pivot_domains)
     if key_available("zoomeye_api_key"):
         run("[T3] Scanning military infrastructure via ZoomEye...", fetch_zoomeye,
             CONFIG["zoomeye_api_key"], _ct_pivot_domains)
@@ -5403,7 +6057,8 @@ def run_collection():
     # ── Dark web round 2 — free ──
     run("[T2] Monitoring ransomware group dark web leak sites...", fetch_ransomwatch)
     run("[T1/T2] Scanning public paste archives for .mil credential leaks...", fetch_paste_leaks)
-    run("[T1] Querying Hudson Rock Cavalier for infostealer-compromised .mil accounts...", fetch_hudson_rock)
+    # Hudson Rock moved up to run right after crt.sh (see [T3]) so it can
+    # take crt.sh's CT-discovered subdomains as extra pivot targets too.
     run("[T2/T6] Searching dark web via Torch (.onion) for military-relevant content...", fetch_tor_onion)
     if key_available("breachdirectory_api_key"):
         run("[T1/T2] Searching dark web breach dumps via BreachDirectory...", fetch_breachdirectory, CONFIG["breachdirectory_api_key"])

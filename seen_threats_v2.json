@@ -1,6346 +1,2522 @@
 {
-  "T2-GHW-038a91de23af": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T2-GHW-0e8536fa2eb2": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T2-GHW-0fc45bafa72d": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
   "T2-GHW-1205e3fb4aa5": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T08:48:19Z"
-  },
-  "T2-GHW-12d94c04ca61": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T2-GHW-147ed391ced6": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T2-GHW-21e973ca168a": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T2-GHW-23cb9e8f87f8": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T2-GHW-2ca9a6ccf9fb": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T2-GHW-2cc58550a429": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T2-GHW-31c4c63bf69a": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T2-GHW-38acddaed44f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T2-GHW-4065509a20c1": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T2-GHW-4a7852a7fd98": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T2-GHW-4fafc324de41": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T08:48:19Z"
-  },
-  "T2-GHW-55b6896318a6": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T2-GHW-5cb79941c9ee": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T2-GHW-600557b2e29d": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T2-GHW-631d719eca9b": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T2-GHW-6709d1f59b75": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T2-GHW-78147ea585e5": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T2-GHW-7eaa0e7bbb8b": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T2-GHW-87eee00e6dc8": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T2-GHW-8926f761247f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T2-GHW-91eec2708e1d": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T2-GHW-93ebceceaeb1": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T2-GHW-9eed0feb9aaf": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T2-GHW-a21ad0689614": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T2-GHW-acbc0032efa7": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T2-GHW-adf90b95f627": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T2-GHW-b6986abfeed9": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T2-GHW-b72d00cbffe5": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T2-GHW-b82dd55592a0": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T2-GHW-bcbc461d831f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T2-GHW-c2073b94dafb": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T2-GHW-c879fd9c12b6": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T2-GHW-ce4fbd430cd5": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T2-GHW-d2f252f750c5": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T2-GHW-d6d48c00ca24": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T2-GHW-e48fedb19990": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T2-GHW-ec4146ff683f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T2-GHW-edbde9f8cdfe": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T2-GHW-ef44648192c0": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T2-GHW-f3b726ded6b4": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T2-GHW-f8f2942bd462": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T2-GHW-fee334d23c80": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T2-LIX-048ff8cf4e2d": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T2-LIX-05ccd9e2dfdd": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T2-LIX-06a19e202e2c": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T2-LIX-074676d95eec": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T2-LIX-0ada7669693d": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T2-LIX-0b3307e4893e": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T2-LIX-0df0bc2b7f36": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T08:48:19Z"
-  },
-  "T2-LIX-10360b55558d": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:28Z"
-  },
-  "T2-LIX-14994d7e71aa": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T2-LIX-15a2e55bb371": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T2-LIX-16cbe595d0ed": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T2-LIX-193b40d096d0": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T2-LIX-1bcfa9b065a9": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T08:48:19Z"
-  },
-  "T2-LIX-2047b8c1f597": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T08:48:19Z"
-  },
-  "T2-LIX-212c98b25455": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T08:48:19Z"
-  },
-  "T2-LIX-21ea37852bcd": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T2-LIX-236ef0206617": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T2-LIX-2752107e091e": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T08:48:19Z"
-  },
-  "T2-LIX-278e54c37581": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T08:48:19Z"
-  },
-  "T2-LIX-345c0a7953f4": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T2-LIX-34f6c8a8bb7b": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T2-LIX-40837ee86f35": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T2-LIX-47b12fd8bf23": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T2-LIX-48381a8d09dd": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T2-LIX-4c69f186f649": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T2-LIX-4f1fd6061b0f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T2-LIX-5c2083a08708": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
-  },
-  "T2-LIX-6204e9a8ac6a": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T2-LIX-638167911b1c": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T2-LIX-64b9327dde7e": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T2-LIX-6535fc0e3242": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T2-LIX-67114ff09d76": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T2-LIX-6c35284c03a0": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T2-LIX-776a92f23e25": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T2-LIX-85048dde9a0e": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T2-LIX-89a9ba19cdaa": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T08:48:19Z"
-  },
-  "T2-LIX-8c63c8843e79": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T2-LIX-90d9b92b1fc0": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T08:48:19Z"
-  },
-  "T2-LIX-93f310776ac8": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T2-LIX-986daa85225f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T2-LIX-9a628e46435c": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T2-LIX-a1130ec8d6a1": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T2-LIX-a3d2670737f1": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T2-LIX-a427f11ff5f4": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T2-LIX-a442f22753ac": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T2-LIX-a450c60a2ed9": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T2-LIX-ab8c591bd94d": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T2-LIX-b630f9da767e": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T2-LIX-b8bd379f75e5": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T2-LIX-b9bad58e3335": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T2-LIX-baa52bc00fc2": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T2-LIX-bc99307a1675": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T2-LIX-bcc8f72ed9c0": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T2-LIX-c1a67a24ba79": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T2-LIX-c3910609b41c": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T2-LIX-c5800bc77509": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T2-LIX-c684f3bbd0e4": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T2-LIX-c9580cd4b768": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T2-LIX-d218b5b788db": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T2-LIX-d82424ff8d67": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T2-LIX-d9341a7b55d7": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T2-LIX-dbd94e8f5175": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T2-LIX-de4dd04d9114": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T08:48:19Z"
-  },
-  "T2-LIX-e17458d4bf4a": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T2-LIX-e2935c05e383": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T2-LIX-e92633588593": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T2-LIX-f5dce043b236": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T08:48:19Z"
-  },
-  "T2-LIX-f6019a28a423": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T2-LIX-fc39fcebf519": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T2-LIX-ff6b4bc1ba05": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T2-RW-02be73d9018f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T2-RW-04edf6d02686": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T2-RW-0a7dc8e5b864": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T2-RW-0d3be4425119": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T2-RW-0fd5ef19bdfa": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T2-RW-258fbf8c9629": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T2-RW-2b7a3c6b99fb": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T2-RW-2fa4b141c877": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T2-RW-32757a3df800": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T2-RW-35bf90de1259": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T2-RW-361dc1b6e41e": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T2-RW-364a2c57640c": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T2-RW-3700a2127a27": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T2-RW-39a480a2e089": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T2-RW-3bcda1bf608c": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T2-RW-3d4ec4ef2f52": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T2-RW-401fc6c310ec": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T2-RW-411e7403ee67": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T2-RW-42f82cb71296": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T2-RW-45beb9232a10": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T2-RW-476fc791dbef": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T2-RW-49698931c66d": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T2-RW-4b1ae1aa934f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T2-RW-4b92d7c30c98": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T2-RW-4fbeeb56ec43": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T2-RW-50cf91430d29": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T2-RW-51093c028b99": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T2-RW-535523a37d5c": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T2-RW-55659bd68429": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T2-RW-5a4ef44f1303": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T2-RW-5bf55711d304": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T2-RW-6181f69e6108": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T2-RW-61a668b00e11": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T2-RW-62be8f7bfefb": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T2-RW-65ff2fbd0b6a": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T2-RW-72cbffb36935": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T2-RW-7c41919969cb": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T2-RW-7cef92e4276e": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T2-RW-7e251e5e0b8f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T2-RW-8028e7ab7758": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T2-RW-82e051121243": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T2-RW-8644b7604cd4": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T2-RW-8d386ab6148e": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T2-RW-8f257fe6dcb7": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T2-RW-8f9f35e5dc74": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T2-RW-929e26a358da": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T2-RW-92a1a1f93ff0": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T2-RW-a399ed9bbaa6": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T2-RW-a42898e194dc": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T2-RW-a65ebf2ab407": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T2-RW-b0f9491e3b6f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T2-RW-b97b4d22d219": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T2-RW-bd79a6c82a46": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T2-RW-bec2651f6f26": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T2-RW-bf53ea2b0049": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T2-RW-bfdfaf229d21": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T2-RW-c8aaeba6c00a": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T2-RW-ccb65536778f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T2-RW-cde6b0aed0b5": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T2-RW-ce8f4d81a2fe": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T2-RW-d13b9a3cd4b6": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T2-RW-d55f2dd44d34": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T2-RW-d667a576febd": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T2-RW-dcfb42f87ed0": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T2-RW-de35a8451275": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T2-RW-e0a8acf3e344": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T2-RW-e1e1837dc056": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T2-RW-e2188338d170": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T2-RW-e2eeecdd4ec2": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T2-RW-e3b5c1540794": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T2-RW-e61606bdac6e": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T2-RW-ea1c4f4afb62": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T2-RW-edc1d82582bd": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T2-RW-efaed5d96446": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T2-RW-f35bc3b5753b": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T2-RW-f4502dfc653c": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T2-RW-f4653d74f9da": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T2-RW-f5c4b8b0e4d7": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T2-RW-f74afea2907e": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T2-RW-f8148f7a9ce6": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
-  "T2-RW-fbf004ac3ded": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+  "T2-TOR-0773242ef838": {
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
-  "T2-TOR-10a7cdc9301a": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T2-TOR-221d828593c0": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
-  },
-  "T2-TOR-5c78fd28ae99": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
-  },
-  "T2-TOR-5e5a3cc45fb0": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
-  },
-  "T2-TOR-5f98e9d5fdf7": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T2-TOR-af2a41ae30fb": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T2-TOR-d04578d8dfbd": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
-  },
-  "T3-CRT-0024ef0ddc65": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-CRT-0086386f61ed": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
+  "T2-TOR-52bcfc730618": {
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-CRT-016136f61693": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-CRT-030f565434b1": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T3-CRT-03a85a56962d": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
-  },
-  "T3-CRT-03e6626c85b5": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
-  },
-  "T3-CRT-0401c1248dc0": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-CRT-047d1c3d4da5": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-CRT-0516a7f778a6": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-CRT-069551739060": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
-  },
-  "T3-CRT-0718273890ba": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-CRT-07411f1dd620": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T3-CRT-078e349cf7cc": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
-  },
-  "T3-CRT-07b0c4e24757": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
-  },
-  "T3-CRT-0892067ff10c": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
-  },
-  "T3-CRT-097907b20426": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T08:53:48Z"
-  },
-  "T3-CRT-0a686caea513": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
-  },
-  "T3-CRT-0abecaf14b4d": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T3-CRT-0b267ba24d59": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-CRT-0b8a657443d3": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
-  "T3-CRT-0b93c88501b1": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
+  "T3-CRT-14dddbc7d217": {
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
-  "T3-CRT-0c27eefea3fb": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-CRT-0cdb317c2576": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
-  },
-  "T3-CRT-0dec250cee4c": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
-  },
-  "T3-CRT-0f2f54395b10": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-CRT-0f9290aac080": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T3-CRT-0fbeab0f07e8": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-CRT-0fddaca0fac8": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T3-CRT-102550837b62": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
-  },
-  "T3-CRT-10ae52121598": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T08:53:48Z"
-  },
-  "T3-CRT-130f8fcc52b8": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T3-CRT-13212bbe5666": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T22:41:22Z"
-  },
-  "T3-CRT-1491fb2baed7": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-CRT-163c9f21c445": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
-  },
-  "T3-CRT-17abd43f3a28": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T3-CRT-17decc1d2f5c": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T23:02:55Z"
-  },
-  "T3-CRT-1807ba576d34": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-CRT-1d015e5015c3": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-CRT-1d6300ff4d5a": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
-  },
-  "T3-CRT-1e86bd1120c7": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
-  },
-  "T3-CRT-20886beddca7": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
+  "T3-CRT-1f574b557235": {
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-CRT-224f8589b4a7": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-CRT-227930ed2885": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-CRT-229312623df7": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-CRT-237579c3785d": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
-  "T3-CRT-239bb07f5869": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-CRT-24160798970b": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
-  },
-  "T3-CRT-265bfccf721c": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
-  },
-  "T3-CRT-26ac58513788": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-CRT-2754eac277dc": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
-  },
-  "T3-CRT-282cba746d2f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
-  },
-  "T3-CRT-28f1264b5488": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
-  },
-  "T3-CRT-2988bb7df5fe": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
-  },
-  "T3-CRT-2a64b90b2562": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
+  "T3-CRT-27f08589d1da": {
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-CRT-2a6e1d8628a3": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
-  "T3-CRT-2ae5ad6bac1c": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
-  },
-  "T3-CRT-2b1e36a5f45f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-CRT-2bc822c6a42d": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-CRT-2c16f335d3a7": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
-  },
-  "T3-CRT-2cf00c9d6a72": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T22:41:22Z"
-  },
-  "T3-CRT-2cfacd3e9022": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-CRT-2d7a801ccab0": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T23:02:55Z"
-  },
-  "T3-CRT-2daa00ef5ff8": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-CRT-2fb01460f4bf": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-CRT-2febed726615": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-CRT-301b8aaa69bf": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T23:02:55Z"
-  },
-  "T3-CRT-301d8f9eb833": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T3-CRT-3041f3f355c3": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
-  },
-  "T3-CRT-30ab6955e0f5": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-CRT-32ddac24ba61": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
-  },
-  "T3-CRT-339713ad8792": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
-  },
-  "T3-CRT-35a6c34cea69": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-CRT-35bb120b1a51": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
-  },
-  "T3-CRT-3604cbd13aa0": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
-  },
-  "T3-CRT-36da8bfd30c8": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
-  },
-  "T3-CRT-37764bd1c70b": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
-  },
-  "T3-CRT-3777c8ecac95": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-CRT-37a9dd5114ab": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T3-CRT-381c135f8b12": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
+  "T3-CRT-330b8204b450": {
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-CRT-38ec50f1d216": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T3-CRT-390cdc9df51d": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
-  },
-  "T3-CRT-391030331830": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T22:41:22Z"
-  },
-  "T3-CRT-399d372ce5f2": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-CRT-3a0270b80b1d": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-CRT-3b013fd0233b": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
-  },
-  "T3-CRT-3b26394321bd": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
-  },
-  "T3-CRT-3b733b4135c1": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T3-CRT-3ba8105e13d7": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-CRT-3c18abd5900b": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
-  },
-  "T3-CRT-3cb8b4b98885": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
-  },
-  "T3-CRT-3cbd26852299": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T08:53:48Z"
-  },
-  "T3-CRT-3e086a0e507a": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
-  },
-  "T3-CRT-3e23d72b8c46": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
-  },
-  "T3-CRT-3e40cd1b84a4": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-CRT-3eb905717a16": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T23:02:55Z"
-  },
-  "T3-CRT-3ff0a9cc324f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-CRT-403c8875c443": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T22:41:22Z"
-  },
-  "T3-CRT-4085562844e3": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-CRT-40c253ab00ec": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
-  },
-  "T3-CRT-4176a1836e59": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T23:02:55Z"
-  },
-  "T3-CRT-4235a9909367": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-CRT-43157f61c58a": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-CRT-444abe10067a": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-CRT-4500ac5dd983": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-CRT-451761076714": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
-  },
-  "T3-CRT-453147d2d5ca": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T08:53:48Z"
-  },
-  "T3-CRT-46e95aad2e1e": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-CRT-474c8be001bc": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-CRT-4766861256d0": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-CRT-479822aefff0": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
-  },
-  "T3-CRT-49377c4473c1": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-CRT-49828eeb80f1": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T08:53:48Z"
-  },
-  "T3-CRT-4b1982a20225": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-CRT-4b9736dcd2bd": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-CRT-4c6f5db3d2db": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
-  },
-  "T3-CRT-4d6a6ca615f1": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
-  },
-  "T3-CRT-4e2db0806d20": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
-  },
-  "T3-CRT-4e6a1c3c1aff": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-CRT-4f2a2ff4d272": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
-  },
-  "T3-CRT-4f37753be4e1": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T3-CRT-4f43b4c2d8c1": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T22:41:22Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-CRT-4f642666ce97": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-CRT-4f66f951a4d4": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-CRT-5155771e7904": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T08:53:48Z"
-  },
-  "T3-CRT-52529ce1e82b": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
-  },
-  "T3-CRT-526382d01777": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-CRT-540f8b039ddf": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-CRT-55381ed1a71c": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-CRT-563083a43e3d": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
-  },
-  "T3-CRT-5667e7e6ee24": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
-  },
-  "T3-CRT-56f85216a991": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-CRT-58501ce0bae6": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-CRT-58a8a114006c": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-CRT-596cdb7e674e": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-CRT-59904eafbd16": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
-  },
-  "T3-CRT-5bddd488e8a8": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-CRT-5c67fca7f67e": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T3-CRT-5cb5d2699029": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T3-CRT-5d24efa9dd95": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
-  },
-  "T3-CRT-5d3473e3e0b3": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-CRT-5d4b9cb4d255": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-CRT-5df16c0d63e9": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
-  },
-  "T3-CRT-5e3b733a1343": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-CRT-5e49d109e370": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T3-CRT-5e9b7e8e8b78": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
-  },
-  "T3-CRT-5f9bc04ee68f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
-  },
-  "T3-CRT-5fd9df1bf8f8": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
-  },
-  "T3-CRT-6045808cdc3c": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T08:53:48Z"
-  },
-  "T3-CRT-62fc8b04a5ac": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T22:41:22Z"
-  },
-  "T3-CRT-6320ed829c4e": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-CRT-6361c0ef606b": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
-  },
-  "T3-CRT-6444760b7d23": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
-  },
-  "T3-CRT-65bd408ba590": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-CRT-66639f50ff04": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
-  },
-  "T3-CRT-66af3aa7dcaa": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-CRT-67e9d732c0d9": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
-  },
-  "T3-CRT-69128ec0c0b6": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-CRT-6a2675eb35a9": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
-  },
-  "T3-CRT-6a3baf119ac7": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T3-CRT-6a50fedd3760": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T08:53:48Z"
-  },
-  "T3-CRT-6abdc7bb963e": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T3-CRT-6c359ec7db4a": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
-  },
-  "T3-CRT-6e3e2159c169": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-CRT-6e439099689a": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-CRT-6e585cba9d29": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T23:02:55Z"
-  },
-  "T3-CRT-6f2b1a16609f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-CRT-6fe0c1f094c2": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-CRT-701482e4614d": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
-  },
-  "T3-CRT-7054d284a434": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-CRT-71b83495bcf3": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
-  },
-  "T3-CRT-71d79af90ff2": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-CRT-72066e930a13": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
-  "T3-CRT-726c6715c9c4": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
-  },
-  "T3-CRT-72fefba55201": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T23:02:55Z"
-  },
-  "T3-CRT-73c5d77db20c": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T3-CRT-74963a8d9a87": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-CRT-767183429642": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T22:41:22Z"
-  },
-  "T3-CRT-76bee355007b": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T23:02:55Z"
-  },
-  "T3-CRT-76e79c0bc55c": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T22:41:22Z"
-  },
-  "T3-CRT-77484a56cec9": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-CRT-778042c3caa9": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
-  },
-  "T3-CRT-77b10348d3f5": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-CRT-786f0277a210": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-CRT-7899a2e602c0": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
-  },
-  "T3-CRT-793ce956a69d": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T23:02:55Z"
-  },
-  "T3-CRT-7c783f93cefd": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T22:41:22Z"
-  },
-  "T3-CRT-7d3a3f95872d": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
-  },
-  "T3-CRT-7d40f3f20f17": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T23:02:55Z"
+  "T3-CRT-735b32a2bd37": {
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-CRT-7ec695b9d70c": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-CRT-7fcffc689cfb": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-CRT-806077e3b34a": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-CRT-807e9636b7ea": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T23:02:55Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
-  "T3-CRT-813888f69749": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T3-CRT-81d383a05036": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T3-CRT-81df69955594": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T23:02:55Z"
-  },
-  "T3-CRT-82696e519fa1": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-CRT-82a3c5b03ca0": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-CRT-82cbb77e3c9c": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-CRT-83be3bf1e985": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
-  },
-  "T3-CRT-83d18a190ca7": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-CRT-85264f5e0940": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T3-CRT-85450269ae56": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
-  },
-  "T3-CRT-86082ba94e65": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
-  },
-  "T3-CRT-86397e152eff": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
-  },
-  "T3-CRT-8775f70708fa": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-CRT-87ab8991be9a": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-CRT-87f57d60cc20": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T22:41:22Z"
-  },
-  "T3-CRT-8818e7c1ca58": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
-  },
-  "T3-CRT-889292a9f749": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
-  },
-  "T3-CRT-89109af039da": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
-  },
-  "T3-CRT-89444d531310": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
+  "T3-CRT-8854af3b5cfd": {
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-CRT-898720fe8fe6": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
-  "T3-CRT-89ab5bf91335": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-CRT-8a31f76bcee2": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-CRT-8a9d961c9c53": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-CRT-8b48d96eae4d": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T23:02:55Z"
-  },
-  "T3-CRT-8b5250439351": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-CRT-8c345caf91de": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T22:41:22Z"
-  },
-  "T3-CRT-8cb03ef146e6": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T3-CRT-8d2ddae825fe": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T23:02:55Z"
-  },
-  "T3-CRT-8db28f4b2177": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
-  },
-  "T3-CRT-8e19c080dd5c": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T3-CRT-8ec68ae79f99": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T23:02:55Z"
-  },
-  "T3-CRT-8fc7e1cf0824": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
+  "T3-CRT-8b21769acf52": {
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-CRT-90233fa1dc35": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
-  },
-  "T3-CRT-9110cdcd4f75": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
-  },
-  "T3-CRT-920cbdbc82fe": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-CRT-924fb21cdd88": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-CRT-927ee5a35482": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T23:02:55Z"
-  },
-  "T3-CRT-9286da4c772b": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T3-CRT-92a8b6c8dbf4": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T3-CRT-92d34cdf15ae": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T22:41:22Z"
-  },
-  "T3-CRT-936d0fb767a0": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-CRT-94606b06873a": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-CRT-9476110e2672": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
-  "T3-CRT-9538993bb278": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+  "T3-CRT-94a0c7b06789": {
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-CRT-9558d7e06906": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T3-CRT-967677063109": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T22:41:22Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-CRT-977a4e6d7aef": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-CRT-97c7521492ce": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
-  },
-  "T3-CRT-99313d62bf3f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T3-CRT-99bc1bda57ae": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-CRT-9a6438d22f07": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-CRT-9b087ef8fe2e": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-CRT-9b9f92712da0": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T08:53:48Z"
-  },
-  "T3-CRT-9bc5e2a6917d": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T3-CRT-9bd731b438b2": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
-  },
-  "T3-CRT-9c0146a09862": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
-  },
-  "T3-CRT-9c640ca5dda6": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-CRT-9d7f6ba16581": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-CRT-9e2c8fca9fcd": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T3-CRT-9f0c09fc1473": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T08:53:48Z"
-  },
-  "T3-CRT-9f9a9289aebb": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-CRT-a1b1cadee66f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T08:53:48Z"
-  },
-  "T3-CRT-a2244dc11b99": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T08:53:48Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-CRT-a2a1fdcf8f45": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-CRT-a2bd2c101d48": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-CRT-a2f2af0f257d": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
-  "T3-CRT-a48b69731949": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-CRT-a4d9803a1b34": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T08:53:48Z"
-  },
-  "T3-CRT-a4ebbe20f90d": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T3-CRT-a653c173d44d": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-CRT-a7030b757d7b": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-CRT-a73bd36d1eba": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T3-CRT-a741cf325bed": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T3-CRT-a7dd426690ef": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
+  "T3-CRT-a7a8c52a424c": {
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-CRT-a81f9bc55bac": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-CRT-aa768a548a19": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
-  },
-  "T3-CRT-aac08351eb9c": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-CRT-ab23b27b4e4b": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-CRT-ac44e4f02191": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T3-CRT-ac947a6497b4": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
-  },
-  "T3-CRT-ace2039ec9bc": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T23:02:55Z"
-  },
-  "T3-CRT-ad03032be4d3": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T08:53:48Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-CRT-addc5dbf7946": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-CRT-ae03a9d5ac88": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
-  },
-  "T3-CRT-aec73062b74d": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T22:41:22Z"
-  },
-  "T3-CRT-aef657f8125e": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-CRT-af90dbcc09a3": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
-  "T3-CRT-afc4868c29a4": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T3-CRT-b06010e83e82": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-CRT-b0f2d2a1e6a7": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T3-CRT-b0f336b27118": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-CRT-b133ba9af3d0": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
-  },
-  "T3-CRT-b14314befb3c": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-CRT-b1d5cce05e9e": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
-  },
-  "T3-CRT-b270e3b2afce": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T23:02:55Z"
-  },
-  "T3-CRT-b3e07251bfad": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T3-CRT-b4489b6fdc79": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
-  },
-  "T3-CRT-b46f1e706499": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
-  },
-  "T3-CRT-b47078183bab": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
-  },
-  "T3-CRT-b49adde3e468": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
-  },
-  "T3-CRT-b5d471e22177": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T08:53:48Z"
-  },
-  "T3-CRT-b6a867c701f3": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
+  "T3-CRT-b43415a70613": {
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-CRT-b6f7c54a0e6a": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-CRT-b7098731695f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-CRT-b77154f514fd": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
-  },
-  "T3-CRT-b77c13092afd": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-CRT-b799636de135": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-CRT-b7e2021a06ca": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-CRT-b7ede33d963f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-CRT-b83b352984dd": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
-  },
-  "T3-CRT-b89bda751d81": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
-  },
-  "T3-CRT-b8b4f7c733ca": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T22:41:22Z"
-  },
-  "T3-CRT-b8ea54edb485": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-CRT-b94e88760884": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
-  },
-  "T3-CRT-b9f75a68b82f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-CRT-ba78c5c52733": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-CRT-babc0191e271": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T3-CRT-bb8b910ac822": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
-  },
-  "T3-CRT-bbc0670d134b": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T3-CRT-bcb08fe4b44e": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
-  },
-  "T3-CRT-be530a44f2f8": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T3-CRT-be5471d5f3c6": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-CRT-be8b72f8e362": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-CRT-bec9acc15178": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
-  },
-  "T3-CRT-bf6eee5bae7a": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T3-CRT-c002f012ef82": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T3-CRT-c0b6105bca86": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-CRT-c0ea322d7970": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T08:53:48Z"
-  },
-  "T3-CRT-c1213cac1f78": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T3-CRT-c26485c4a0c1": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-CRT-c26fb49e9cd9": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
+  },
+  "T3-CRT-c2cbc56aa7b1": {
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-CRT-c3944140cfcf": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-CRT-c419fe58a28f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T23:02:55Z"
-  },
-  "T3-CRT-c4305ff48e87": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-CRT-c4c543da3222": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T3-CRT-c4dce3d297a0": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-CRT-c5f14bb97cbb": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-CRT-c62dfa5fcfb3": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-CRT-c7a2691730fb": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-CRT-c8e20120a79f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-CRT-c8f56d00c645": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T08:02:25Z"
-  },
-  "T3-CRT-c98a9e0450b9": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-CRT-cb628d4da891": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
-  },
-  "T3-CRT-cba04ee1754d": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-CRT-cd58a86cf2ad": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T22:41:22Z"
-  },
-  "T3-CRT-cd9f0a805c56": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
-  },
-  "T3-CRT-ce836f13996b": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
-  },
-  "T3-CRT-cea5df50f85f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
-  },
-  "T3-CRT-cf4f47c4d1e4": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
-  },
-  "T3-CRT-cfe460ce25d3": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T3-CRT-d011a59ace0e": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-CRT-d063bfc15e87": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
-  },
-  "T3-CRT-d0d8fbfb2f3b": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
-  },
-  "T3-CRT-d139c93742ad": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-CRT-d1d6d62a8a9c": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
-  },
-  "T3-CRT-d20797dd7d56": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-CRT-d2fa03a60ba1": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-CRT-d3d13b1e452f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-CRT-d46c33705308": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T3-CRT-d52bcfb2ccab": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-CRT-d56e3dd38e79": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-CRT-d5717db9e4d0": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-CRT-d6495fc6141d": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-CRT-d6fda32daef1": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T3-CRT-daed0a034ef7": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
-  },
-  "T3-CRT-dbb13d1b3545": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T08:53:48Z"
-  },
-  "T3-CRT-dc11f5de5751": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-CRT-dd0808f42a7c": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
-  },
-  "T3-CRT-ddd6b954efd2": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T22:41:22Z"
-  },
-  "T3-CRT-de8b650f5891": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-CRT-dfd67378591f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-CRT-e044d314e91d": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-CRT-e0f0063f918e": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-CRT-e0f3c503ffbf": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T23:02:55Z"
-  },
-  "T3-CRT-e12686c6ce26": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T14:05:09Z"
-  },
-  "T3-CRT-e162339d2e1d": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T3-CRT-e16638bb0bda": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-CRT-e20636333784": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
-  },
-  "T3-CRT-e2f125bc1cb5": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
-  },
-  "T3-CRT-e45b086431ba": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-CRT-e48f55084ce5": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-CRT-e4a29d980403": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T08:53:48Z"
-  },
-  "T3-CRT-e4ff6d509f8d": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-CRT-e58d6f3b9cb4": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-CRT-e599e07e57c8": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T22:41:22Z"
-  },
-  "T3-CRT-e6baf083dbf2": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-CRT-e7b00835b2f6": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-CRT-e812cdb10ad5": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T22:41:22Z"
-  },
-  "T3-CRT-e88f1e478d84": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
-  },
-  "T3-CRT-e88f6b1501af": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T23:02:55Z"
-  },
-  "T3-CRT-e94f42953469": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-CRT-e9b556c969ef": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-CRT-ea115178ac4f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-CRT-eab4fa45be7d": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-CRT-eb32cafd772c": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
-  },
-  "T3-CRT-eb53f97dc22c": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T3-CRT-ec142d7b987e": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-CRT-ec3382f3ede8": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
-  },
-  "T3-CRT-ec45322bfca4": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-CRT-ee464cd99e56": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T3-CRT-ee839cdfe8f5": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-CRT-eeaaf31e61b7": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-CRT-ef1dd1e38c3b": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-CRT-f03f83fb7dd5": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T08:53:48Z"
-  },
-  "T3-CRT-f08031c426f4": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
-  },
-  "T3-CRT-f0d117973e6f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
-  },
-  "T3-CRT-f143fd46fc9e": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-CRT-f148ccd8ee35": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
-  },
-  "T3-CRT-f1e400456ab4": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
-  },
-  "T3-CRT-f1f9f707fe14": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-CRT-f2de15c26226": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T08:53:48Z"
-  },
-  "T3-CRT-f3835b5b2ace": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-CRT-f3c7e2c878c8": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
-  },
-  "T3-CRT-f46c404d63d1": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-CRT-f541761bd2a4": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
-  },
-  "T3-CRT-f574cd6ed79d": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T3-CRT-f57adb2cefa6": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-CRT-f5cefce253c5": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-CRT-f63b3344c1b8": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
-  },
-  "T3-CRT-f6a851071f9e": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
-  },
-  "T3-CRT-f754627d1ce7": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T08:53:48Z"
-  },
-  "T3-CRT-f8e9e5f68edd": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
-  },
-  "T3-CRT-f9004c4b4857": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
-  },
-  "T3-CRT-f92e87a42cc3": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-CRT-f98770a135e4": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-CRT-f9a120b0c67b": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
-  },
-  "T3-CRT-f9dfd2fe1726": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T3-CRT-f9fb9ecd1299": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T3-CRT-fa11c57421dc": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
-  },
-  "T3-CRT-fa37e13dd7d4": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-CRT-fc6afb1648a2": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-CRT-fc7224bb2e7d": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T3-CRT-fca25fda1477": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T22:12:01Z"
-  },
-  "T3-CRT-fd816a53bf73": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T22:41:22Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-DNS-00981ba0a204": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T14:05:09Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
+  },
+  "T3-DNS-2f5f31e01c11": {
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
+  },
+  "T3-DNS-2f7bf4135c8b": {
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-DNS-35bbb5f47bf3": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T14:05:09Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
+  },
+  "T3-DNS-40e8224a40db": {
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-DNS-42b068961cb9": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T14:05:09Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
-  "T3-DNS-6d11dad3de54": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T14:05:09Z"
+  "T3-DNS-50d0c3b9c734": {
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
+  },
+  "T3-DNS-79e99aa4a57c": {
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-DNS-7b455d711491": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T14:05:09Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-DNS-7defa0c0c30e": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T14:05:09Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-DNS-ae96dc7d542b": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T14:05:09Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-DNS-b4d166a3900e": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T14:05:09Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-DNS-be77bb5b5753": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T14:05:09Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-DNS-c760186ac9bf": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T14:05:09Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-DNS-c81b26974ebf": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T14:05:09Z"
-  },
-  "T3-DNS-caa3e175b822": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T14:05:09Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-DNS-ddbc5705d2af": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T14:05:09Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
+  },
+  "T3-DNS-e9a5cd010dae": {
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-DNS-ed920da1d2d1": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T14:05:09Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
-  "T3-DNS-eee15be6e586": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T14:05:09Z"
-  },
-  "T3-DNS-f5a4805bc67f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T14:05:09Z"
+  "T3-DNS-fc358784b7a0": {
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-DNS-ffcdce1fea7c": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T14:05:09Z"
-  },
-  "T3-LIX-0afd504fd4ec": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-LIX-1de76ea9ee0f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-LIX-2721d47fe9ba": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-LIX-3aa3b9e9446f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-LIX-53ae083ff0fa": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-LIX-83d012a28e6e": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-LIX-9ba338e6c90d": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T3-LIX-b29098e33270": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-LIX-c4e5148e23ed": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-MAP-0064aebd2cf8": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T14:05:09Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-MAP-00981ba0a204": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T14:05:09Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-MAP-0bb3b042c3fd": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T14:05:09Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-MAP-0e259856e3b2": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T14:05:09Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-MAP-23f419c966cc": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T14:05:09Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
+  },
+  "T3-MAP-2f7bf4135c8b": {
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-MAP-35bbb5f47bf3": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T14:05:09Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-MAP-35c3bf98815b": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T14:05:09Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-MAP-3fa4eead25c0": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T14:05:09Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-MAP-40e8224a40db": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T14:05:09Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-MAP-42b068961cb9": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T14:05:09Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-MAP-4edc70987d86": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T14:05:09Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-MAP-60732a521969": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T14:05:09Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-MAP-8a845da0071f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T14:05:09Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-MAP-9b3fb2a3d204": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T14:05:09Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-MAP-a07227bad2d1": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T14:05:09Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-MAP-b4d166a3900e": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T14:05:09Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-MAP-bbe63136fd40": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T14:05:09Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-MAP-be77bb5b5753": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T14:05:09Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-MAP-c760186ac9bf": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T14:05:09Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-MAP-d9e3e77d127a": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T14:05:09Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-MAP-daeda1b8a834": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T14:05:09Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-MAP-e96f5323ffd4": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T14:05:09Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
+  },
+  "T3-MAP-e9a5cd010dae": {
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-MAP-ec2116c6c8fd": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T14:05:09Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-MAP-ed920da1d2d1": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T14:05:09Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-MAP-fc358784b7a0": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T14:05:09Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-MAP-fe8c6f05738b": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T14:05:09Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-MAP-ffcdce1fea7c": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T14:05:09Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-NTL-001726c4b1b4": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T09:18:02Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-NTL-0355cb5dca4b": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T09:18:02Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-NTL-0cda3cc348e5": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T09:18:02Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-NTL-1baac3726840": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T09:18:02Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-NTL-1e8b57920b54": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T09:18:02Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-NTL-34c87be19316": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T14:05:09Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-NTL-3620863102f9": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T09:18:02Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-NTL-60d2614fa246": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T09:18:02Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-NTL-75844da34419": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T09:18:02Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-NTL-96d65c1c5188": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T09:18:02Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-NTL-9fec2f9808c1": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T09:18:02Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-NTL-a677482d085c": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T14:05:09Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-NTL-b43e04f33a8b": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T09:18:02Z"
-  },
-  "T3-TOR-4d031674624e": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T3-TOR-9ea1c1b7afac": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T3-US-00abe51b084b": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-US-00cf47d5c459": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-US-019048763a3d": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-US-02001dcb1d35": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-US-03409adfdeb6": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-US-035492000b77": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-05ad9f80bf1c": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-069d0461f389": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-09a1219e6ff6": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-09d18492d48b": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-0a2afc9a028a": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-0af956b58f8c": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-0b385d57aa26": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-0ba674aa75a0": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-0bd4db69b71e": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-0c670b6b8a53": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-0ca52c7c8219": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
-  },
-  "T3-US-0d175570bd27": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-US-0d352802a5d2": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-0e06da7ee35f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T3-US-0fc1a0f3a2a8": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-US-10491702255f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-US-10c87e9dbce9": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-US-11e284262c59": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-US-12f45b849209": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-US-13110cfab955": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-US-131821868c82": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-US-13b1bce75874": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-1479bea4c26a": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T3-US-15645e4c943f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-US-15f53df5495d": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-US-17b26447d5f8": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-US-192f2a09c781": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-US-1a20d8a8301f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-1dcfec2ad239": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
-  },
-  "T3-US-1e544afb5171": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-1f219d2395e5": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T3-US-1f3be39b7da7": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-US-1fa957a8ee6f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-20ccf1140fe1": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T3-US-219308f9978d": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-US-21b13c30dc1c": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-21c3e4f2dac8": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T3-US-22348c25b401": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-US-227b0c7a5e0b": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-US-22c31c96ef7a": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-22dcb8f790ff": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-23407f16cfe1": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T3-US-23ab2d30e6d2": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-US-23ef54670ff4": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-US-252848aae37e": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-US-2541a5c714b3": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-US-2673a0d4acc0": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-US-26a8034a152e": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-26ec711625ea": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-26f69596f2d8": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T3-US-280e9dba6bcd": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-US-288d14129cbe": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-28f9f0007ad9": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T14:05:09Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-29f8856ae7e5": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T3-US-2ad74a6eac92": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-2af57386f1cb": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
-  },
-  "T3-US-2d3efdc1bd72": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-US-2dbb026b9841": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-US-2debefaedd30": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-US-2f457500cb86": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-US-301802dcae1c": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-US-30ee210bc6dc": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-317a00e60f21": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-3393a04e628c": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-33b5bfcbdbe6": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
-  },
-  "T3-US-33bacecb6c6e": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-346a7adcc143": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-34815d019e21": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T3-US-349166c4aea7": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-US-34bd9e2ad976": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-US-34bfac1720a2": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-US-350e9171c74a": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-3568918e796f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T3-US-371a04df42b6": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-US-3744325aa5fc": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-US-3843343219f5": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-US-39412950a998": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-US-3a7b9aa21ecd": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-3ac35dc84e55": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
-  },
-  "T3-US-3b16109dd2bc": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-US-3b3ed1fac993": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-3d7bf23c6b4c": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-3ead2ba660c5": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T3-US-4090a0ebfcd0": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-411822c72299": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
-  "T3-US-4174937a07ed": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-US-41992461c725": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-US-41a971fa5292": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+  "T3-US-412bbac24a0c": {
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-4290b6c19c96": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-42c997a55e6f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-US-435ea145173c": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-US-435ff874eb73": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-US-43bb4f34796b": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-44bc675590dc": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T3-US-45370a1a9fcf": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-453e2a19b627": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-US-4868e4312ec5": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-48a2c2fe3ced": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-48c9916c125a": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T3-US-492355bff728": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-4ac2715a782c": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
-  },
-  "T3-US-4d543a62bc65": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-4ea5a340acd5": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T3-US-4f09ba8aecdc": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-4f9477aa3054": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-50285b607612": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
-  },
-  "T3-US-511694779bb3": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-US-51b3e6a6379b": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-US-540d50b7cec2": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-US-543bcfdf9b88": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-5459ce9db79e": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
-  },
-  "T3-US-545ed0269a0c": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-54927334aada": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-54deb41d7553": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-54e2131c1649": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T3-US-554abdbdd366": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-US-56d937bdde6a": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-US-5770a71a2c17": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-US-582b7e297b99": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T08:02:25Z"
-  },
-  "T3-US-588e91678c62": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-US-58f181cfe8b2": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-590fa8e3cbcb": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
-  },
-  "T3-US-5911bcfdb8cb": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-59d6e1897faf": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-US-5c65362bbeb3": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-US-5d360fe88825": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-US-5ddc691c2ac2": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-5de7d92720b1": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-5e3cfa654507": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-US-5f5df69bded7": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-US-5fb5769ecef6": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-5fc1aeacf9d3": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
-  },
-  "T3-US-61bb92bbaa42": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-US-637885d6ab08": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-US-662f6cfd8245": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-663feb9768a7": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-US-66b68335cba5": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-US-66e6c635bc56": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-67a62cc4ebfc": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-US-67d4dbf2352f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-6829426a7bd2": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T14:05:09Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-68b1860dcab4": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-6910fc3bb7ea": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T14:05:09Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-694a9703599a": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-US-69f0b7e268a3": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-US-6a7a21546fff": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-US-6bc8573575aa": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-US-6bd725c0e585": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-US-6e0c8134a5cc": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-US-6f754e9744be": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-6ff0f92010bb": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-707b0486c9b9": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-71a56b71a393": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-73f713ca4648": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-7412131f5fb3": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T3-US-7546876ce378": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-US-75d0c469f8c2": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-US-764ce4655635": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-US-7a24d946f53e": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-US-7aedb3a7f9e4": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-US-7b3817f68dd0": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-7cff3271693a": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T14:05:09Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-7d52b0b5f44a": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-7dba1fde62b0": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-US-7e37a8d8e21a": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-US-7e75de5379aa": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-US-7f45a058362c": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-7f5e7d7b2423": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-US-802068153a38": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-US-80c449a64eca": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-8222e3e566cd": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-US-822c6bfd6efd": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-US-83c83d28ac42": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-84024cc8c1e3": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-US-85186b266a1d": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-US-876d2e61388f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-US-878036c4ce23": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-US-88d05c62a7b2": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-US-8a139debae07": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-US-8a31a0f63557": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-8a48eb1300b9": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-8aa72feea349": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T3-US-8aed0a8f44e1": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-8b0b8b104e96": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-US-8c3cfb6014bb": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-US-8c6104dde48a": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-US-8ec3dbf44a8a": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-8ee8b835bb21": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T3-US-8f6986d4d10d": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-US-8f7dd80e10a2": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-US-918db0affbc7": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-US-91f66ae20a42": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-US-929b9fac2ef8": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-9307f85b9477": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-US-944f32dcb959": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-US-94b0c3b7213a": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-US-97578d2e83ff": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-975df47217d7": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T3-US-9ab24c4165ff": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-9bf03309ecfa": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-US-9c109c7ce57d": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-US-9dec9360364b": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-9dfe8968cc9d": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-9e5e896e424d": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-a1f3e3db0f07": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-a3094305740f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T3-US-a3505034f84f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-a35f1ad606f2": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T3-US-a4556926f8b0": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-US-a48935dc1aa4": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-a4b0dc59969b": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-US-a5895bfe9e25": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-US-a5a8b1414048": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-US-a706b2e70dc3": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-a742d1ac13ec": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T3-US-a8dc9084fc63": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-US-a9ff1fb536aa": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-aa3baaed78e9": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-aaecf760f0b5": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-aaf21aded5c3": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
-  },
-  "T3-US-ac792297578f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-ac99238a1136": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-US-ae3ac5786218": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-US-b08de806a0c1": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-b11a573c2f0c": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
-  },
-  "T3-US-b1c5f0893f6a": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-US-b210f4f2df8b": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-b231e46a6e4f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
-  },
-  "T3-US-b2cacc60a3d3": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-US-b4151151192f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-US-b6eb516e30db": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-b7cc201ce72a": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T3-US-b88c29d0d778": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-b8d69b19b528": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T3-US-b9ea08389554": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-bacd1f2c0c06": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-bb0552c6e3a4": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
-  },
-  "T3-US-bb0b45f2bd90": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-US-bbf7370b4b9d": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-US-bc01ed74127f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-c00273f6f20f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-c15cde771aca": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-c1da0d8cdd01": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-c2d438004286": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-c34673d9ba38": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T3-US-c39b72a3de40": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-c476ac7f34f9": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
-  },
-  "T3-US-c51af4290415": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-c5adb1b1d260": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T3-US-c5add6618b5c": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-US-c7f0e4819cec": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-c823d575ff26": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T3-US-c8b11de03bdc": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-US-cafdcaeda281": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-cbaf97143d10": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-cbd417b7e8fb": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-US-cbe583f5aa79": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-US-cc200fb41b2d": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-US-cc552a40cbed": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-US-cc5fdd5c4550": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-cc6b2ac1e044": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-US-cce8ec4316f5": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-US-cce9d71a7eff": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-US-cd416d71e3e3": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-US-d0be438e7bc2": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-US-d109a46faaa1": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-US-d1e17f88b73c": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-US-d1fad7b17f7a": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-d24641b78935": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-d260442be8be": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
-  },
-  "T3-US-d2cd012edeb5": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-d2dffaaa5871": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-d475788f0f7d": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-d4b3637e99d2": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
-  },
-  "T3-US-d5065ab79a68": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-US-d5ecaca1f5fa": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-d642959ee180": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T3-US-d7145279ef5c": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-US-d7abf05bca72": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-d82df74e1e91": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
-  },
-  "T3-US-d8327728d7b9": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-US-d8c90da0753f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-d8f51c5e33bb": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-US-d9a950d4414a": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-d9cc66e200f2": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
-  },
-  "T3-US-da9057fb2c9e": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-dabcb336fc7d": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
-  },
-  "T3-US-db07cc045f36": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-dc8a7e2e81d4": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T3-US-dce38a1d3ad5": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-ddf8f0f3ae88": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-de3279d46b0b": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-ded3e48d2888": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-US-dede1464d7e0": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-df6288d86f03": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T3-US-dfeace0b4afb": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-US-e0690d1b9a28": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-e0715e4cdaba": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-e1333ffbf817": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-US-e15799ccb652": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-US-e1d2ba3e232c": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-e2c7924dc853": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-e4159e47d354": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-US-e44bebc98036": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-e502d28e8192": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-e53df41743d7": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-US-e5e5d9d8d8bd": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-e7b8c7bd0cca": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-e80063056157": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-US-ea911d8fc740": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-US-ebe8423fe498": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-ebeafbe556ee": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
-  },
-  "T3-US-ec75d20c3386": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-US-ec8800e6c739": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-ee4da646291d": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
-  },
-  "T3-US-ee7c68aabe70": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-f023afaa6167": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-US-f0683b34ecb8": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-f0f23baf452b": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
-  },
-  "T3-US-f1a51b2cc5d0": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-f201eb72f5fa": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-f27677435f07": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-f3826a7d2441": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-US-f44d73f58fac": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-US-f47147cf9a71": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-f59217a4d647": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-US-f5f6bb3ffab6": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T3-US-f7e0ce474c67": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-f90d1fe04f3a": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-f973d2e4d1ad": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T14:05:09Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-fa16f88eaf9e": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-fb0e8602a287": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-US-fb86784bbf2f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-fbb0f41398b1": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T3-US-fcd77d63e321": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-fd757ab09d3e": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T3-US-fd75f5a609ea": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T3-US-fe78281b7c94": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T3-US-ff07bc593c6a": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-00dd6e370918": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-02a9af4b648b": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-0354dd1ab808": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-07729bd91cf0": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-079c1f19d818": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-087001710351": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-0bdf35380d67": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T4-CTK-0dfcaaa532a0": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-105a0be6c975": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T4-CTK-1976d03cf931": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T4-CTK-1b1662b47b22": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T4-CTK-1b55421fc49f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-1d2c9e169603": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T4-CTK-1e1437c0e6eb": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-20d46fdadf64": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-21a01051e16e": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T4-CTK-23097c8af3f9": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-2371995c2def": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-27270ecd4b41": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-29743e88f237": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-2ab769587ba9": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T4-CTK-2b29fc3571ce": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T4-CTK-2d3c02569a63": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T04:07:25Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-2fc03afdceef": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-329733384a72": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T4-CTK-33e7d7c23a62": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-372a80f5d5af": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-39854c562ee0": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T4-CTK-3ba1cc3a1e54": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-3dff80bd5898": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-3e9726e2d840": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-42d097aebf21": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-4438ab079737": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T4-CTK-44b6e9d9b63f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T4-CTK-459bc64b8828": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-45ea27a5f501": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T4-CTK-46a4c531fb7c": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T4-CTK-46dd237a3a99": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T4-CTK-4ca443ce9f1c": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T4-CTK-50ca50971aba": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-529105478391": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-55272fa03c94": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-552b0d772201": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-585602fa5402": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-58fae9d7efab": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-5921bca3212d": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T4-CTK-594012fc11d8": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-5c988e90ea09": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-5ce848211bdb": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-5e0ed88aeba7": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T4-CTK-5e12400ff33f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-5ef7f8420c0a": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T4-CTK-604673459b9c": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T4-CTK-61596b25a391": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T4-CTK-61b35166b36b": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T04:07:25Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-625284d65fc2": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T4-CTK-6374142ae727": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T4-CTK-637ccc22e84f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-6481ae310a09": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-67363ab853e2": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-6c24e386b032": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-702d326eb87c": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-7342fc6491a6": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T4-CTK-75b996dcfab9": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-76f53c2b9266": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T4-CTK-78fa16c375c5": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-7b0b667c8c6e": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-7da2ee4c68cb": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T4-CTK-7eae46e65c3e": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-7ed5b07438dc": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-7eeb3fa56e31": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-7ff55191edc5": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-803ed33d6d03": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-827ac96d13a4": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T4-CTK-8414257c1cfb": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-86582a5c6583": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T4-CTK-87f6a472136b": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T4-CTK-8966bd64ee43": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T4-CTK-8a70ae0f3433": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T4-CTK-8b394fe266f9": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-8b5667921f03": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-8ba0077403df": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-8c4eafe625db": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-8eb4cc9277e1": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-926e73f57f9b": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-92a0df081238": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-9331c97378ee": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T4-CTK-9399f2096f47": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-96ea30c08ab7": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-a0f2dbf78f0a": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-a2e798010ae3": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-a379ba23513a": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-adb41005bbb0": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-af7e9231fba2": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-b3547ca2b44b": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T4-CTK-b4a2038e7182": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T4-CTK-bd3bda416c4d": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-c09cd7454e63": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-c529a0802911": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-c6676214fe7e": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-c85202d2f89b": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-cc57fc5d47b0": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-cccb5e3f0af8": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-d6fee75220d1": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-dbb2c44fa1e7": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-dbef58007694": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-dd63834a8ebf": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T4-CTK-dd9e4cf2e272": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T4-CTK-deffecff52b3": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T4-CTK-e0664ac2dcd1": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T4-CTK-e4c0c6ce3f29": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-e65686a12e7a": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-e8fe576c3a48": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T4-CTK-e93a4b7b8cbf": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T4-CTK-e96dc3632c01": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T4-CTK-e9b87fcaa203": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-e9efcc22c35e": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-ec72058a6de3": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-ed56143f714f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-ed59a48856c2": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T4-CTK-f36851506b47": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
-  "T4-CTK-f7c867f1a444": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+  "T4-OSK-217fa54cc935": {
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
-  "T4-CTK-ffea18328579": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+  "T4-OSK-31ff16cf4741": {
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
-  "T4-OSK-07ba5183c01f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
+  "T4-OSK-7d6baf0bf319": {
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
-  "T4-OSK-2395792d740e": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T13:18:26Z"
-  },
-  "T4-OSK-3f9490ef774e": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T4-OSK-45048ee50b1f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T4-OSK-57b145e4b648": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T4-OSK-5b3ab6b85409": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T4-OSK-61e674f8de9e": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T13:18:26Z"
-  },
-  "T4-OSK-6de651a65a42": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
-  },
-  "T4-OSK-6e05dc0edbe7": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T4-OSK-7031830bce85": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T13:18:26Z"
-  },
-  "T4-OSK-8282538ca529": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T4-OSK-9a2c4122d753": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T04:07:25Z"
-  },
-  "T4-OSK-bb059916fb64": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T14:55:52Z"
-  },
-  "T4-OSK-bc611094c918": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T14:55:52Z"
-  },
-  "T4-OSK-c54d27f40d9f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
-  },
-  "T4-OSK-c8afe4f4be6b": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T22:41:22Z"
-  },
-  "T4-OSK-c9f462052f13": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
-  },
-  "T4-OSK-cbd600e84e48": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T00:06:20Z"
-  },
-  "T4-OSK-cf129aa8fa74": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T00:06:20Z"
-  },
-  "T4-OSK-d9adbf74d359": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T4-OSK-eb38abb6aebd": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T4-OSK-f01b342c2558": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T4-OSK-fa77a0c1864d": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
+  "T4-OSK-b73a23cf175b": {
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T5-CISA-CVE-2018-4063": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T5-CISA-CVE-2019-7256": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T5-CISA-CVE-2020-11261": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T5-CISA-CVE-2020-3259": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T5-CISA-CVE-2020-3452": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T5-CISA-CVE-2020-3580": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T5-CISA-CVE-2021-22681": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T5-CISA-CVE-2021-26828": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T5-CISA-CVE-2021-26829": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T5-CISA-CVE-2021-38406": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T5-CISA-CVE-2023-6448": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T5-CISA-CVE-2024-20353": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T5-CISA-CVE-2024-20359": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T5-CISA-CVE-2024-20481": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T5-CISA-CVE-2025-0994": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-C2-3e7bffdfcbae": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-C2-5c72177d8436": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-C2-8317bb3f9858": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-C2-da5d42b10426": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-C2-dd4f0099a454": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T6-MB-01103019555e": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T6-MB-08b0358349d2": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T6-MB-1324a842e70b": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T6-MB-20e76c622433": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T6-MB-22c3e745bcfd": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T6-MB-408c4477cd5c": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T6-MB-484cc6bfcfa8": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
-  },
-  "T6-MB-54c46228712f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T6-MB-7747888ee131": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T6-MB-7ab253a8ac8e": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
-  },
-  "T6-MB-910e206ba1ec": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T6-MB-951b676c8105": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T6-MB-958ac61882ee": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T6-MB-97cc4e500542": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T6-MB-a73f172e71c9": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T6-MB-b900d48888a6": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T6-MB-bcd2a13771a3": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T6-MB-c16f7d0ce3c0": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T6-MB-c3a169b641e0": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T6-MB-dd736894294e": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T6-MB-deacb7ff720f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T6-MB-e144d9360f5b": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T6-MB-e2ae52bbfa25": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T6-MB-ea4e44a4b234": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T6-MB-fc76916362f3": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T6-OTX-1e0c2c97db79": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T6-OTX-25bb40a6ddb5": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T04:07:25Z"
-  },
-  "T6-OTX-2610f7770204": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T6-OTX-2cb383b8902f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-OTX-3d0603ac2e14": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T6-OTX-4266100adcc4": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-OTX-4bc4b58eff25": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T14:55:52Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-OTX-519a1273614d": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T04:07:25Z"
-  },
-  "T6-OTX-597464a5235b": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T04:07:25Z"
-  },
-  "T6-OTX-6eb2f685fd09": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T04:07:25Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-OTX-700a8333e30a": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T14:55:52Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-OTX-879656173a2d": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T14:55:52Z"
-  },
-  "T6-OTX-961b2a5ae8cd": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T6-OTX-96ee23371da1": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T04:07:25Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-OTX-971a6826f3d7": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T6-OTX-9d8709045c63": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-OTX-a0ee6441b5ad": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T14:55:52Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-OTX-b06afe6fe7c7": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T14:55:52Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-OTX-bb6aa957c4d5": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T14:55:52Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-OTX-c2bf9afa4d2e": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T6-OTX-c4f73ec99d1f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T6-OTX-e7d06e7f973f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T6-OTX-f0c75e0cc99d": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T04:07:25Z"
-  },
-  "T6-OTX-ffa2c9c4e5a3": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T04:07:25Z"
-  },
-  "T6-TFX-01ef4dadf5ea": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-03e8a85be688": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T6-TFX-05ce209f9ae2": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T6-TFX-06731577dcfb": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-0701c7f77935": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T6-TFX-07bfda90d3ec": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T6-TFX-09d2fc0069be": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-0a872d5ee871": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-0b05415ae82f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T14:05:09Z"
-  },
-  "T6-TFX-0b974576e12a": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-0c7ff9553733": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T08:02:25Z"
-  },
-  "T6-TFX-0ccb3f3e48f9": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-0dafedc1d17f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T08:02:25Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
-  "T6-TFX-0f59d17f1e9d": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
+  "T6-TFX-0e3f830d8305": {
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-10bd57d12e4b": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-12bad4390102": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T09:18:02Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-13575c709f1f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T08:02:25Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-15888c82f4c1": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
-  },
-  "T6-TFX-16a180f0a30d": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-174efe3b4721": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T6-TFX-18e1bfc48a0d": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T6-TFX-196085665646": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-1a2a91c42143": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T09:18:02Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-1b0cee32449d": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T08:02:25Z"
-  },
-  "T6-TFX-1b65cb45b9b6": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T6-TFX-1e0fd33cecdc": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-1ee162221a2b": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T08:02:25Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-22afedcdc926": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
-  },
-  "T6-TFX-22c18e3c0788": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T6-TFX-22ca7ed069eb": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-241b46e31aa8": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T08:02:25Z"
-  },
-  "T6-TFX-2434add1ac53": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-2458435f6243": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-2622dd0f4b72": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T00:06:20Z"
-  },
-  "T6-TFX-293896a3423b": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-2d003fbc6b51": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T14:05:09Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-2e85bdf246be": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-2ebf0430334c": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-2efc26f9ecbd": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T14:55:52Z"
-  },
-  "T6-TFX-2f3f23801c91": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T6-TFX-3264cd15c464": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T6-TFX-3370a280a958": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T6-TFX-3437b524c261": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-349ae32e3678": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-3a4ae736c7ce": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-3b90a379ebd2": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T08:02:25Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-3e0d95561a95": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-3eac012be8aa": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T08:02:25Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-3f8285c8ca4f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T6-TFX-406336b795e6": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-41014b748712": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T08:02:25Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-428b2cf84676": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T08:02:25Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-431200af4ad8": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T08:02:25Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
-  "T6-TFX-44b50c232745": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+  "T6-TFX-439898e41dda": {
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-44ce3adfb7ad": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T6-TFX-46ff7c8b12b1": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-491518c9f71c": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T08:02:25Z"
-  },
-  "T6-TFX-496df58bc06a": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T6-TFX-4df2c15a01a6": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-4f6c847968fe": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-4fb9b877c580": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T22:41:22Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-5131d16a02db": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-52fbd19a6ba4": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T08:02:25Z"
-  },
-  "T6-TFX-5600c054042d": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T6-TFX-56d882fb3925": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-582acb7920c4": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T09:18:02Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-5a0f7d967d4a": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T09:18:02Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-5a22c9edda3c": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T14:05:09Z"
-  },
-  "T6-TFX-5a86949a207d": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-5fc5a420511a": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-618028d66935": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-61d68dd1b387": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T08:02:25Z"
-  },
-  "T6-TFX-6741468a5d47": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T6-TFX-6862f0fac321": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-6fb14d8f6f9a": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T08:02:25Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-704ad92ebbe7": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T08:02:25Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-7074e25cd5bf": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T08:02:25Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-71c3ca66c4c7": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T08:02:25Z"
-  },
-  "T6-TFX-7253f7720b95": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-7288458a4b69": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-733666262756": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
-  },
-  "T6-TFX-735b5c31059a": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-76dd45ef149e": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T08:02:25Z"
-  },
-  "T6-TFX-7b7063fe6d80": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-7c19c8ede926": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T6-TFX-7d0e0897ba33": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T6-TFX-7ea9912149d6": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T6-TFX-7ee9b466e918": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-7fb07a8a3f59": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
-  },
-  "T6-TFX-812d162afc48": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-8194fd8405b3": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T08:02:25Z"
-  },
-  "T6-TFX-822f1d72859d": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T6-TFX-829bc6003f39": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-82efbd7b7e6a": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-8360185da81a": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T6-TFX-8bb577be3a91": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-8c78bae63bed": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-9049a2c004d4": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T14:55:52Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-91df6a96f77c": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T08:02:25Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-92b1db6097b7": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
-  },
-  "T6-TFX-951f22fe4b46": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-9863683cfeb8": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T08:02:25Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-9a155feee97d": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T6-TFX-9aa6574a965a": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-9b436e3ba5e7": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T6-TFX-a03962882f31": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-a11e63547d5c": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-a12521c84767": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-a17f7259c516": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-a390a7388730": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-a5f77bcbab30": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T08:02:25Z"
-  },
-  "T6-TFX-a674946723b4": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-a881f9af035c": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T08:02:25Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
-  "T6-TFX-aa0ae8279a82": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T6-TFX-aa8a89e9159b": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
+  "T6-TFX-aac22212c29b": {
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-ab04a5f323d2": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-ac3d5bd55cdb": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T00:06:20Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
-  "T6-TFX-ac74668336ec": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T6-TFX-ae16baabcbc2": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T6-TFX-ae83b2579ce8": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T6-TFX-afc310e1475a": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+  "T6-TFX-aff6afbc19be": {
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-b03fdd086eda": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-b1ba9c9be35c": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T14:05:09Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-b2c77edfabd7": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-b37069acf940": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-b40db239a4e4": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T18:28:09Z"
-  },
-  "T6-TFX-b4925d9c2770": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-b4ce8c03ab18": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T14:55:52Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-b582d00e4c1b": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-b5e8eb1a74d9": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-b73f50ca8319": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-b7676d087ca0": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-baf97410c7c7": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-bd1aa2e3e7f5": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T13:18:26Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-be4da2053373": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T08:02:25Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-be7b7e16408e": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T08:02:25Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-bfcc64f7c221": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-c1083b94c3b1": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-c1c391c20318": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-c4b506c49c4b": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T08:02:25Z"
-  },
-  "T6-TFX-c56388523a58": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-c6de114d2595": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T08:02:25Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-c8b57bb3f23f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-c8fdfabb872d": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T08:02:25Z"
-  },
-  "T6-TFX-cb955d916bc6": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-cbe55aa89149": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T13:18:26Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-cc87322d3da7": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T6-TFX-ccb466d501f9": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-cddef761cd6a": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-d30996073730": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-d5cc9509d73f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T08:02:25Z"
-  },
-  "T6-TFX-dcc2a3214ca6": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T20:00:19Z"
-  },
-  "T6-TFX-dcca46513636": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T6-TFX-de8f774dddba": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-e2b1cd410aac": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T08:02:25Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-e3610831318c": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
-  },
-  "T6-TFX-e44f34b69dca": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T6-TFX-e5749da1b215": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-e670e478a600": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T08:02:25Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-e7a0681efdb3": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T14:05:09Z"
-  },
-  "T6-TFX-eb6e682003b3": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T6-TFX-eb938c262b4b": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T6-TFX-ed3027dabcdd": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T6-TFX-ee281b44160d": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T6-TFX-ee6361074abc": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-eef05d19b873": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-f2c2f1fb68c7": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T13:18:26Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-f4aeee7a0e26": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T08:02:25Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-f52e2431c458": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-f5b7fa12a7e3": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T08:02:25Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-f67f3b01dfea": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
-  "T6-TFX-f73963e29229": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
+  "T6-TFX-f9714c312a6b": {
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-f9d2fef8b008": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T6-TFX-f9e64f527762": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-TFX-f9fa521dace7": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
-  "T6-TFX-fdef0d82492d": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T6-TFX-fe66d393b880": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+  "T6-TOR-f31a28a9d2bd": {
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T6-UH-fe60bc28dc46": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T7-NVD-0730ad84a2bd": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T7-NVD-1a944e8cc766": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T7-NVD-20ed7f1f7bf1": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T7-NVD-37ea6d485677": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T7-NVD-3fc0ef6f6dbc": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T7-NVD-4aee6ad13ce5": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T7-NVD-5c55afc19eff": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T7-NVD-5f89f3fb9f3f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T7-NVD-639684c8e529": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T7-NVD-7135970ede7c": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T7-NVD-72664da9b8df": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T7-NVD-7be1ecf84d9e": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T7-NVD-84d1b623589c": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T7-NVD-8d3f062706d3": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T7-NVD-a9786d39552c": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T7-NVD-c3e5ea12208f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T7-NVD-d1d1dc09ee02": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T7-NVD-d6e6ba12abb9": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T7-NVD-d816c1f3bdd3": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T7-NVD-e498dfcd18b0": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T7-NVD-e51aac53c170": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
-  "T8-RSS-03f9499f2158": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
-  },
-  "T8-RSS-051d6e5dee5b": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T00:06:20Z"
-  },
-  "T8-RSS-072b80371fb5": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
-  },
-  "T8-RSS-07b329ce5ebf": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T00:06:20Z"
-  },
-  "T8-RSS-0896833ea4b0": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
+  "T7-TOR-ce36116b7d42": {
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T8-RSS-0fb48c1d499f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T00:06:20Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
-  "T8-RSS-12261898b775": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+  "T8-RSS-11f2606d2356": {
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T8-RSS-153223f80b7b": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
-  "T8-RSS-15cf19e3e997": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T00:06:20Z"
+  "T8-RSS-170f717e5279": {
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T8-RSS-1d77afa5fe81": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T8-RSS-1f15d2ac538f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T00:06:20Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T8-RSS-20b1ffcaedb2": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
-  },
-  "T8-RSS-225baacd169c": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T8-RSS-2283a6764feb": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T09:18:02Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
-  "T8-RSS-22beea5002dc": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
-  },
-  "T8-RSS-2a3eccbeffd5": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
+  "T8-RSS-257bd125669b": {
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T8-RSS-2bc6404e56f8": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T8-RSS-2bfca71c2efb": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
-  },
-  "T8-RSS-2e275451cf32": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T00:06:20Z"
-  },
-  "T8-RSS-2fa3b2f2d562": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T8-RSS-30c9092a3bf7": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T8-RSS-318df13d9fc9": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
-  },
-  "T8-RSS-359d8f7dc9ef": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T00:06:20Z"
-  },
-  "T8-RSS-36af3fbb9415": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T8-RSS-38e6debfef6b": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T00:06:20Z"
-  },
-  "T8-RSS-3abc5536bef4": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T8-RSS-3ee7f78dcba8": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T8-RSS-412b69771d5e": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T09:18:02Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
-  "T8-RSS-42595ae0dfca": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
+  "T8-RSS-45fd48eda11d": {
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T8-RSS-4a68ad26d598": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T8-RSS-4b7cc2b84376": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
-  },
-  "T8-RSS-4c72d6f1503c": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T8-RSS-4fa30e6e4462": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
-  },
-  "T8-RSS-58753c636b54": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
-  },
-  "T8-RSS-5b39454abfb0": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T00:06:20Z"
-  },
-  "T8-RSS-5c7622b71256": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T8-RSS-5e45f39bb588": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T00:06:20Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T8-RSS-5ff6ab954b95": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
-  },
-  "T8-RSS-61d28d8f721f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T00:06:20Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T8-RSS-65a8360039b9": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T23:02:55Z"
-  },
-  "T8-RSS-675c2b594d99": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
-  },
-  "T8-RSS-6e605debdc0e": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T00:06:20Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T8-RSS-715c4509ab34": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T8-RSS-727d77e3ced8": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T00:06:20Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T8-RSS-76cc1b8ece66": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T00:06:20Z"
-  },
-  "T8-RSS-78cf4a1a1c46": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T8-RSS-78e32e8fe5e1": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T8-RSS-78e7d89a1541": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T8-RSS-7b0f17b850fe": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T09:18:02Z"
-  },
-  "T8-RSS-7bf17bb219a4": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
-  },
-  "T8-RSS-7f442035391b": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T8-RSS-7fb96f41eaa8": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T00:06:20Z"
-  },
-  "T8-RSS-819e8243d025": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T8-RSS-830a870407a7": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T00:06:20Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T8-RSS-83af674caa78": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
-  "T8-RSS-83e9af8a1db8": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
-  },
-  "T8-RSS-8479cd4f4bee": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T00:06:20Z"
-  },
-  "T8-RSS-8c1c623687fd": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+  "T8-RSS-8c6e8f58a7b3": {
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T8-RSS-8fa909ac5d15": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
-  "T8-RSS-91146fa7c200": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
-  },
-  "T8-RSS-91625b7e2699": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T00:06:20Z"
-  },
-  "T8-RSS-91bd6d51ad39": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T00:06:20Z"
-  },
-  "T8-RSS-933a8169405d": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
-  },
-  "T8-RSS-93f786ccf649": {
-    "filter_version": "2.0",
-    "ts": "2026-07-06T10:05:00Z"
+  "T8-RSS-9358be4e4b79": {
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T8-RSS-93fd8c6b1766": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T14:05:09Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
+  },
+  "T8-RSS-96a09b24b9be": {
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T8-RSS-97ff9a2d7ed2": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T8-RSS-9881a8d4f14f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T8-RSS-9964de774a0b": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
-  "T8-RSS-99a927e1dc48": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
+  "T8-RSS-9db5692391e7": {
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
-  "T8-RSS-9ace0f9b4ad3": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T00:06:20Z"
-  },
-  "T8-RSS-9f4130541a2f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T00:06:20Z"
-  },
-  "T8-RSS-9fe4672ea95a": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T8-RSS-9fe822bb6ba4": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T8-RSS-a0d84e1ffc5f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T8-RSS-a0e20f7859f6": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T00:06:20Z"
+  "T8-RSS-a00293a1fe51": {
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T8-RSS-a1ca427f9a96": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T14:05:09Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T8-RSS-a34abbea13bf": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
-  "T8-RSS-a722e949eb04": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
-  },
-  "T8-RSS-a9ad98f87937": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
-  },
-  "T8-RSS-aa7e19f430d1": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T00:06:20Z"
+  "T8-RSS-a6dd9c9022c1": {
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T8-RSS-ae7226b382f3": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T23:02:55Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
+  },
+  "T8-RSS-af976bb421b0": {
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
+  },
+  "T8-RSS-b07bf819f027": {
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T8-RSS-b15205535869": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T8-RSS-b2760a2b24a4": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T00:06:20Z"
-  },
-  "T8-RSS-b2bf9013f2fe": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T8-RSS-b45a0251acf2": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
-  "T8-RSS-b67b39b84df0": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T00:06:20Z"
-  },
-  "T8-RSS-b69228e45300": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
+  "T8-RSS-b61cbf588f6f": {
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T8-RSS-b71fff8567d9": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T23:02:55Z"
-  },
-  "T8-RSS-b7bd29a77cca": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
-  },
-  "T8-RSS-b8c75dc93fb8": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
-  },
-  "T8-RSS-bc54d0c62767": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T00:06:20Z"
-  },
-  "T8-RSS-bddd178a64da": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T00:06:20Z"
-  },
-  "T8-RSS-bf23c1feb08e": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T00:06:20Z"
-  },
-  "T8-RSS-c0a44d8878fb": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T8-RSS-c1a0256fca80": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T8-RSS-c2bb7ce3a5d0": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
-  },
-  "T8-RSS-c39670656010": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T8-RSS-c4238a511767": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
-  },
-  "T8-RSS-cb6f1460ef0f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T00:06:20Z"
-  },
-  "T8-RSS-cba643446de9": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T00:06:20Z"
-  },
-  "T8-RSS-cbc4e1b1f2d3": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T00:06:20Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T8-RSS-d2a9b401730a": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T8-RSS-d2d549ca135f": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T8-RSS-d4475582da74": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T8-RSS-d4513f489987": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T8-RSS-d464332a315a": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T8-RSS-d4ffb9a6342a": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
-  },
-  "T8-RSS-d5a6aa217be0": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T00:06:20Z"
-  },
-  "T8-RSS-d9b4e1b2bf1e": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T8-RSS-da3100ccc13c": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T8-RSS-dd4d3154c481": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T20:14:37Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
-  "T8-RSS-e0c181b0c961": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T00:06:20Z"
+  "T8-RSS-e05591283305": {
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
-  "T8-RSS-e27d990aff90": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
-  },
-  "T8-RSS-e4972f18ab7c": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T8-RSS-e6db8637277e": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T00:06:20Z"
-  },
-  "T8-RSS-eae3be3ddb25": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T00:06:20Z"
-  },
-  "T8-RSS-edffcbb92806": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
+  "T8-RSS-e32e04099ecf": {
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T8-RSS-f07c1d2ceaea": {
-    "filter_version": "2.0",
-    "ts": "2026-07-08T08:02:25Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T8-RSS-f2d276dc592b": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T07:52:27Z"
-  },
-  "T8-RSS-f3d8ed8eb9d9": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T00:06:20Z"
-  },
-  "T8-RSS-f4d97c85e501": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T8-RSS-f58c1753737a": {
-    "filter_version": "2.0",
-    "ts": "2026-07-07T14:07:32Z"
-  },
-  "T8-RSS-f8a424b44be4": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T8-RSS-f911fa437f20": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T8-RSS-fb39e58b7cac": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T00:06:20Z"
-  },
-  "T8-RSS-fd16875cf83b": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   },
   "T8-RSS-fdd7692d67aa": {
-    "filter_version": "2.0",
-    "ts": "2026-07-04T21:47:29Z"
-  },
-  "T8-RSS-fec88c3f6d1a": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T00:06:20Z"
-  },
-  "T8-TG-c6837d306fac": {
-    "filter_version": "2.0",
-    "ts": "2026-07-05T21:09:08Z"
+    "filter_version": "2.1",
+    "ts": "2026-07-09T00:47:29Z"
   }
 }
