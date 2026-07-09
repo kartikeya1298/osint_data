@@ -164,6 +164,24 @@ CONFIG = {
     # fetch_tavily_search's docstring.
     "tavily_api_key":          "",
 
+    # AI inference layer — generates a plain-English "what this means" for
+    # every row that doesn't already get one from deterministic logic (the
+    # Certificate Intel tab's inference column is hand-built and free, no
+    # AI needed there — see chat). Tried in this order, each a genuinely
+    # free tier verified at build time (no card): Groq first (fastest,
+    # largest daily quota by far — ~14,400 req/day on llama-3.1-8b-instant),
+    # falling back to Gemini (Flash-Lite, ~1,000-1,500 req/day) if Groq
+    # errors/is unavailable, falling back to OpenRouter's free models
+    # (smaller quota — 50/day unless you've ever bought $10 credit — but a
+    # different underlying provider pool as a last resort) if both of
+    # those fail too. None of these are required — if all three are empty,
+    # this enrichment pass is skipped entirely and every other module is
+    # unaffected. Sign up: console.groq.com, aistudio.google.com,
+    # openrouter.ai/keys — all free, no card.
+    "groq_api_key":            "",
+    "gemini_api_key":          "",
+    "openrouter_api_key":      "",
+
     # DEEP / DARK WEB — PAID (stubs ready, activate by pasting key)
     "darkowl_api_key":         "",
     "flashpoint_api_key":      "",
@@ -292,6 +310,7 @@ CSV_COLUMNS = [
     "threat_id", "threat_name", "category_code", "category_name",
     "source_layer", "source", "post_text", "post_url", "timestamp",
     "location", "severity", "confidence", "ioc_type", "ioc_value", "tags",
+    "ai_inference",
 ]
 
 CATEGORY_NAMES = {
@@ -5190,6 +5209,182 @@ def correlate_infrastructure(rows: list) -> list:
     return rows + summary_rows
 
 
+# ── AI inference layer ──────────────────────────────────────────────────────
+# Generates a plain-English "what does this actually mean" for every row
+# that doesn't already get one from hand-built deterministic logic (see
+# chat — the Certificate Intel tab's inference column is regex-based,
+# free, instant, and already verified; this covers everything else: the
+# ~25 other source modules, each with a different post_text shape, that
+# would otherwise need a hand-written parser per module the way the CT
+# tab has). Three free-tier providers tried in order — see the CONFIG
+# comment for groq_api_key for why this order and what each quota is.
+#
+# Deliberately NOT live-tested against real keys (none were available at
+# build time) — the request/response shapes below are written to each
+# provider's documented API contract, but should be verified once a key
+# is added. Same "write to spec, verify live later" pattern already used
+# for other optional-key modules in this tool (e.g. SecurityTrails).
+_LLM_BATCH_SIZE = 15
+_LLM_MAX_INFERENCE_CHARS = 220  # guards against a model ignoring the length instruction
+
+_LLM_SYSTEM_PROMPT = (
+    "You are analyzing OSINT threat intelligence rows from an automated collection tool "
+    "focused on cyber threats to Indian and neighbouring-country (Pakistan, China, Bangladesh, "
+    "Nepal, Sri Lanka, Myanmar) military and government targets.\n\n"
+    "For each row, write ONE short sentence (max 20 words) stating what an analyst should "
+    "actually conclude or do next -- not a restatement of the fields already shown.\n\n"
+    "STRICT RULES:\n"
+    "- Base your inference ONLY on the data provided for that specific row. Do not add facts, "
+    "attribution, or context not present in the row.\n"
+    "- If the data doesn't support a strong conclusion, say so plainly (e.g. \"Insufficient "
+    "detail to assess real-world impact\") rather than guessing.\n"
+    "- Do not use words like \"definitely\", \"proves\", or \"confirms\" unless the row's own "
+    "confidence field is HIGH.\n"
+    "- Do not mention any country, organization, or threat-actor name that is not already "
+    "present in the row's own text.\n\n"
+    "Respond with ONLY a JSON array, no other text, no markdown code fences: "
+    '[{"threat_id": "...", "inference": "..."}, ...]'
+)
+
+
+def _llm_row_to_text(r: dict) -> str:
+    return (f"threat_id: {r.get('threat_id','')}\n"
+            f"threat_name: {r.get('threat_name','')}\n"
+            f"category: {r.get('category_name','')}\n"
+            f"source: {r.get('source','')}\n"
+            f"severity: {r.get('severity','')} | confidence: {r.get('confidence','')}\n"
+            f"location: {r.get('location','')}\n"
+            f"details: {(r.get('post_text','') or '')[:400]}\n"
+            f"tags: {r.get('tags','')}")
+
+
+def _llm_parse_response(text: str, batch: list) -> dict:
+    """Defensive JSON parsing — a model can wrap the array in markdown
+    fences despite instructions, or add stray text before/after. Only
+    accepts inferences for threat_ids actually in this batch (defends
+    against the model inventing entries) and caps length (defends
+    against a model ignoring the one-sentence instruction)."""
+    if not text:
+        return {}
+    cleaned = text.strip()
+    if cleaned.startswith("```"):
+        cleaned = re.sub(r'^```[a-zA-Z]*\n?', '', cleaned)
+        cleaned = re.sub(r'\n?```$', '', cleaned)
+    match = re.search(r'\[.*\]', cleaned, re.DOTALL)
+    if not match:
+        return {}
+    try:
+        parsed = json.loads(match.group(0))
+    except Exception:
+        return {}
+    if not isinstance(parsed, list):
+        return {}
+    valid_ids = {r.get("threat_id") for r in batch}
+    out = {}
+    for item in parsed:
+        if not isinstance(item, dict):
+            continue
+        tid = item.get("threat_id")
+        inf = item.get("inference")
+        if tid in valid_ids and isinstance(inf, str) and inf.strip():
+            out[tid] = inf.strip()[:_LLM_MAX_INFERENCE_CHARS]
+    return out
+
+
+def _call_groq(api_key: str, batch: list) -> dict:
+    prompt = _LLM_SYSTEM_PROMPT + "\n\nROWS:\n\n" + "\n\n".join(_llm_row_to_text(r) for r in batch)
+    resp = requests.post(
+        "https://api.groq.com/openai/v1/chat/completions",
+        headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
+        json={"model": "llama-3.1-8b-instant",
+              "messages": [{"role": "user", "content": prompt}],
+              "temperature": 0.2, "max_tokens": 2000},
+        timeout=30)
+    resp.raise_for_status()
+    text = resp.json()["choices"][0]["message"]["content"]
+    return _llm_parse_response(text, batch)
+
+
+def _call_gemini(api_key: str, batch: list) -> dict:
+    prompt = _LLM_SYSTEM_PROMPT + "\n\nROWS:\n\n" + "\n\n".join(_llm_row_to_text(r) for r in batch)
+    resp = requests.post(
+        f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={api_key}",
+        headers={"Content-Type": "application/json"},
+        json={"contents": [{"parts": [{"text": prompt}]}],
+              "generationConfig": {"temperature": 0.2, "maxOutputTokens": 2000}},
+        timeout=30)
+    resp.raise_for_status()
+    text = resp.json()["candidates"][0]["content"]["parts"][0]["text"]
+    return _llm_parse_response(text, batch)
+
+
+def _call_openrouter(api_key: str, batch: list) -> dict:
+    prompt = _LLM_SYSTEM_PROMPT + "\n\nROWS:\n\n" + "\n\n".join(_llm_row_to_text(r) for r in batch)
+    resp = requests.post(
+        "https://openrouter.ai/api/v1/chat/completions",
+        headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
+        json={"model": "meta-llama/llama-3.3-70b-instruct:free",
+              "messages": [{"role": "user", "content": prompt}],
+              "temperature": 0.2, "max_tokens": 2000},
+        timeout=30)
+    resp.raise_for_status()
+    text = resp.json()["choices"][0]["message"]["content"]
+    return _llm_parse_response(text, batch)
+
+
+def generate_ai_inferences(rows: list) -> None:
+    """Mutates rows in place, setting row["ai_inference"] for any row that
+    doesn't already have a non-empty one. Skips Certificate Intel rows
+    entirely (crt.sh/DNS/correlation/CT-Discovered pivots) — those already
+    get a free, instant, deterministic inference client-side in the
+    dashboard, so spending API quota on them would be pure waste.
+
+    Tries Groq -> Gemini -> OpenRouter per batch, in that order (see
+    CONFIG comment for groq_api_key). If a provider errors or its key
+    isn't set, falls through to the next; if all three are unavailable for
+    a batch, that batch is silently skipped (rows just keep an empty
+    ai_inference — same graceful-degradation as every other optional
+    enrichment in this tool)."""
+    providers = [
+        ("Groq", _call_groq, "groq_api_key"),
+        ("Gemini", _call_gemini, "gemini_api_key"),
+        ("OpenRouter", _call_openrouter, "openrouter_api_key"),
+    ]
+    active = [(name, fn, k) for name, fn, k in providers if key_available(k)]
+    if not active:
+        return
+
+    def _is_cert_intel_row(r):
+        if r.get("source") in ("crt.sh (Certificate Transparency)",
+                                "Cloudflare DoH + OTX Passive DNS",
+                                "Correlation (multi-source)"):
+            return True
+        return "CT-Discovered:" in (r.get("threat_name") or "")
+
+    todo = [r for r in rows if not r.get("ai_inference") and not _is_cert_intel_row(r)]
+    if not todo:
+        return
+
+    batches = [todo[i:i + _LLM_BATCH_SIZE] for i in range(0, len(todo), _LLM_BATCH_SIZE)]
+    filled = 0
+    for batch in batches:
+        result = {}
+        for name, fn, key_name in active:
+            try:
+                result = fn(CONFIG[key_name], batch)
+                if result:
+                    break
+            except Exception as e:
+                log.warning(f"AI inference [{name}]: {e} — trying next provider")
+        for r in batch:
+            inf = result.get(r.get("threat_id"))
+            if inf:
+                r["ai_inference"] = inf
+                filled += 1
+        time.sleep(1)
+    log.info(f"AI inference: {filled} of {len(todo)} eligible rows enriched")
+
+
 def deduplicate_rows(rows: list, seen: dict) -> tuple:
     new_rows = []
     for row in rows:
@@ -5957,6 +6152,8 @@ def run_collection():
     log.info(f"  [T8] Defence RSS feeds                 : ACTIVE (free)")
     log.info(f"  [T8] Telegram channels                 : ACTIVE (free — {len(CONFIG.get('telegram_channels',[]))} channels)")
     log.info(f"  [--] VirusTotal enrichment              : {status('virustotal_api_key')}")
+    ai_providers = [n for n, k in [("Groq","groq_api_key"),("Gemini","gemini_api_key"),("OpenRouter","openrouter_api_key")] if key_available(k)]
+    log.info(f"  [--] AI inference (plain-English 'so what') : {'ACTIVE — ' + '/'.join(ai_providers) if ai_providers else 'SKIPPED — set groq_api_key, gemini_api_key, or openrouter_api_key'}")
     log.info(f"  [--] Discord alerts                    : {'ACTIVE' if CONFIG.get('discord_webhook_url') else 'DISABLED'}")
     wa_ready = CONFIG.get("twilio_account_sid") and CONFIG.get("twilio_auth_token") and CONFIG.get("whatsapp_to")
     log.info(f"  [--] WhatsApp alerts (Twilio)          : {'ACTIVE' if wa_ready else 'DISABLED'}")
@@ -6178,6 +6375,10 @@ def run_collection():
     save_seen_threats(seen_threats)
     save_module_health(module_health)
     log.info(f"[POST] {dup_count} duplicates suppressed | {len(new_rows)} new threats this run")
+
+    if key_available("groq_api_key") or key_available("gemini_api_key") or key_available("openrouter_api_key"):
+        log.info("[POST] Generating AI inference for new rows...")
+        generate_ai_inferences(new_rows)
 
     if CONFIG.get("master_csv"):
         log.info("[POST] Merging new findings into master CSV...")
