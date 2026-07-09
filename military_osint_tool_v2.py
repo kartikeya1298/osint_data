@@ -304,17 +304,26 @@ CONFIG = {
     "stix_export":             True,
     "request_delay_sec":       1.5,
     "urlscan_api_key":         "",
-    # Session-cookie auth for urlscan.io's /result/{uuid}/ detail endpoint --
-    # confirmed live (see chat) this 403s with "You're not logged in!" even
-    # WITH a valid free API key, so urlscan_api_key alone can't reach it.
-    # Same pattern discussed for any gated site: log into urlscan.io in a
-    # normal browser, open DevTools -> Network tab, reload, click any
-    # request to urlscan.io, copy the full value of the "cookie" request
-    # header, paste it here whole (multiple "name=value; name2=value2"
-    # pairs, not just one). Never the account password -- this only reuses
-    # a session you created yourself, expires/refreshes like any browser
-    # session, and is revoked the moment you log out. Leave empty to skip;
-    # the module still works off the free /search/ endpoint without it.
+    # Try urlscan_api_key first for the /result/{uuid}/ detail endpoint --
+    # urlscan.io's own pricing page lists 10,000 Result API requests/day
+    # on the FREE tier, not gated behind a paid plan, so a real free key
+    # (same account you'd sign up for either way) may be all that's
+    # needed. What's actually confirmed live (see chat) is only that
+    # ANONYMOUS requests -- no key, no cookie -- 403 with "You're not
+    # logged in!"; no real key was ever tested here to know for sure.
+    # urlscan_session_cookie below is the verified-working fallback if a
+    # bare key isn't enough. If you end up setting both, use the SAME
+    # account for both -- no reason to split them, and mixing accounts
+    # isn't a scenario urlscan.io's auth is built to expect.
+    #
+    # Session-cookie auth: log into urlscan.io in a normal browser, open
+    # DevTools -> Network tab, reload, click any request to urlscan.io,
+    # copy the full value of the "cookie" request header, paste it here
+    # whole (multiple "name=value; name2=value2" pairs, not just one).
+    # Never the account password -- this only reuses a session you
+    # created yourself, expires/refreshes like any browser session, and
+    # is revoked the moment you log out. Leave both empty to skip; the
+    # module still works off the free /search/ endpoint either way.
     "urlscan_session_cookie":  "",
     "nvd_api_key":             "",
     "whatsapp_alert_threshold": "high",
@@ -3733,17 +3742,23 @@ def fetch_urlscan(api_key: str = "", extra_domains: list = None) -> list:
     screenshots" step — nothing else in this tool captures screenshots),
     and request-footprint stats.
 
-    If urlscan_session_cookie is set (see CONFIG comment — a session
-    cookie exported from a normal logged-in browser, not the account
-    password), it additionally fetches the detail endpoint for the
-    highest-value hits: the api_key-only path here was tried first and
-    confirmed live to still 403 with "You're not logged in!" even with a
-    valid free key, so the cookie is the actual gate, not the key. Pulls
-    technology signatures via the shared fingerprinter plus a couple of
-    extra fields the detail record has that /search/ doesn't (page IP,
-    ASN). Best-effort either way — fails silently per-hit if the cookie's
-    expired or the response shape doesn't match, same as every other
-    optional enrichment in this tool."""
+    If urlscan_api_key or urlscan_session_cookie is set, additionally
+    fetches the detail endpoint for the highest-value hits. Correction
+    (see chat): an earlier version of this docstring claimed a real API
+    key was "confirmed" insufficient here -- that's overstated. What was
+    actually confirmed live is that ANONYMOUS requests (no key, no
+    cookie) 403 with "You're not logged in!"; no real urlscan_api_key was
+    ever configured to test whether a genuine free key alone satisfies
+    it. urlscan.io's own pricing page explicitly includes 10,000 Result
+    API requests/day on the Free tier, not gated behind a paid plan, so
+    a plain free key may well be enough on its own. urlscan_session_cookie
+    (a session cookie exported from a normal logged-in browser, never the
+    account password) is the verified-working fallback if a bare key
+    turns out not to be. Pulls technology signatures via the shared
+    fingerprinter plus page IP/ASN, fields the detail record has that
+    /search/ doesn't. Best-effort either way — fails silently per-hit if
+    the credential's invalid/expired or the response shape doesn't
+    match, same as every other optional enrichment in this tool."""
     # Narrowed to India + neighbouring countries only (per explicit instruction).
     rows = []
     queries = [
@@ -3833,12 +3848,18 @@ def fetch_urlscan(api_key: str = "", extra_domains: list = None) -> list:
 
                 tech_tags = ""
                 detail_extra = ""
-                # Gated on session_cookie, not api_key -- confirmed live
-                # (see docstring) that a bare API key still 403s "You're
-                # not logged in!" on this endpoint. api_key alone was the
-                # old (unverified, never-fired) gate; session_cookie is
-                # the credential actually shown to matter.
-                if session_cookie and (is_sensitive or is_new_domain) and detail_calls < 5:
+                # Tries either credential -- urlscan.io's own pricing page
+                # (see chat) shows the Free tier explicitly includes
+                # 10,000 Result API requests/day, not gated behind a paid
+                # plan, so a plain free api_key may well be enough on its
+                # own; that was never actually tested against a real key
+                # (the account this was built against had none configured
+                # at all). session_cookie is the verified-working fallback
+                # if a bare key still isn't enough -- detail_headers
+                # already carries both together when both are set, so
+                # whichever urlscan.io's backend actually checks, it's
+                # there.
+                if (session_cookie or api_key) and (is_sensitive or is_new_domain) and detail_calls < 5:
                     detail_calls += 1
                     try:
                         d = requests.get(f"https://urlscan.io/api/v1/result/{uuid}/",
