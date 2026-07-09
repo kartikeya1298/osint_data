@@ -133,6 +133,13 @@
   .rel-dual{background:rgba(255,159,10,.15);color:var(--orange);border:1px solid rgba(255,159,10,.3);}
   .rel-verified{background:rgba(48,209,88,.12);color:var(--green);border:1px solid rgba(48,209,88,.3);}
 
+  /* Chat (Ask AI panel) */
+  .chat-msg{max-width:75%;padding:10px 14px;border-radius:12px;font-size:13px;line-height:1.5;white-space:pre-wrap;word-wrap:break-word;}
+  .chat-msg.user{align-self:flex-end;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-bottom-right-radius:3px;}
+  .chat-msg.ai{align-self:flex-start;background:var(--surface2);border:1px solid var(--border);border-bottom-left-radius:3px;}
+  .chat-msg.error{align-self:flex-start;background:rgba(255,69,96,.12);border:1px solid rgba(255,69,96,.3);color:var(--red);}
+  .chat-msg.system{align-self:center;background:transparent;color:var(--muted);font-size:11px;font-style:italic;max-width:90%;text-align:center;}
+
   /* Pagination */
   .pagination{display:flex;align-items:center;justify-content:flex-end;gap:7px;padding:12px 18px;border-top:1px solid var(--border);}
   .page-btn{background:var(--surface2);border:1px solid var(--border);color:var(--text);
@@ -227,6 +234,7 @@
     <div class="tab" data-tab="map" onclick="switchTab('map')">🗺 Threat Map</div>
     <div class="tab" data-tab="cert" onclick="switchTab('cert')">🔐 Certificate Intel</div>
     <div class="tab" data-tab="compare" onclick="switchTab('compare')">📊 Compare Runs</div>
+    <div class="tab" data-tab="chat" onclick="switchTab('chat')">💬 Ask AI</div>
   </div>
 
   <!-- ── INTELLIGENCE TABLE PANEL ── -->
@@ -407,6 +415,43 @@
       Add 2+ CSV files above to start comparing runs
     </div>
   </div>
+
+  <!-- ── ASK AI PANEL ── -->
+  <div class="panel" id="panel-chat">
+    <div class="chart-card" style="margin-bottom:16px">
+      <h3 style="margin-bottom:10px">Chat Settings</h3>
+      <p style="font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:12px">
+        Your API key is stored only in this browser's local storage — never written into this
+        HTML file, never included in anything committed to git. It's sent directly from your
+        browser to the provider you pick below when you send a message, the same as any other
+        client-side app using that provider's API.
+      </p>
+      <div class="filters-bar" style="margin-bottom:0">
+        <select id="chat-provider" style="min-width:140px">
+          <option value="groq">Groq (llama-3.1-8b-instant)</option>
+          <option value="gemini">Gemini (2.5 Flash)</option>
+          <option value="openrouter">OpenRouter (free models)</option>
+        </select>
+        <div class="search-wrap" style="flex:1;min-width:220px">
+          <input type="password" id="chat-api-key" placeholder="Paste your API key for the selected provider…">
+        </div>
+        <button class="hbtn" onclick="saveChatKey()">Save key</button>
+        <button class="hbtn" onclick="clearChatKey()">Clear saved key</button>
+        <label class="new-only-wrap" title="Sends the currently-filtered Intelligence Table rows as context so answers are grounded in your actual data">
+          <input type="checkbox" id="chat-include-context" checked> Include filtered table rows as context
+        </label>
+      </div>
+      <div id="chat-key-status" style="font-size:11px;color:var(--muted);margin-top:8px"></div>
+    </div>
+    <div class="table-wrap" style="display:flex;flex-direction:column;height:520px">
+      <div id="chat-messages" style="flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px"></div>
+      <div style="border-top:1px solid var(--border);padding:12px;display:flex;gap:8px">
+        <input type="text" id="chat-input" placeholder="Ask about this data — e.g. 'what's the most urgent CRITICAL finding right now?'"
+               style="flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:10px 14px;font-size:13px;outline:none">
+        <button class="hbtn primary" onclick="sendChatMessage()">Send</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -459,6 +504,8 @@ let mapInstance=null, mapInitialized=false, mapMarkers=[];
 let compareRuns=[];   // [{name, rows}]
 let compareBarChart=null, compareSevChart=null;
 let catChart=null, sevChart=null, srcChart=null;
+let chatHistory=[];   // [{role:'user'|'assistant', content:string}]
+let chatInitialized=false;
 
 // ── Tab switching ────────────────────────────────────────────────────────────
 function switchTab(tab) {
@@ -469,6 +516,7 @@ function switchTab(tab) {
   if (tab==='map' && !mapInitialized) initMap();
   if (tab==='map' && mapInitialized) mapInstance.invalidateSize();
   if (tab==='cert') renderCertPanel();
+  if (tab==='chat' && !chatInitialized) initChatPanel();
 }
 
 // ── File loading ─────────────────────────────────────────────────────────────
@@ -1061,6 +1109,173 @@ function renderCompare() {
 function removeRun(idx) {
   compareRuns.splice(idx,1);
   renderCompare();
+}
+
+// ── Ask AI (interactive chat) ────────────────────────────────────────────────
+// Separate from the per-row AI Inference column (which runs server-side in the
+// Python collection tool, keys only ever in .env) — this is a live, in-browser
+// chat, so the key has to live in the browser. Stored in localStorage, one per
+// provider, NEVER written into this HTML file itself, so it's never at risk of
+// being committed — see chat. Reuses the same "don't invent facts not in the
+// provided context" grounding principle as the batch inference prompt.
+const _CHAT_SYSTEM_PROMPT =
+  "You are an OSINT analyst assistant helping review cyber threat intelligence data about " +
+  "military/government targets in India and its neighbouring countries (Pakistan, China, " +
+  "Bangladesh, Nepal, Sri Lanka, Myanmar). If a DATA CONTEXT block is provided below, answer " +
+  "using ONLY the facts in it plus general security knowledge for explaining concepts -- do " +
+  "not invent specific attribution, incidents, or details about this dataset that aren't " +
+  "actually present in the context. If no context is provided or it doesn't cover what's " +
+  "asked, say so plainly rather than guessing. Be concise and direct.";
+
+function _chatKeyStorageKey(provider) { return `milosint_chat_key_${provider}`; }
+
+function saveChatKey() {
+  const provider = document.getElementById('chat-provider').value;
+  const key = document.getElementById('chat-api-key').value.trim();
+  if (!key) { alert('Enter a key first.'); return; }
+  localStorage.setItem(_chatKeyStorageKey(provider), key);
+  document.getElementById('chat-api-key').value = '';
+  _refreshChatKeyStatus();
+}
+
+function clearChatKey() {
+  const provider = document.getElementById('chat-provider').value;
+  localStorage.removeItem(_chatKeyStorageKey(provider));
+  _refreshChatKeyStatus();
+}
+
+function _refreshChatKeyStatus() {
+  const provider = document.getElementById('chat-provider').value;
+  const saved = localStorage.getItem(_chatKeyStorageKey(provider));
+  const el = document.getElementById('chat-key-status');
+  el.textContent = saved
+    ? `✓ A key is saved for ${provider} in this browser (${saved.slice(0,6)}…, ${saved.length} chars).`
+    : `No key saved for ${provider} yet in this browser.`;
+}
+
+function initChatPanel() {
+  chatInitialized = true;
+  document.getElementById('chat-provider').addEventListener('change', _refreshChatKeyStatus);
+  document.getElementById('chat-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChatMessage(); }
+  });
+  _refreshChatKeyStatus();
+  appendChatMessage('system', 'Pick a provider above, paste the matching API key, hit "Save key", then ask a question. The key stays in this browser only.');
+}
+
+function appendChatMessage(role, text) {
+  const container = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  div.className = `chat-msg ${role}`;
+  div.textContent = text;
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+}
+
+// Caps at 30 rows, CRITICAL/HIGH first, so a chat question doesn't silently
+// balloon into a multi-thousand-row payload — same reasoning as the batch
+// size cap on the Python side, just applied to context instead of a queue.
+function _buildChatContext() {
+  const sevOrder = {CRITICAL:0, HIGH:1, MEDIUM:2, LOW:3, UNKNOWN:4};
+  const rows = [...filtered].sort((a,b) => (sevOrder[a.severity]??9) - (sevOrder[b.severity]??9)).slice(0, 30);
+  if (!rows.length) return '';
+  const lines = rows.map(r =>
+    `- [${r.category_code}] ${r.threat_name} | source: ${r.source} | severity: ${r.severity} | ` +
+    `confidence: ${r.confidence} | location: ${r.location} | details: ${(r.post_text||'').slice(0,200)}`
+  );
+  return `\n\nDATA CONTEXT (${rows.length} of ${filtered.length} currently-filtered rows, highest severity first):\n${lines.join('\n')}`;
+}
+
+let _openRouterChatModelCache = null;
+async function _openRouterFreeModel() {
+  if (_openRouterChatModelCache) return _openRouterChatModelCache;
+  const resp = await fetch('https://openrouter.ai/api/v1/models');
+  const data = await resp.json();
+  const avoid = ['safety','moderation','guard','omni','-vl','embed'];
+  const free = (data.data||[]).map(m=>m.id).filter(id => id.endsWith(':free') && !avoid.some(p=>id.toLowerCase().includes(p)));
+  if (!free.length) throw new Error('no free OpenRouter models currently listed');
+  _openRouterChatModelCache = free[0];
+  return free[0];
+}
+
+async function _callGroqChat(apiKey, messages) {
+  const resp = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    method: 'POST',
+    headers: {'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json'},
+    body: JSON.stringify({model: 'llama-3.1-8b-instant', messages, temperature: 0.3, max_tokens: 600}),
+  });
+  if (!resp.ok) throw new Error(`Groq ${resp.status}: ${(await resp.text()).slice(0,200)}`);
+  const data = await resp.json();
+  return data.choices[0].message.content;
+}
+
+async function _callGeminiChat(apiKey, messages) {
+  // Gemini uses role:"user"/"model" (not "assistant") and has no separate
+  // system-message slot in this basic call shape, so the system prompt gets
+  // folded into the first user turn instead.
+  const sys = messages.find(m => m.role === 'system');
+  const rest = messages.filter(m => m.role !== 'system');
+  const contents = rest.map((m, i) => ({
+    role: m.role === 'assistant' ? 'model' : 'user',
+    parts: [{text: (i === 0 && sys) ? `${sys.content}\n\n${m.content}` : m.content}],
+  }));
+  const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({contents, generationConfig: {temperature: 0.3, maxOutputTokens: 600}}),
+  });
+  if (!resp.ok) throw new Error(`Gemini ${resp.status}: ${(await resp.text()).slice(0,200)}`);
+  const data = await resp.json();
+  return data.candidates[0].content.parts[0].text;
+}
+
+async function _callOpenRouterChat(apiKey, messages) {
+  const model = await _openRouterFreeModel();
+  const resp = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+    method: 'POST',
+    headers: {'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json'},
+    body: JSON.stringify({model, messages, temperature: 0.3, max_tokens: 600}),
+  });
+  if (!resp.ok) throw new Error(`OpenRouter [${model}] ${resp.status}: ${(await resp.text()).slice(0,200)}`);
+  const data = await resp.json();
+  return data.choices[0].message.content;
+}
+
+async function sendChatMessage() {
+  const input = document.getElementById('chat-input');
+  const question = input.value.trim();
+  if (!question) return;
+  const provider = document.getElementById('chat-provider').value;
+  const apiKey = localStorage.getItem(_chatKeyStorageKey(provider));
+  if (!apiKey) {
+    appendChatMessage('error', `No saved key for ${provider}. Paste one above and hit "Save key" first.`);
+    return;
+  }
+
+  input.value = '';
+  appendChatMessage('user', question);
+  const includeContext = document.getElementById('chat-include-context').checked;
+  const contextBlock = includeContext ? _buildChatContext() : '';
+
+  chatHistory.push({role: 'user', content: question + (chatHistory.length === 0 ? contextBlock : '')});
+  const messages = [{role: 'system', content: _CHAT_SYSTEM_PROMPT}, ...chatHistory.slice(-8)];
+
+  const thinkingEl = document.createElement('div');
+  thinkingEl.className = 'chat-msg ai';
+  thinkingEl.textContent = 'Thinking…';
+  document.getElementById('chat-messages').appendChild(thinkingEl);
+  thinkingEl.scrollIntoView({block: 'end'});
+
+  try {
+    const fn = {groq: _callGroqChat, gemini: _callGeminiChat, openrouter: _callOpenRouterChat}[provider];
+    const reply = await fn(apiKey, messages);
+    thinkingEl.remove();
+    appendChatMessage('ai', reply);
+    chatHistory.push({role: 'assistant', content: reply});
+  } catch (e) {
+    thinkingEl.remove();
+    appendChatMessage('error', `${e.message}\n\nIf this looks like a CORS or network error, that provider may not allow direct browser calls — try a different provider above.`);
+  }
 }
 
 // ── PDF Export ────────────────────────────────────────────────────────────────
