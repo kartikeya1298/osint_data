@@ -1233,7 +1233,7 @@ def fetch_paste_leaks() -> list:
                         "threat_name":   f"Paste Leak — {label}",
                         "category_code": "T1", "category_name": CATEGORY_NAMES["T1"],
                         "source_layer":  "Deep Web", "source": "Paste Monitor (psbdmp)",
-                        "post_text":     f"Query: {q} | Paste ID: {paste_id} | Snippet: {snippet[:250]}",
+                        "post_text":     f"Query: {q} | Paste ID: {paste_id} | Snippet: {snippet[:600]}",
                         "post_url":      paste_url,
                         "timestamp":     str(item.get("time") or item.get("date") or now_utc()),
                         "location":      "Global", "severity": "CRITICAL", "confidence": "MEDIUM",
@@ -1389,7 +1389,7 @@ def fetch_tavily_search(api_key: str) -> list:
                     "threat_name":   f"Tavily Search — {label}",
                     "category_code": cat, "category_name": CATEGORY_NAMES[cat],
                     "source_layer":  "Surface Web", "source": "Tavily Search API",
-                    "post_text":     f"Query: {query} | Title: {title[:150]} | Snippet: {snippet[:250]}",
+                    "post_text":     f"Query: {query} | Title: {title[:200]} | Snippet: {snippet[:600]}",
                     "post_url":      link,
                     "timestamp":     now_utc(), "location": _tavily_location(label, text),
                     "severity":      sev, "confidence": "MEDIUM",
@@ -1558,7 +1558,7 @@ def fetch_intelx_pastes(api_key: str, query: str = ".mil") -> list:
                 "threat_name":   "Defence Document/Data Leakage",
                 "category_code": "T2", "category_name": CATEGORY_NAMES["T2"],
                 "source_layer":  "Deep Web", "source": "IntelligenceX",
-                "post_text":     r.get("name", "")[:500],
+                "post_text":     r.get("name", "")[:600],
                 "post_url":      f"https://intelx.io/?did={r.get('systemid', '')}",
                 "timestamp":     r.get("date", now_utc()), "location": r.get("bucket", "Unknown"),
                 "severity":      "CRITICAL", "confidence": "MEDIUM",
@@ -1787,7 +1787,7 @@ def fetch_leakix(api_key: str, extra_domains: list = None) -> list:
             "threat_name":   f"LeakIX {scope.title()} — {label} — {plugin or 'Unknown Service'}",
             "category_code": cat, "category_name": cat_name,
             "source_layer":  "Deep Web", "source": "LeakIX",
-            "post_text":     f"Target: {label} | Host: {host}:{port} | Plugin: {plugin} | {summary[:250]}",
+            "post_text":     f"Target: {label} | Host: {host}:{port} | Plugin: {plugin} | {summary[:600]}",
             "post_url":      f"https://leakix.net/host/{ip}" if ip else "https://leakix.net",
             "timestamp":     str(item.get("time") or now_utc()), "location": country,
             "severity":      sev, "confidence": "HIGH",
@@ -2278,8 +2278,8 @@ def fetch_flashpoint(api_key: str) -> list:
                         "threat_name":   f"Flashpoint Dark Web — {label}",
                         "category_code": "T2", "category_name": CATEGORY_NAMES["T2"],
                         "source_layer":  "Dark Web", "source": "Flashpoint (dark web intelligence)",
-                        "post_text":     f"Title: {title[:100]} | Category: {src.get('site_tags') or []} | "
-                                         f"{(src.get('body', {}).get('text/plain') or src.get('summary') or '')[:300]}",
+                        "post_text":     f"Title: {title[:150]} | Category: {src.get('site_tags') or []} | "
+                                         f"{(src.get('body', {}).get('text/plain') or src.get('summary') or '')[:700]}",
                         "post_url":      f"https://app.flashpoint.io/documents/{doc_id}",
                         "timestamp":     str(src.get("date_extracted") or src.get("timestamp") or now_utc()),
                         "location":      "Dark Web", "severity": "CRITICAL", "confidence": "HIGH",
@@ -2526,7 +2526,7 @@ def fetch_tor_onion() -> list:
                     "threat_name":   f"Dark Web Search (Torch .onion) — {label}",
                     "category_code": cat, "category_name": CATEGORY_NAMES.get(cat, CATEGORY_NAMES["T2"]),
                     "source_layer":  "Dark Web", "source": "Torch dark web search (.onion)",
-                    "post_text":     f"Query: {q} | Title: {(title or link)[:100]} | Snippet: {snippet[:200]} | URL: {link[:120]}",
+                    "post_text":     f"Query: {q} | Title: {(title or link)[:150]} | Snippet: {snippet[:500]} | URL: {link[:120]}",
                     "post_url":      link, "timestamp": now_utc(), "location": "Dark Web",
                     "severity":      "HIGH" if tier == "strong" else "MEDIUM",
                     "confidence":    "HIGH" if tier == "strong" else "MEDIUM",
@@ -2595,7 +2595,7 @@ def fetch_telethon_private() -> list:
                         "threat_name":   f"Telegram Private — {chan_name[:40]}",
                         "category_code": "T2", "category_name": CATEGORY_NAMES["T2"],
                         "source_layer":  "Dark Web", "source": f"Telegram Private (Telethon) — {chan_name}",
-                        "post_text":     f"Channel: {chan_name} | Sender: {msg.sender_id or 'Unknown'} | {msg.text[:400]}",
+                        "post_text":     f"Channel: {chan_name} | Sender: {msg.sender_id or 'Unknown'} | {msg.text[:800]}",
                         "post_url":      f"https://t.me/{chan_user}",
                         "timestamp":     str(msg.date) if msg.date else now_utc(),
                         "location":      "Unknown", "severity": sev, "confidence": "HIGH",
@@ -2645,7 +2645,7 @@ def fetch_cybersixgill(client_id: str, client_secret: str) -> list:
                         "threat_name":   f"Cybersixgill — {label}",
                         "category_code": cat, "category_name": CATEGORY_NAMES.get(cat, CATEGORY_NAMES["T2"]),
                         "source_layer":  "Dark Web", "source": f"Cybersixgill ({site})",
-                        "post_text":     f"Source: {site} | Title: {(item.get('title') or q)[:100]} | {(item.get('content') or '')[:300]}",
+                        "post_text":     f"Source: {site} | Title: {(item.get('title') or q)[:150]} | {(item.get('content') or '')[:700]}",
                         "post_url":      f"https://portal.cybersixgill.com/dashboard/items/{item_id}",
                         "timestamp":     str(item.get("date") or now_utc()), "location": "Dark Web",
                         "severity":      "CRITICAL", "confidence": "HIGH",
@@ -2688,8 +2688,8 @@ def fetch_kela_radark(api_key: str) -> list:
                         "threat_name":   f"KELA RaDark — {label}",
                         "category_code": cat, "category_name": CATEGORY_NAMES.get(cat, CATEGORY_NAMES["T2"]),
                         "source_layer":  "Dark Web", "source": f"KELA RaDark ({source})",
-                        "post_text":     f"Source: {source} | Title: {(item.get('title') or q)[:100]} | "
-                                         f"{(item.get('snippet') or item.get('content') or '')[:300]}",
+                        "post_text":     f"Source: {source} | Title: {(item.get('title') or q)[:150]} | "
+                                         f"{(item.get('snippet') or item.get('content') or '')[:700]}",
                         "post_url":      f"https://radar.ke-la.com/item/{item_id}",
                         "timestamp":     str(item.get("date") or item.get("timestamp") or now_utc()),
                         "location":      "Dark Web", "severity": "CRITICAL", "confidence": "HIGH",
@@ -2848,7 +2848,7 @@ def fetch_shodan_military(api_key: str, extra_domains: list = None) -> list:
                     "category_code": _domain_scan_category(label),
                     "category_name": CATEGORY_NAMES[_domain_scan_category(label)],
                     "source_layer":  "Deep Web", "source": "Shodan",
-                    "post_text":     f"Org: {m.get('org','')} | Port: {m.get('port','')} | Banner: {str(m.get('data',''))[:300]}",
+                    "post_text":     f"Org: {m.get('org','')} | Port: {m.get('port','')} | Banner: {str(m.get('data',''))[:600]}",
                     "post_url":      f"https://www.shodan.io/host/{ip}",
                     "timestamp":     m.get("timestamp", now_utc()),
                     "location":      loc,
@@ -3707,7 +3707,7 @@ def fetch_urlscan(api_key: str = "", extra_domains: list = None) -> list:
                     "category_code": _domain_scan_category(label),
                     "category_name": CATEGORY_NAMES[_domain_scan_category(label)],
                     "source_layer":  "Surface Web", "source": "URLScan.io",
-                    "post_text":     post_text[:500],
+                    "post_text":     post_text[:700],
                     "post_url":      f"https://urlscan.io/result/{uuid}/",
                     "timestamp":     str(r.get("task", {}).get("time", now_utc())), "location": domain_to_country(page.get("domain", "")),
                     "severity":      sev, "confidence": "MEDIUM",
@@ -4095,7 +4095,7 @@ def fetch_packetstorm() -> list:
                 "threat_name":   f"PacketStorm Security Advisory — {title[:60]}",
                 "category_code": "T5", "category_name": CATEGORY_NAMES["T5"],
                 "source_layer":  "Surface Web", "source": "PacketStorm Security",
-                "post_text":     f"{title} | {desc[:300]}",
+                "post_text":     f"{title} | {desc[:600]}",
                 "post_url":      link, "timestamp": str(pub), "location": "Global",
                 "severity":      "HIGH", "confidence": "HIGH",
                 "ioc_type":      "url", "ioc_value": link,
@@ -4158,7 +4158,7 @@ def fetch_otx_pulses(api_key: str) -> list:
                     "threat_name":   p.get("name", "APT/Malware Activity")[:100],
                     "category_code": "T6", "category_name": CATEGORY_NAMES["T6"],
                     "source_layer":  "Surface Web", "source": "OTX AlienVault",
-                    "post_text":     f"Pulse: {p.get('name','')} | Adversary: {p.get('adversary','Unknown')} | {desc_lower[:400]}",
+                    "post_text":     f"Pulse: {p.get('name','')} | Adversary: {p.get('adversary','Unknown')} | {desc_lower[:800]}",
                     "post_url":      f"https://otx.alienvault.com/pulse/{p.get('id','')}",
                     "timestamp":     p.get("created", now_utc()),
                     # p.get(key, default) only falls back to default when
@@ -4555,8 +4555,8 @@ def fetch_osv_cves() -> list:
                     "threat_name":   f"Critical CVE — Military Supply Chain{'  ★KEV' if in_kev else ''}",
                     "category_code": "T7", "category_name": CATEGORY_NAMES["T7"],
                     "source_layer":  "Deep Web", "source": "CIRCL CVE API",
-                    "post_text":     (f"{cve_id} | CVSS {score_f} | Advisory: {advisory_title[:100]}"
-                                      f"{' | IN CISA KEV (actively exploited)' if in_kev else ''} | {desc[:300]}"),
+                    "post_text":     (f"{cve_id} | CVSS {score_f} | Advisory: {advisory_title[:150]}"
+                                      f"{' | IN CISA KEV (actively exploited)' if in_kev else ''} | {desc[:600]}"),
                     "post_url":      f"https://cve.circl.lu/cve/{cve_id}",
                     "timestamp":     str(vuln.get("release_date") or vuln.get("discovery_date") or now_utc()),
                     "location":      "Global", "severity": severity, "confidence": "HIGH",
@@ -4632,7 +4632,7 @@ def fetch_nvd_cves() -> list:
                     "threat_name":   f"{'★KEV ' if in_kev else ''}NVD {cid} (CVSS {score_f:.1f}) — {kw.title()}",
                     "category_code": "T7", "category_name": CATEGORY_NAMES["T7"],
                     "source_layer":  "Surface Web", "source": "NVD (NIST)",
-                    "post_text":     f"CVSS: {score_f} | Vector: {vector} | KEV: {in_kev} | {desc[:300]}",
+                    "post_text":     f"CVSS: {score_f} | Vector: {vector} | KEV: {in_kev} | {desc[:600]}",
                     "post_url":      f"https://nvd.nist.gov/vuln/detail/{cid}",
                     "timestamp":     cve.get("published", now_utc())[:10],
                     "location":      "Global", "severity": sev, "confidence": "HIGH",
@@ -4742,7 +4742,7 @@ def fetch_defence_news_rss() -> list:
                     "threat_name":   "Defence/InfoOp News Intelligence",
                     "category_code": "T8", "category_name": CATEGORY_NAMES["T8"],
                     "source_layer":  "Surface Web", "source": source_name,
-                    "post_text":     f"{title} | {desc[:300]}",
+                    "post_text":     f"{title} | {desc[:600]}",
                     "post_url":      link, "timestamp": pub or now_utc(), "location": "Global",
                     "severity":      "MEDIUM", "confidence": "MEDIUM" if tier == "weak" else "HIGH",
                     # The feed's own domain used to sit here as a placeholder
@@ -5284,13 +5284,23 @@ _LLM_SYSTEM_PROMPT = (
 
 
 def _llm_row_to_text(r: dict) -> str:
+    # 400 -> 1000: was silently re-truncating post_text on top of each
+    # module's own cap, so a row could lose detail twice before the AI
+    # ever saw it (see chat -- caught via a real LeakIX row where the
+    # source-level cap alone was already dropping the back half of the
+    # finding). 1000 sits above every individual module's own post_text
+    # cap (raised alongside this, see fetch_leakix etc.) so this stops
+    # being an independent bottleneck. Batch math at _LLM_BATCH_SIZE=8
+    # still leaves ~2000+ tokens of headroom under Groq's 6,000 TPM
+    # ceiling even at this worst case -- see CONFIG comment for
+    # groq_api_key for where that ceiling number came from.
     return (f"threat_id: {r.get('threat_id','')}\n"
             f"threat_name: {r.get('threat_name','')}\n"
             f"category: {r.get('category_name','')}\n"
             f"source: {r.get('source','')}\n"
             f"severity: {r.get('severity','')} | confidence: {r.get('confidence','')}\n"
             f"location: {r.get('location','')}\n"
-            f"details: {(r.get('post_text','') or '')[:400]}\n"
+            f"details: {(r.get('post_text','') or '')[:1000]}\n"
             f"tags: {r.get('tags','')}")
 
 
