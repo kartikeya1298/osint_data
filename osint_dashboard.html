@@ -140,6 +140,15 @@
   .chat-msg.error{align-self:flex-start;background:rgba(255,69,96,.12);border:1px solid rgba(255,69,96,.3);color:var(--red);}
   .chat-msg.system{align-self:center;background:transparent;color:var(--muted);font-size:11px;font-style:italic;max-width:90%;text-align:center;}
 
+  /* Analyst review status pills */
+  .review-controls{display:flex;gap:4px;}
+  .review-pill{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;
+    border-radius:4px;cursor:pointer;font-size:10px;font-weight:700;color:var(--muted);
+    background:var(--surface2);border:1px solid var(--border);user-select:none;transition:all .15s;}
+  .review-pill:hover{border-color:var(--accent);color:var(--accent);}
+  .review-pill.active.v{background:rgba(48,209,88,.18);border-color:var(--green);color:var(--green);}
+  .review-pill.active.r{background:rgba(255,69,96,.15);border-color:var(--red);color:var(--red);}
+
   /* Pagination */
   .pagination{display:flex;align-items:center;justify-content:flex-end;gap:7px;padding:12px 18px;border-top:1px solid var(--border);}
   .page-btn{background:var(--surface2);border:1px solid var(--border);color:var(--text);
@@ -296,13 +305,22 @@
       <label class="new-only-wrap" title="Highlight rows with [CORRELATED] tag">
         <input type="checkbox" id="filter-correlated"> Correlated only
       </label>
+      <select id="filter-review" title="Filter by analyst review status">
+        <option value="">All Review Status</option>
+        <option value="pending">Pending</option>
+        <option value="verified">Verified</option>
+        <option value="rejected">Rejected</option>
+      </select>
       <span class="row-count" id="row-count"></span>
+      <span class="row-count" id="review-summary" style="margin-left:8px"></span>
+      <button class="hbtn" style="margin-left:auto" onclick="exportReviewLog()" title="Download a CSV of every row you've marked verified or rejected">⬇ Export review log</button>
     </div>
 
     <div class="table-wrap">
       <div class="table-scroll">
         <table id="data-table">
           <thead><tr>
+            <th>Review</th>
             <th data-col="threat_id">ID <span class="sort-icon">↕</span></th>
             <th data-col="category_code">Cat <span class="sort-icon">↕</span></th>
             <th data-col="threat_name">Threat <span class="sort-icon">↕</span></th>
@@ -568,7 +586,7 @@ document.getElementById('file-input-compare').addEventListener('change', e=>{
 });
 
 function attachListeners() {
-  ['search','filter-category','filter-severity','filter-confidence','filter-source','filter-layer'].forEach(id=>{
+  ['search','filter-category','filter-severity','filter-confidence','filter-source','filter-layer','filter-review'].forEach(id=>{
     const el = document.getElementById(id);
     if (el) el.addEventListener('input', ()=>{ currentPage=1; applyFilters(); });
   });
@@ -599,6 +617,7 @@ function applyFilters() {
   const src = document.getElementById('filter-source').value;
   const layer = document.getElementById('filter-layer').value;
   const corrOnly = document.getElementById('filter-correlated').checked;
+  const reviewFilter = document.getElementById('filter-review').value;
 
   filtered = allRows.filter(r=>{
     if (cat && r.category_code!==cat) return false;
@@ -607,6 +626,7 @@ function applyFilters() {
     if (src && r.source!==src) return false;
     if (layer && r.source_layer!==layer) return false;
     if (corrOnly && !(r.post_text||'').includes('[CORRELATED')) return false;
+    if (reviewFilter && getReviewStatus(r.threat_id)!==reviewFilter) return false;
     if (q) {
       const hay = [r.threat_name,r.source,r.post_text,r.ioc_value,r.tags,r.location,r.threat_id,r.ai_inference].join(' ').toLowerCase();
       if (!hay.includes(q)) return false;
@@ -623,6 +643,7 @@ function applyFilters() {
 
   document.getElementById('total-badge').textContent = allRows.length+' threats';
   document.getElementById('row-count').textContent = `${filtered.length} of ${allRows.length} rows`;
+  _refreshReviewSummary();
   renderTable();
 }
 
@@ -631,6 +652,78 @@ function populateSourceFilter() {
   const sel = document.getElementById('filter-source');
   sel.innerHTML = '<option value="">All Sources</option>';
   sources.forEach(s=>{ const o=document.createElement('option'); o.value=s; o.textContent=s; sel.appendChild(o); });
+}
+
+// ── Analyst Review Status ────────────────────────────────────────────────────
+// Per-row verified/rejected/pending status, stored only in this browser's
+// localStorage (same pattern as the Ask AI chat keys — never written into
+// this HTML file). Keyed by threat_id, which is a stable content-derived
+// hash (see short_id() on the Python side), so status survives across
+// dashboard regenerations for the same underlying finding. Absence from
+// the map means "pending" — nothing to backfill for existing rows.
+const _REVIEW_STORAGE_KEY = 'milosint_review_status';
+
+function _loadReviewMap() {
+  try { return JSON.parse(localStorage.getItem(_REVIEW_STORAGE_KEY) || '{}'); }
+  catch (e) { return {}; }
+}
+
+function _saveReviewMap(map) {
+  localStorage.setItem(_REVIEW_STORAGE_KEY, JSON.stringify(map));
+}
+
+function getReviewStatus(threatId) {
+  const map = _loadReviewMap();
+  return (map[threatId] && map[threatId].status) || 'pending';
+}
+
+function setReviewStatus(threatId, status) {
+  const map = _loadReviewMap();
+  if (status === 'pending') delete map[threatId];
+  else map[threatId] = {status, reviewed_at: new Date().toISOString()};
+  _saveReviewMap(map);
+  _refreshReviewSummary();
+  renderTable();
+}
+
+function reviewControlHtml(threatId, status) {
+  const id = esc(threatId);
+  const mk = (val, label, cls) => {
+    const next = status === val ? 'pending' : val;
+    return `<span class="review-pill ${status===val?'active '+cls:''}" onclick="setReviewStatus('${id}','${next}')" title="Mark ${label}">${label[0]}</span>`;
+  };
+  return `<span class="review-controls">${mk('verified','Verified','v')}${mk('rejected','Rejected','r')}</span>`;
+}
+
+function _refreshReviewSummary() {
+  const map = _loadReviewMap();
+  let verified=0, rejected=0;
+  Object.values(map).forEach(v=>{ if(v.status==='verified') verified++; else if(v.status==='rejected') rejected++; });
+  const el = document.getElementById('review-summary');
+  if (el) el.textContent = `· ${verified} verified, ${rejected} rejected, ${Math.max(0,allRows.length-verified-rejected)} pending`;
+}
+
+function exportReviewLog() {
+  const map = _loadReviewMap();
+  const ids = Object.keys(map);
+  if (!ids.length) { alert("No rows have been marked verified or rejected yet — click the V/R pills in the Review column first."); return; }
+  const byId = {};
+  allRows.forEach(r => { byId[r.threat_id] = r; });
+  const header = ['threat_id','status','reviewed_at','threat_name','category_code','severity','source','location'];
+  const lines = [header.join(',')];
+  ids.forEach(id => {
+    const entry = map[id];
+    const r = byId[id] || {};
+    const row = [id, entry.status, entry.reviewed_at, r.threat_name, r.category_code, r.severity, r.source, r.location]
+      .map(v => `"${String(v||'').replace(/"/g,'""')}"`);
+    lines.push(row.join(','));
+  });
+  const blob = new Blob([lines.join('\n')], {type:'text/csv'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `milosint_review_log_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
 // ── Table ────────────────────────────────────────────────────────────────────
@@ -643,7 +736,9 @@ function renderTable() {
     const isNew = (r.post_text||'').includes('[CORRELATED');
     const tr=document.createElement('tr');
     if (isNew) tr.classList.add('is-new');
+    const revStatus = getReviewStatus(r.threat_id);
     tr.innerHTML=`
+      <td>${reviewControlHtml(r.threat_id, revStatus)}</td>
       <td><span class="ioc-val" style="font-size:10px">${esc(r.threat_id||'')}</span></td>
       <td><span class="cat cat-${esc(r.category_code)}">${esc(r.category_code)}</span></td>
       <td><span class="cell-truncate" style="max-width:190px" title="${esc(r.threat_name)}">${esc(r.threat_name)}</span></td>
