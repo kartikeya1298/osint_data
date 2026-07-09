@@ -894,7 +894,50 @@ _GHW_SENSITIVE_EXTS = {
 _GHW_NEG_FILENAME_TERMS = {
     "icon", "medal", "clipart", "wallpaper", "meme", "logo",
     "thumbnail", "favicon", "banner", "badge",
+    # Found live (see chat): a "webcrawler.fra1.digitaloceanspaces.com"
+    # bucket matched every avic.com STRONG query, but it's a generic
+    # third-party web-scraping/monitoring service's own cache of AVIC's
+    # already-PUBLIC website and investor-relations pages -- not AVIC's
+    # own infrastructure, and not an exposure of anything confidential.
+    # "webcrawler"/"crawler_results" catch that bucket's own naming
+    # convention specifically; "investor_reports"/"investor_relations"
+    # catch the broader pattern (any company's public disclosures re-
+    # hosted by a monitoring tool) since public-by-definition documents
+    # aren't a leak regardless of which bucket happens to store them.
+    "webcrawler", "crawler_results", "investor_reports", "investor_relations",
+    # Found live (see chat): apparel/retail e-commerce listings sharing a
+    # bucket naming scheme ("...-navy-pajamas-for-him-for-her-lk-...")
+    # that happened to word-match a STRONG query's literal country-code
+    # suffix (".lk") in an unrelated context. These terms don't
+    # legitimately co-occur with a military/defence file.
+    "pajamas", "sleep-set", "sleepset", "outfits", "allover-print",
 }
+
+
+def _ghw_query_relevant(query: str, filename: str, bucket: str) -> bool:
+    """GrayhatWarfare's own search match isn't trustworthy on its own --
+    found live (see chat): a query for "army.lk"/"navy.lk"/"defence.lk"/
+    "airforce.lk" (a STRONG query, previously given the least filtering
+    of any tier) matched an unrelated apparel listing whose filename
+    ends in "...-lk-1634983482.aspx", where "lk" is plainly a product-
+    SKU fragment, not Sri Lanka's domain suffix -- none of "army",
+    "navy", "defence", or "airforce" ever appeared in that file at all.
+
+    Requires the query's distinctive word (the part before its first
+    ".", e.g. "army" from "army.lk", "bsf" from "bsf.gov.in") to appear
+    in the filename or bucket as a genuine word, not just a substring --
+    word-boundary-safe (same reasoning as _has_any() elsewhere in this
+    file: a naive `in` check would let "mod" match inside "module" the
+    same way "lk" matched inside an unrelated SKU). Separators (./_/-)
+    are normalised to spaces first since real filenames commonly write
+    a domain as "avic_com" or "bsf-gov-in", where a raw regex \\b
+    wouldn't split on the underscore/hyphen at all."""
+    token = query.split(".")[0]
+    if not token:
+        return True
+    haystack = re.sub(r"[._\-]", " ", f"{filename} {bucket}".lower())
+    return bool(re.search(rf"\b{re.escape(token.lower())}\b", haystack))
+
 
 # ═════════════════════════════════════════════════════════════════════════
 #  T1 | PERSONNEL & IDENTITY THREATS
@@ -1628,7 +1671,10 @@ def fetch_grayhatwarfare(api_key: str) -> list:
                     if ext in _GHW_SKIP_EXTS:
                         continue
                     fname_low = fname.lower()
-                    if any(t in fname_low for t in _GHW_NEG_FILENAME_TERMS):
+                    bucket_low = bucket.lower()
+                    if any(t in fname_low or t in bucket_low for t in _GHW_NEG_FILENAME_TERMS):
+                        continue
+                    if not _ghw_query_relevant(q, fname_low, bucket_low):
                         continue
                     if tier == "soft" and ext not in _GHW_SENSITIVE_EXTS:
                         continue
