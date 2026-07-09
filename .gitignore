@@ -33,3 +33,4 @@ run[0-9]*_*.log
 *_check.log
 mojibake_context.txt
 leakix_guide_extracted.txt
+ai_backfill_run*.log

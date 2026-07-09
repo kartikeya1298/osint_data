@@ -53,6 +53,7 @@ import os
 import re
 import sys
 import time
+import random
 import base64
 import hashlib
 import logging
@@ -5224,7 +5225,17 @@ def correlate_infrastructure(rows: list) -> list:
 # provider's documented API contract, but should be verified once a key
 # is added. Same "write to spec, verify live later" pattern already used
 # for other optional-key modules in this tool (e.g. SecurityTrails).
-_LLM_BATCH_SIZE = 15
+#
+# Batch size of 15 was live-tested and found too large: Groq's own rate-
+# limit headers (checked directly, not assumed from docs) showed this
+# account's real constraint is 6,000 TPM, not the ~14,400 RPD figure —
+# a 15-row batch (long system prompt + 15 rows of context) plus a 2000-
+# token output reservation could burn most of a 6K budget in a single
+# call, so two batches back-to-back 429'd every time. Cut to 8 rows and
+# a right-sized 800-token output cap (8 one-sentence inferences don't
+# need anywhere near 2000) to leave real headroom.
+_LLM_BATCH_SIZE = 8
+_LLM_MAX_OUTPUT_TOKENS = 800
 _LLM_MAX_INFERENCE_CHARS = 220  # guards against a model ignoring the length instruction
 
 _LLM_SYSTEM_PROMPT = (
@@ -5298,9 +5309,23 @@ def _call_groq(api_key: str, batch: list) -> dict:
         headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
         json={"model": "llama-3.1-8b-instant",
               "messages": [{"role": "user", "content": prompt}],
-              "temperature": 0.2, "max_tokens": 2000},
+              "temperature": 0.2, "max_tokens": _LLM_MAX_OUTPUT_TOKENS},
         timeout=30)
     resp.raise_for_status()
+    # A live bulk backfill found this account's real constraint is 6,000
+    # TPM (checked Groq's own rate-limit headers directly, not assumed
+    # from docs) — a fixed inter-batch sleep either wasted time when
+    # headroom was fine or wasn't enough when it wasn't. Groq echoes its
+    # exact remaining budget on every response; when it's too thin for
+    # another same-sized batch, sleep here proactively instead of
+    # firing the next request and eating a 429.
+    try:
+        remaining = int(resp.headers.get("x-ratelimit-remaining-tokens", "999999"))
+        if remaining < 2500:
+            log.info(f"Groq: {remaining} TPM headroom left, pausing 20s to let it refill")
+            time.sleep(20)
+    except (TypeError, ValueError):
+        pass
     text = resp.json()["choices"][0]["message"]["content"]
     return _llm_parse_response(text, batch)
 
@@ -5311,25 +5336,73 @@ def _call_gemini(api_key: str, batch: list) -> dict:
         f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={api_key}",
         headers={"Content-Type": "application/json"},
         json={"contents": [{"parts": [{"text": prompt}]}],
-              "generationConfig": {"temperature": 0.2, "maxOutputTokens": 2000}},
+              "generationConfig": {"temperature": 0.2, "maxOutputTokens": _LLM_MAX_OUTPUT_TOKENS}},
         timeout=30)
     resp.raise_for_status()
     text = resp.json()["candidates"][0]["content"]["parts"][0]["text"]
     return _llm_parse_response(text, batch)
 
 
+_OPENROUTER_MODEL_CACHE = {"models": None}
+_OPENROUTER_AVOID_PATTERNS = ("safety", "moderation", "guard", "omni", "-vl", "embed")
+
+
+def _openrouter_free_models() -> list:
+    """OpenRouter's free-model lineup rotates fast enough that hardcoding
+    one name goes stale on its own (confirmed live at build time: the
+    model this originally targeted, meta-llama/llama-3.3-70b-instruct:free,
+    was already gone from the live list minutes later) — so this discovers
+    what's actually available right now instead. Cached for the process
+    lifetime (one collection run), not persisted, since the whole point is
+    to never trust a stale snapshot across runs. Filters out safety/
+    moderation/vision/embedding models that aren't general chat models."""
+    if _OPENROUTER_MODEL_CACHE["models"] is not None:
+        return _OPENROUTER_MODEL_CACHE["models"]
+    try:
+        resp = requests.get("https://openrouter.ai/api/v1/models", timeout=15)
+        resp.raise_for_status()
+        ids = [m["id"] for m in resp.json().get("data", []) if m["id"].endswith(":free")]
+        ids = [i for i in ids if not any(p in i.lower() for p in _OPENROUTER_AVOID_PATTERNS)]
+    except Exception as e:
+        log.warning(f"OpenRouter model list fetch failed: {e}")
+        ids = []
+    _OPENROUTER_MODEL_CACHE["models"] = ids
+    return ids
+
+
 def _call_openrouter(api_key: str, batch: list) -> dict:
     prompt = _LLM_SYSTEM_PROMPT + "\n\nROWS:\n\n" + "\n\n".join(_llm_row_to_text(r) for r in batch)
-    resp = requests.post(
-        "https://openrouter.ai/api/v1/chat/completions",
-        headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
-        json={"model": "meta-llama/llama-3.3-70b-instruct:free",
-              "messages": [{"role": "user", "content": prompt}],
-              "temperature": 0.2, "max_tokens": 2000},
-        timeout=30)
-    resp.raise_for_status()
-    text = resp.json()["choices"][0]["message"]["content"]
-    return _llm_parse_response(text, batch)
+    models = _openrouter_free_models()
+    if not models:
+        raise RuntimeError("no free models currently listed by OpenRouter")
+    # The free tier can have individual models temporarily congested
+    # upstream (live-observed: two different models both 429'd with
+    # "temporarily rate-limited upstream" within the same minute) — try
+    # several candidates before giving up on this provider for the batch.
+    # A live backfill run found the first 3 candidates (always the same
+    # 3, since the model list is cached per-process) were ALL broken for
+    # the entire run (connection resets every single call) — trying only
+    # 3 meant every batch failed OpenRouter outright. Widened to 6 and
+    # shuffled per call so a run doesn't get stuck hammering the same
+    # dead models the whole time.
+    candidates = list(models[:10])
+    random.shuffle(candidates)
+    last_exc = None
+    for model_id in candidates[:6]:
+        try:
+            resp = requests.post(
+                "https://openrouter.ai/api/v1/chat/completions",
+                headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
+                json={"model": model_id, "messages": [{"role": "user", "content": prompt}],
+                      "temperature": 0.2, "max_tokens": _LLM_MAX_OUTPUT_TOKENS},
+                timeout=30)
+            resp.raise_for_status()
+            text = resp.json()["choices"][0]["message"]["content"]
+            return _llm_parse_response(text, batch)
+        except Exception as e:
+            last_exc = e
+            log.warning(f"OpenRouter [{model_id}]: {e} — trying next free model")
+    raise last_exc
 
 
 def generate_ai_inferences(rows: list) -> None:
@@ -5367,13 +5440,33 @@ def generate_ai_inferences(rows: list) -> None:
 
     batches = [todo[i:i + _LLM_BATCH_SIZE] for i in range(0, len(todo), _LLM_BATCH_SIZE)]
     filled = 0
+    # A live backfill run found the old code had no rate-limit awareness:
+    # Gemini 429'd, fell through to OpenRouter for that batch, then the
+    # VERY NEXT batch immediately retried Gemini again (its RPM window
+    # hadn't reset) and got another 429 -- repeating for 7 straight
+    # minutes across ~40 batches, filling almost nothing. Once a provider
+    # 429s, drop it from `active` for the rest of THIS run instead of
+    # re-hitting an exhausted quota every batch — same "stop retrying a
+    # confirmed-exhausted source" pattern already used for OTX/GreyNoise
+    # elsewhere in this tool. A free-tier per-minute/per-day cap doesn't
+    # reset in the ~1s between batches, so retrying immediately is pure
+    # waste, not resilience.
+    rate_limited: set = set()
     for batch in batches:
         result = {}
         for name, fn, key_name in active:
+            if name in rate_limited:
+                continue
             try:
                 result = fn(CONFIG[key_name], batch)
                 if result:
                     break
+            except requests.exceptions.HTTPError as e:
+                if e.response is not None and e.response.status_code == 429:
+                    rate_limited.add(name)
+                    log.warning(f"AI inference [{name}]: rate-limited (429) — dropping for rest of this run")
+                else:
+                    log.warning(f"AI inference [{name}]: {e} — trying next provider")
             except Exception as e:
                 log.warning(f"AI inference [{name}]: {e} — trying next provider")
         for r in batch:
@@ -5381,7 +5474,10 @@ def generate_ai_inferences(rows: list) -> None:
             if inf:
                 r["ai_inference"] = inf
                 filled += 1
-        time.sleep(1)
+        # 3s, not 1s — Groq's real per-account limit turned out to be
+        # 6,000 TPM (checked its own rate-limit headers directly), a
+        # tighter-than-documented constraint that a 1s gap didn't respect.
+        time.sleep(3)
     log.info(f"AI inference: {filled} of {len(todo)} eligible rows enriched")
 
 
