@@ -790,6 +790,20 @@ _TECH_SIGNATURES = {
     "gitlab": "GitLab", "grafana": "Grafana", "prometheus": "Prometheus",
     "minio": "MinIO", "phpmyadmin": "phpMyAdmin", "kubernetes": "Kubernetes",
     "docker": "Docker",
+    # Mail/collaboration platforms -- added after a live cert-intel review
+    # (see chat) found a Bangladeshi defense-facility's webmail portal
+    # (mail.cddl.gov.bd, Zimbra, build 2023-09-21 -- ~3 years stale against
+    # real 2023/2024 Zimbra CVEs) went completely unflagged: this dict
+    # covered infrastructure/devops tooling and network appliances, but
+    # nothing in the webmail/groupware space at all, so there was no way
+    # for a finding like this to ever get picked up regardless of how
+    # interesting it was.
+    "zimbra": "Zimbra", "outlook web app": "Exchange/OWA", "owa/": "Exchange/OWA",
+    "exchange server": "Exchange/OWA", "roundcube": "Roundcube",
+    "confluence": "Confluence", "atlassian": "Confluence/Jira",
+    "sharepoint": "SharePoint", "vmware vcenter": "vCenter", "vsphere": "vCenter",
+    "wp-content": "WordPress", "wordpress": "WordPress",
+    "drupal": "Drupal", "joomla": "Joomla",
 }
 
 
@@ -804,6 +818,77 @@ def _fingerprint_technology(*texts: str) -> list:
         if sig in combined and name not in found:
             found.append(name)
     return found
+
+
+def _fingerprint_technology_versioned(*texts: str) -> list:
+    """Same signature matching as _fingerprint_technology(), but also
+    looks for a version/build string tied to each match and appends it
+    when found -- "Zimbra" alone tells you nothing about risk; "Zimbra
+    (2023-09-21)" tells you it's ~3 years stale against real disclosed
+    CVEs, which is the actual point of fingerprinting software at all.
+    Kept separate from _fingerprint_technology() (used in 5 other places
+    for a plain tag list) rather than changing that function's return
+    shape for callers that don't need version detail.
+
+    The "Product/X.Y.Z" pattern (classic server-header style, e.g.
+    "nginx/1.18.0") is anchored DIRECTLY to the signature match, not
+    searched in a surrounding window -- a live check on real collected
+    data caught a loose window-based version of this matching "HTTP/1.1"
+    (the protocol version, present in nearly every raw HTTP dump) and
+    misreporting it as the product's own version. "Build date:" and a
+    bare "version X.Y.Z" phrase are looked for in a short window AFTER
+    the signature only (not before), since neither has a fixed-adjacency
+    convention the way a server header does."""
+    combined = " ".join((t or "") for t in texts)
+    combined_low = combined.lower()
+    found = []
+    for sig, name in _TECH_SIGNATURES.items():
+        idx = combined_low.find(sig)
+        if idx == -1:
+            continue
+        version = ""
+        m = re.match(re.escape(sig) + r"/(\d+\.\d+(?:\.\d+)?)", combined_low[idx:])
+        if m:
+            version = m.group(1)
+        else:
+            after = combined[idx:idx+150]
+            m2 = re.search(r"build date:\s*(\d{4}-\d{2}-\d{2})", after, re.IGNORECASE) or \
+                 re.search(r"version\s*:?\s*v?(\d+\.\d+(?:\.\d+)?)", after, re.IGNORECASE)
+            if m2:
+                version = m2.group(1)
+        label = f"{name} ({version})" if version else name
+        if label not in found:
+            found.append(label)
+    return found
+
+
+# Products worth escalating severity for on their own, independent of the
+# per-module file-exposure/directory-listing checks -- these are all named
+# enterprise targets with real, recurring, serious CVE histories (account
+# takeover, RCE, auth bypass), where knowing the EXACT product+version is
+# itself an actionable lead regardless of whether anything else is also
+# exposed. Deliberately excludes generic infrastructure (nginx, Apache,
+# MySQL, Redis, Elasticsearch, ...) -- "we found what web server this is"
+# isn't a signal the way "we found a 3-year-stale Zimbra build" is.
+_HIGH_VALUE_TECH = {
+    "Zimbra", "Exchange/OWA", "Confluence", "Confluence/Jira", "SharePoint",
+    "vCenter", "Citrix", "F5 BIG-IP", "Fortinet", "Palo Alto", "Cisco ASA",
+    "Pulse Secure", "Ivanti", "SonicWall", "Check Point",
+}
+
+
+def _tech_severity_floor(*texts: str) -> str:
+    """Returns "HIGH" if any _HIGH_VALUE_TECH product was fingerprinted
+    WITH a captured version/build string, else "". Meant to raise a row's
+    severity to at least this floor, never to lower it -- see chat: a
+    Bangladeshi defense facility's Zimbra webmail (build 2023-09-21, ~3
+    years stale against real disclosed CVEs) was sitting at MEDIUM
+    because the file-exposure checks this is layered on top of have no
+    concept of "named software + old version" as its own risk signal."""
+    for label in _fingerprint_technology_versioned(*texts):
+        if "(" in label and label.split(" (")[0] in _HIGH_VALUE_TECH:
+            return "HIGH"
+    return ""
 
 
 def relevance_check(text: str, domain_value: str = "", weak_terms=None, min_weak: int = 2):
@@ -2026,6 +2111,12 @@ def fetch_leakix(api_key: str, extra_domains: list = None) -> list:
         detail = _leakix_host_detail(ip)
         base_text = f"Target: {label} | Host: {host}:{port} | Plugin: {plugin} | {summary[:600]}"
         full_text = f"{base_text} | Full record: {detail}" if detail else base_text
+        # See chat -- the Zimbra/mail.cddl.gov.bd finding that started this:
+        # a named high-value product (Zimbra, Citrix, Exchange, ...) found
+        # WITH a version/build string is worth HIGH on its own, even when
+        # nothing above (file-exposure patterns) already flagged it.
+        if sev != "CRITICAL" and _tech_severity_floor(summary, plugin, detail) == "HIGH":
+            sev = "HIGH"
         return {
             "threat_id":     f"{cat}-LIX-{short_id(host+str(port)+scope)}",
             "threat_name":   f"LeakIX {scope.title()} — {label} — {plugin or 'Unknown Service'}",
@@ -3096,7 +3187,7 @@ def fetch_shodan_military(api_key: str, extra_domains: list = None) -> list:
                 loc = domain_to_country(target_domain)
                 if loc == "Unknown":
                     loc = m.get("location", {}).get("country_name", "Unknown")
-                tech = _fingerprint_technology(str(m.get("data", "")), str(m.get("product", "")))
+                tech = _fingerprint_technology_versioned(str(m.get("data", "")), str(m.get("product", "")))
                 rows.append({
                     "threat_id":     f"T3-SHD-{short_id(ip + str(m.get('port','')))}",
                     "threat_name":   label,
@@ -3335,7 +3426,7 @@ def fetch_netlas(api_key: str, extra_domains: list = None) -> list:
                     port = data.get("port") or item.get("port") or ""
                     title = (((data.get("http") or {}).get("title"))
                              or ((data.get("http") or {}).get("body_title")) or "")[:150]
-                    tech = _fingerprint_technology(title)
+                    tech = _fingerprint_technology_versioned(title)
                     rows.append({
                         "threat_id":     f"T3-NTL-{short_id(str(ip) + str(port) + domain)}",
                         "threat_name":   f"Netlas Exposed Asset — {label}",
@@ -3606,7 +3697,7 @@ def fetch_zoomeye(api_key: str, extra_domains: list = None) -> list:
                     ip = m.get("ip") or ""
                     port = m.get("port") or ""
                     country = m.get("country") or m.get("country_name") or geo
-                    tech = _fingerprint_technology(str(m.get("product", "")), str(m.get("title", "")))
+                    tech = _fingerprint_technology_versioned(str(m.get("product", "")), str(m.get("title", "")))
                     rows.append({
                         "threat_id":     f"T3-ZY-{short_id(ip + str(port))}",
                         "threat_name":   f"ZoomEye Exposed Asset — {label}",
@@ -3937,9 +4028,15 @@ def fetch_urlscan(api_key: str = "", extra_domains: list = None) -> list:
                                 if server_hdr:
                                     break
                             if server_hdr:
-                                fp = _fingerprint_technology(server_hdr)
+                                fp = _fingerprint_technology_versioned(server_hdr)
                                 if fp:
                                     tech_tags = ";" + ";".join(f"tech:{t}" for t in fp)
+                                # See chat -- a named high-value product
+                                # (Zimbra, Citrix, Exchange, ...) found WITH
+                                # a version/build string is worth HIGH on
+                                # its own, same reasoning as the LeakIX fix.
+                                if sev != "CRITICAL" and _tech_severity_floor(server_hdr) == "HIGH":
+                                    sev = "HIGH"
                             # Page IP/ASN -- only in the detail record, not
                             # /search/, per the same live schema check that
                             # found /search/ missing them entirely.

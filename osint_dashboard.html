@@ -392,6 +392,9 @@
         <option value="pivot">Downstream Pivot Hit</option>
         <option value="correlation">Multi-Source Correlation</option>
       </select>
+      <label class="new-only-wrap" title="A certificate existing for a subdomain isn't itself a finding — every organization has these. Hides only the rows that were discovered and never pivoted, weren't expired, and didn't look sensitive; pivoted/expired/sensitive-looking cert rows stay visible either way.">
+        <input type="checkbox" id="cert-hide-low-signal" checked onchange="renderCertPanel()"> Hide low-signal "discovered only" rows
+      </label>
       <span class="row-count" id="cert-row-count"></span>
     </div>
     <div class="table-wrap">
@@ -858,6 +861,65 @@ function _certPivotedDomainSet(certRows) {
   return set;
 }
 
+// Mirrors _TECH_SIGNATURES / _fingerprint_technology_versioned / _HIGH_VALUE_TECH
+// on the Python side (see chat) so the pivot-stage inference below can
+// actually read post_text for a named product+version instead of just
+// echoing r.severity — the gap that let a ~3-year-stale Zimbra webmail
+// portal (mail.cddl.gov.bd) get labelled "no significant exposure found"
+// even though the exact interesting detail was sitting right there in
+// the row's own text.
+const _TECH_SIGNATURES = {
+  "nginx":"Nginx","openresty":"OpenResty","apache":"Apache",
+  "microsoft-iis":"IIS","iis/":"IIS","cloudflare":"Cloudflare",
+  "big-ip":"F5 BIG-IP","f5-":"F5 BIG-IP","citrix":"Citrix","netscaler":"Citrix NetScaler",
+  "fortinet":"Fortinet","fortigate":"Fortinet","palo alto":"Palo Alto","pan-os":"Palo Alto",
+  "cisco asa":"Cisco ASA","cisco adaptive security":"Cisco ASA",
+  "pulse secure":"Pulse Secure","ivanti":"Ivanti","sonicwall":"SonicWall","checkpoint":"Check Point",
+  "elasticsearch":"Elasticsearch","kibana":"Kibana","opensearch":"OpenSearch",
+  "mongodb":"MongoDB","redis":"Redis","postgres":"PostgreSQL","mysql":"MySQL",
+  "rabbitmq":"RabbitMQ","jenkins":"Jenkins","gitlab":"GitLab","grafana":"Grafana",
+  "prometheus":"Prometheus","minio":"MinIO","phpmyadmin":"phpMyAdmin",
+  "kubernetes":"Kubernetes","docker":"Docker",
+  "zimbra":"Zimbra","outlook web app":"Exchange/OWA","owa/":"Exchange/OWA",
+  "exchange server":"Exchange/OWA","roundcube":"Roundcube",
+  "confluence":"Confluence","atlassian":"Confluence/Jira","sharepoint":"SharePoint",
+  "vmware vcenter":"vCenter","vsphere":"vCenter",
+  "wp-content":"WordPress","wordpress":"WordPress","drupal":"Drupal","joomla":"Joomla",
+};
+const _HIGH_VALUE_TECH = new Set([
+  "Zimbra","Exchange/OWA","Confluence","Confluence/Jira","SharePoint","vCenter",
+  "Citrix","F5 BIG-IP","Fortinet","Palo Alto","Cisco ASA","Pulse Secure","Ivanti",
+  "SonicWall","Check Point",
+]);
+function _fingerprintTechVersioned(text) {
+  const combined = text || '';
+  const combinedLow = combined.toLowerCase();
+  const found = [];
+  for (const [sig, name] of Object.entries(_TECH_SIGNATURES)) {
+    const idx = combinedLow.indexOf(sig);
+    if (idx === -1) continue;
+    let version = '';
+    const slashMatch = combinedLow.slice(idx).match(new RegExp('^' + sig.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + '/(\\d+\\.\\d+(?:\\.\\d+)?)'));
+    if (slashMatch) {
+      version = slashMatch[1];
+    } else {
+      const after = combined.slice(idx, idx + 150);
+      const m2 = after.match(/build date:\s*(\d{4}-\d{2}-\d{2})/i) || after.match(/version\s*:?\s*v?(\d+\.\d+(?:\.\d+)?)/i);
+      if (m2) version = m2[1];
+    }
+    const label = version ? `${name} (${version})` : name;
+    if (!found.includes(label)) found.push(label);
+  }
+  return found;
+}
+function _techSeverityFloor(text) {
+  for (const label of _fingerprintTechVersioned(text)) {
+    const name = label.includes(' (') ? label.split(' (')[0] : null;
+    if (name && _HIGH_VALUE_TECH.has(name)) return 'HIGH';
+  }
+  return '';
+}
+
 // Answers "what does this row actually mean" instead of just restating
 // the raw fields — the gap flagged in chat. Each stage's post_text has a
 // different shape (see fetch_crtsh/fetch_dns_records/correlate_infrastructure
@@ -884,6 +946,8 @@ function _certInference(r, stage, pivotedDomains) {
     return 'DNS record resolved';
   }
   if (stage === 'pivot') {
+    const techHits = _fingerprintTechVersioned(text).filter(l => l.includes(' ('));
+    if (techHits.length) return `⚠ Named software detected: ${techHits.join(', ')} — check for known CVEs against this version`;
     if (r.severity === 'CRITICAL') return `⚠ CRITICAL exposure confirmed via ${r.source}`;
     if (r.severity === 'HIGH') return `Exposure confirmed via ${r.source}`;
     return `Checked via ${r.source} — no significant exposure found`;
@@ -905,9 +969,22 @@ function renderCertPanel() {
 
   const q = (document.getElementById('cert-search').value||'').toLowerCase();
   const stageFilter = document.getElementById('cert-filter-stage').value;
+  const hideLowSignal = document.getElementById('cert-hide-low-signal').checked;
+  // A cert row only hits the generic "discovered, not pivoted this run"
+  // case when it's ALSO not expired and not sensitive-looking (see
+  // _certInference's own 'cert' branch) -- those other cases already
+  // carry real signal and stay visible either way. This only hides the
+  // genuinely uninformative "a subdomain exists" rows, which is most of
+  // them (every organization has certs for its subdomains; that alone
+  // isn't a finding) and was diluting the panel enough that a real find
+  // (the Zimbra/mail.cddl.gov.bd row) took deliberate filtering to surface.
+  const isLowSignal = r => _certStageOf(r) === 'cert' &&
+    _certInference(r, 'cert', pivotedDomains) === 'Subdomain discovered, not pivoted this run';
+  let hiddenCount = 0;
   const shown = certRows.filter(r=>{
     const stage = _certStageOf(r);
     if (stageFilter && stage!==stageFilter) return false;
+    if (hideLowSignal && isLowSignal(r)) { hiddenCount++; return false; }
     if (q) {
       const hay = [r.threat_name,r.source,r.post_text,r.ioc_value,r.tags,r.location].join(' ').toLowerCase();
       if (!hay.includes(q)) return false;
@@ -934,7 +1011,9 @@ function renderCertPanel() {
       <div class="sub">${c.sub}</div>
     </div>`).join('');
 
-  document.getElementById('cert-row-count').textContent = `${shown.length} of ${certRows.length} rows`;
+  document.getElementById('cert-row-count').textContent = hiddenCount
+    ? `${shown.length} of ${certRows.length} rows (${hiddenCount} low-signal rows hidden)`
+    : `${shown.length} of ${certRows.length} rows`;
 
   const tbody = document.getElementById('cert-table-body');
   tbody.innerHTML = shown.map(r=>{
