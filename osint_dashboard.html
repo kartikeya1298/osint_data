@@ -1133,16 +1133,27 @@ function _domSeverity(rows) {
 function _sevColorFor(rows) {
   return SEV_COLORS[_domSeverity(rows)]||'#64748b';
 }
+// Only http(s) URLs get turned into a real link -- post_url ultimately
+// traces back to scraped/external sources (dark web, breach sites, ...),
+// so this guards against a stray "javascript:" or similar value ever
+// being written into an href. esc() on both the URL and the visible text
+// since threat_name is the same kind of externally-sourced text.
+function _linkify(url, text) {
+  const safe = /^https?:\/\//i.test(url || '');
+  return safe
+    ? `<a href="${esc(url)}" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">${esc(text)}</a>`
+    : esc(text);
+}
 function _popupFor(label, rows, coordNote) {
   const topRows = rows.slice(0,5);
   return `
     <div style="font-family:system-ui;font-size:12px;min-width:200px">
-      <b style="font-size:13px">${label}</b>${coordNote?`<div style="color:#888;font-size:10px">${coordNote}</div>`:''}
+      <b style="font-size:13px">${esc(label)}</b>${coordNote?`<div style="color:#888;font-size:10px">${coordNote}</div>`:''}
       <div style="color:#666;margin-bottom:6px">${rows.length} threats</div>
       ${topRows.map(r=>`
         <div style="border-top:1px solid #eee;padding:4px 0">
-          <span style="color:${SEV_COLORS[r.severity]||'#999'};font-weight:700;font-size:10px">${r.severity}</span>
-          <span style="margin-left:4px;font-size:11px">${(r.threat_name||'').slice(0,45)}</span>
+          <span style="color:${SEV_COLORS[r.severity]||'#999'};font-weight:700;font-size:10px">${esc(r.severity)}</span>
+          <span style="margin-left:4px;font-size:11px">${_linkify(r.post_url, (r.threat_name||'').slice(0,45))}</span>
         </div>`).join('')}
       ${rows.length>5?`<div style="color:#888;font-size:10px;margin-top:4px">+${rows.length-5} more…</div>`:''}
     </div>`;
