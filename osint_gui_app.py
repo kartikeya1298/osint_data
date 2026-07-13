@@ -134,6 +134,17 @@ class Api:
         ).start()
         return {"ok": True}
 
+    def start_ai_backfill(self, csv_path: str = ""):
+        with self.lock:
+            if self.state == "running":
+                return {"ok": False, "error": "A run is already in progress."}
+        if csv_path and not Path(csv_path).exists():
+            return {"ok": False, "error": f"CSV not found: {csv_path}"}
+        self._reset_for_run("ai_backfill")
+        args = ["--ai-backfill", csv_path] if csv_path else ["--ai-backfill"]
+        threading.Thread(target=self._run_subprocess, args=(args,), daemon=True).start()
+        return {"ok": True}
+
     def stop(self):
         with self.lock:
             proc = self.proc

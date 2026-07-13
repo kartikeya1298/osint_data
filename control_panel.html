@@ -139,6 +139,12 @@
     </div>
 
     <div class="card">
+      <h3>AI Inference Backfill</h3>
+      <button class="run-btn" id="btn-ai-backfill" onclick="startAiBackfill()">🧠 Run AI Backfill</button>
+      <div class="run-note">Fills in the ai_inference column for master-CSV rows that don't have one yet, via Groq/Gemini/OpenRouter/Ollama — decoupled from collection so you can run it whenever those providers are actually free/responsive, instead of it blocking a full run.</div>
+    </div>
+
+    <div class="card">
       <h3>Master Dataset</h3>
       <div class="stats-grid">
         <div class="stat"><div class="label">Total Rows</div><div class="value" id="stat-rows">—</div></div>
@@ -215,6 +221,7 @@ function setStatus(state) {
   const running = state === "running";
   document.getElementById('btn-start').disabled = running;
   document.getElementById('btn-clean').disabled = running;
+  document.getElementById('btn-ai-backfill').disabled = running;
   document.getElementById('btn-stop').disabled = !running;
 }
 
@@ -302,6 +309,16 @@ async function startRun() {
 async function stopRun() {
   if (!confirm("Stop the current run?")) return;
   await pywebview.api.stop();
+}
+
+async function startAiBackfill() {
+  const res = await pywebview.api.start_ai_backfill();
+  if (!res.ok) { alert(res.error); return; }
+  clearConsole();
+  sinceIdx = 0;
+  setStatus("running");
+  startElapsedTimer();
+  startPolling();
 }
 
 async function runClean() {

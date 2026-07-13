@@ -144,6 +144,11 @@ CONFIG = {
     "leakix_api_key":          "",
     "threatfox_api_key":       "",
     "criminal_ip_api_key":     "",
+    # 1,000 free checks/day, no card — signup at abuseipdb.com/account/api.
+    # Enriches whatever IPs THIS run already found (Shodan chief among
+    # them, but not exclusively) with abuse-report history -- doesn't run
+    # any of its own discovery queries, so it costs zero Shodan credits.
+    "abuseipdb_api_key":       "",
 
     # DEEP / DARK WEB — FREE tier (key needed)
     "zoomeye_api_key":         "",
@@ -784,6 +789,13 @@ _TECH_SIGNATURES = {
     "cisco asa": "Cisco ASA", "cisco adaptive security": "Cisco ASA",
     "pulse secure": "Pulse Secure", "ivanti": "Ivanti",
     "sonicwall": "SonicWall", "checkpoint": "Check Point",
+    # Webmin/MiniServ -- added after a live Shodan review (see chat) found
+    # a Sri Lanka MoD host with port 10000 open running MiniServ and it
+    # fingerprinted as nothing at all: Webmin has real unauthenticated-RCE
+    # history (CVE-2019-15107) so an admin panel on the open internet is
+    # exactly the "named product, real CVE track record" case this dict
+    # exists for, same reasoning as the Zimbra entry above.
+    "miniserv": "Webmin", "webmin": "Webmin",
     "elasticsearch": "Elasticsearch", "kibana": "Kibana", "opensearch": "OpenSearch",
     "mongodb": "MongoDB", "redis": "Redis", "postgres": "PostgreSQL",
     "mysql": "MySQL", "rabbitmq": "RabbitMQ", "jenkins": "Jenkins",
@@ -873,7 +885,7 @@ def _fingerprint_technology_versioned(*texts: str) -> list:
 _HIGH_VALUE_TECH = {
     "Zimbra", "Exchange/OWA", "Confluence", "Confluence/Jira", "SharePoint",
     "vCenter", "Citrix", "F5 BIG-IP", "Fortinet", "Palo Alto", "Cisco ASA",
-    "Pulse Secure", "Ivanti", "SonicWall", "Check Point",
+    "Pulse Secure", "Ivanti", "SonicWall", "Check Point", "Webmin",
 }
 
 
@@ -3138,6 +3150,76 @@ def fetch_digital_shadows(api_key: str, api_secret: str) -> list:
 #  T3 | COMMUNICATION & NETWORK ATTACKS
 # ═════════════════════════════════════════════════════════════════════════
 
+# Port -> human-readable service, so `tags` says what's actually open
+# (mail server, admin panel, DNS...) instead of leaving the reader to dig
+# a bare port number out of post_text. Added in the same noise-review pass
+# as the checks below (see chat).
+_SHODAN_PORT_SERVICE = {
+    21: "ftp", 22: "ssh", 23: "telnet", 25: "smtp", 53: "dns",
+    80: "http", 110: "pop3", 143: "imap", 443: "https",
+    465: "smtps", 587: "smtp-submission", 993: "imaps", 995: "pop3s",
+    3306: "mysql", 3389: "rdp", 5432: "postgres", 6379: "redis",
+    8080: "http-alt", 9200: "elasticsearch", 10000: "webmin-panel",
+    27017: "mongodb",
+}
+
+# ccTLD second-level labels seen across our actual target list (gov.in,
+# gov.pk, gov.bd, gov.np, gov.mm, gov.cn, ...) -- not a full public-suffix-
+# list implementation, just enough that _registrable_base("mail.afd.gov.bd")
+# returns "afd.gov.bd" (the organisation) rather than "gov.bd" (which would
+# then "confirm" against ANY Bangladeshi government host) or "bd" (which
+# would confirm against anything in the country).
+_CCTLD_SECOND_LEVEL = {"gov", "mil", "ac", "co", "net", "org", "edu"}
+
+
+def _registrable_base(domain: str) -> str:
+    labels = (domain or "").lower().split(".")
+    if len(labels) >= 3 and labels[-2] in _CCTLD_SECOND_LEVEL:
+        return ".".join(labels[-3:])
+    return ".".join(labels[-2:]) if len(labels) >= 2 else (domain or "").lower()
+
+
+def _domain_matches_base(hostname: str, base: str) -> bool:
+    return bool(base) and (hostname == base or hostname.endswith("." + base))
+
+
+# RFC 5321 SMTP greeting: "220 <hostname> ESMTP ..." / "220-<hostname> ...".
+_SMTP_BANNER_HOSTNAME = re.compile(
+    r"^220[- ]([a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?)+)")
+
+
+def _banner_self_reported_host(banner: str) -> str:
+    """Pulls the hostname a service reports for ITSELF in its own greeting
+    -- currently just the SMTP 220 banner, the one place this protocol set
+    self-identifies reliably enough to regex. This is what actually caught
+    the noise in a live review (see chat): a China MoD query returning a
+    host whose own SMTP banner said "220 archive.mailsystem.com", a
+    Myanmar MoD query returning "220 mail.infosheet.org". Deliberately NOT
+    using the match's `hostnames`/`domains` fields for this check -- those
+    are exactly what Shodan's hostname: filter (the thing that selected
+    this match in the first place) is keyed off, so cross-checking a
+    result against the same field used to find it is circular and will
+    always "confirm." The banner's self-reported identity is independent
+    of what query found the host."""
+    m = _SMTP_BANNER_HOSTNAME.match((banner or "").strip())
+    return m.group(1).lower() if m else ""
+
+
+def _shodan_is_content_free(banner: str, tech_found: list) -> bool:
+    """True for a response that reveals nothing beyond "a port answered" --
+    a bare load-balancer 403 or a raw TLS handshake failure, as opposed to
+    a 403 that still fingerprints a real product (e.g. IIS/ASP.NET) behind
+    it. Added after a live review (see chat) found 5 separate BSF rows that
+    were all just an AWS ELB 403 Forbidden or a bare SSL alert -- zero
+    content between them -- yet stored as 5 independent HIGH/HIGH rows."""
+    b = (banner or "").strip()
+    if not b or b.startswith("SSL Error:"):
+        return True
+    if re.match(r"HTTP/[\d.]+\s+(401|403|404)\b", b) and not tech_found and len(b.splitlines()) <= 6:
+        return True
+    return False
+
+
 def fetch_shodan_military(api_key: str, extra_domains: list = None) -> list:
     """T3 — PAID $69/mo at shodan.io. Exposed military network infrastructure.
 
@@ -3150,8 +3232,31 @@ def fetch_shodan_military(api_key: str, extra_domains: list = None) -> list:
 
     extra_domains: CT-discovered sensitive subdomains pivoted in from
     crt.sh this run — same workflow as the LeakIX pivot (see chat), now
-    extended to every actively-working scan module, not just LeakIX."""
+    extended to every actively-working scan module, not just LeakIX.
+
+    Noise-reduction pass (see chat — a manual review of a live 36-row run
+    found roughly a third was noise): Shodan's hostname: filter matches
+    against its own historical DNS/cert index, which can be stale -- an IP
+    that used to answer for the target domain but now hosts something
+    unrelated (e.g. a China MoD query returning a host whose own SMTP
+    banner said "220 archive.mailsystem.com"). Where the banner itself
+    self-reports a hostname (currently: SMTP greetings), that's now
+    cross-checked against the query's target domain -- contradicted ->
+    tagged unconfirmed-stale-hostname + confidence LOW; confirmed ->
+    confidence HIGH; nothing to check (most non-SMTP banners) -> confidence
+    MEDIUM, not flagged either way since there's no independent evidence
+    for or against. (An earlier version of this check used the match's own
+    `hostnames`/`domains` fields instead -- dropped as circular, since
+    those are exactly what the hostname: filter is keyed off, so they
+    trivially "confirm" every result regardless of actual staleness.)
+    Severity no longer blanket-HIGH: a named high-value product+version
+    (_tech_severity_floor) is HIGH, a content-free response
+    (_shodan_is_content_free) is LOW, everything else MEDIUM. Same (ip,
+    port) matched by more than one query this run (common — a CT-pivoted
+    subdomain often resolves to infra a fixed query already found) is
+    collapsed into one row instead of counted twice."""
     rows = []
+    seen_ip_port = {}  # (ip, port) -> index into rows, for the collapse above
     queries = [
         ('hostname:"mod.gov.in"', "Indian MoD exposed infrastructure"),
         ('hostname:"drdo.gov.in"', "DRDO exposed infrastructure"),
@@ -3175,6 +3280,7 @@ def fetch_shodan_military(api_key: str, extra_domains: list = None) -> list:
         # (often a foreign CDN/cloud region), not the org's actual country;
         # same fix already applied to LeakIX this session (see chat).
         target_domain = q.split('"')[1] if '"' in q else ""
+        target_base = _registrable_base(target_domain)
         try:
             resp = requests.get("https://api.shodan.io/shodan/host/search",
                                  params={"key": api_key, "query": q, "limit": 10}, timeout=15)
@@ -3184,28 +3290,60 @@ def fetch_shodan_military(api_key: str, extra_domains: list = None) -> list:
                 _save_raw_response("Shodan", q, shodan_data)
             for m in shodan_data.get("matches", []):
                 ip = m.get("ip_str", "")
+                port = m.get("port", "")
+                banner = str(m.get("data", ""))
+                key = (ip, port)
+                if key in seen_ip_port:
+                    existing = rows[seen_ip_port[key]]
+                    if label not in existing["threat_name"]:
+                        existing["threat_name"] += f" + {label}"
+                    if "corroborated-multi-query" not in existing["tags"]:
+                        existing["tags"] += ";corroborated-multi-query"
+                    continue
                 loc = domain_to_country(target_domain)
                 if loc == "Unknown":
                     loc = m.get("location", {}).get("country_name", "Unknown")
-                tech = _fingerprint_technology_versioned(str(m.get("data", "")), str(m.get("product", "")))
+                tech = _fingerprint_technology_versioned(banner, str(m.get("product", "")))
+                content_free = _shodan_is_content_free(banner, tech)
+                tech_floor = _tech_severity_floor(banner, str(m.get("product", "")))
+                severity = tech_floor or ("LOW" if content_free else "MEDIUM")
+                self_host = _banner_self_reported_host(banner)
+                if not self_host:
+                    confidence, stale = "MEDIUM", False
+                elif _domain_matches_base(self_host, target_base):
+                    confidence, stale = "HIGH", False
+                else:
+                    confidence, stale = "LOW", True
+                service = _SHODAN_PORT_SERVICE.get(port, f"port-{port}")
+                tag_bits = ["network", "exposed", "shodan", f"service:{service}"]
+                if tech:
+                    tag_bits.append(f"tech:{','.join(tech)}")
+                if stale:
+                    tag_bits.append("unconfirmed-stale-hostname")
+                if content_free:
+                    tag_bits.append("content-free")
+                seen_ip_port[key] = len(rows)
                 rows.append({
-                    "threat_id":     f"T3-SHD-{short_id(ip + str(m.get('port','')))}",
+                    "threat_id":     f"T3-SHD-{short_id(ip + str(port))}",
                     "threat_name":   label,
                     "category_code": _domain_scan_category(label),
                     "category_name": CATEGORY_NAMES[_domain_scan_category(label)],
                     "source_layer":  "Deep Web", "source": "Shodan",
-                    "post_text":     f"Org: {m.get('org','')} | Port: {m.get('port','')} | Banner: {str(m.get('data',''))[:600]}",
+                    "post_text":     f"Org: {m.get('org','')} | Port: {port} | Banner: {banner[:600]}",
                     "post_url":      f"https://www.shodan.io/host/{ip}",
                     "timestamp":     m.get("timestamp", now_utc()),
                     "location":      loc,
-                    "severity":      "HIGH", "confidence": "HIGH",
+                    "severity":      severity, "confidence": confidence,
                     "ioc_type":      "ip", "ioc_value": ip,
-                    "tags":          "network;exposed;shodan" + (f";tech:{','.join(tech)}" if tech else ""),
+                    "tags":          ";".join(tag_bits),
                 })
             time.sleep(CONFIG["request_delay_sec"])
         except Exception as e:
             log.error(f"Shodan error [{q}]: {e}")
-    log.info(f"Shodan: {len(rows)} exposed military assets found")
+    stale_n = sum(1 for r in rows if "unconfirmed-stale-hostname" in r["tags"])
+    free_n = sum(1 for r in rows if "content-free" in r["tags"])
+    log.info(f"Shodan: {len(rows)} exposed military assets found "
+             f"({stale_n} unconfirmed-stale-hostname, {free_n} content-free)")
     return rows
 
 
@@ -5395,6 +5533,105 @@ def fetch_greynoise_enrichment(ip_list: list) -> dict:
     return results
 
 
+def fetch_ripestat_enrichment(ip_list: list) -> dict:
+    """Enrich IPs with ASN/network-ownership data via RIPEstat
+    (stat.ripe.net) -- fully public, no key, no signup at all (unlike
+    every other enrichment source here). Answers "who actually announces
+    this address space" -- e.g. distinguishing a cloud provider's own ASN
+    from the target organisation's, directly relevant background for the
+    Shodan noise review this session did (see chat): several "BSF exposed
+    infrastructure" rows turned out to just be bare AWS load-balancer
+    address space, not anything BSF-owned. Doesn't touch Shodan at all —
+    reads only IPs THIS run's other modules already found, so it costs
+    nothing against the Shodan credit budget.
+
+    Originally built against bgpview.io (a single-call API returning both
+    ASN and holder name together) -- live-tested at build time and its
+    domain didn't even resolve (NXDOMAIN on both bgpview.io and
+    api.bgpview.io), so that service appears to be dead, not just rate-
+    limiting. Switched to RIPE NCC's own stat.ripe.net, which is two
+    separate live-verified calls (network-info for the ASN, as-overview
+    for the holder name) instead of one -- ASN->holder is cached within a
+    run since many IPs here share the same ASN (e.g. one country's
+    telecom), so that second call only actually fires once per distinct
+    ASN, not once per IP."""
+    if not ip_list:
+        return {}
+    results = {}
+    asn_holder_cache: dict = {}
+    for ip in ip_list[:50]:
+        try:
+            resp = requests.get("https://stat.ripe.net/data/network-info/data.json",
+                                 params={"resource": ip}, timeout=10,
+                                 headers={"User-Agent": "MilOSINT/2.0"})
+            if resp.status_code == 429:
+                log.warning(f"RIPEstat: rate-limited after {len(results)} IPs — stopping")
+                break
+            resp.raise_for_status()
+            data = (resp.json() or {}).get("data") or {}
+            asns = data.get("asns") or []
+            if not asns:
+                time.sleep(0.3)
+                continue
+            asn = asns[0]
+            if asn not in asn_holder_cache:
+                oresp = requests.get("https://stat.ripe.net/data/as-overview/data.json",
+                                      params={"resource": f"AS{asn}"}, timeout=10,
+                                      headers={"User-Agent": "MilOSINT/2.0"})
+                holder = ""
+                if oresp.status_code == 200:
+                    holder = ((oresp.json() or {}).get("data") or {}).get("holder", "")
+                asn_holder_cache[asn] = holder
+                time.sleep(0.3)
+            results[ip] = {"asn": asn, "org": asn_holder_cache[asn], "prefix": data.get("prefix", "")}
+            time.sleep(0.3)
+        except Exception as e:
+            log.debug(f"RIPEstat [{ip}]: {e}")
+    return results
+
+
+def fetch_abuseipdb_enrichment(ip_list: list, api_key: str) -> dict:
+    """Enrich IPs with community abuse-report history via abuseipdb.com --
+    free tier (1,000 checks/day), signup required unlike GreyNoise/
+    RIPEstat. Reads only IPs THIS run's other modules already found
+    (Shodan chief among them, but not exclusively) -- makes no queries of
+    its own against Shodan, so it's free against that budget regardless of
+    this key's own quota. Same "stop on first rate-limit instead of
+    grinding through the rest" pattern as fetch_greynoise_enrichment (see
+    chat: that used to be the single slowest step in a run for zero
+    benefit once its quota was already exhausted) -- extended here to also
+    stop on a 401, confirmed live-reachable (returns a real 401, not a
+    DNS/connection failure) but would otherwise re-fail the same invalid/
+    expired key on every one of up to 50 IPs instead of just the first."""
+    if not ip_list or not api_key:
+        return {}
+    results = {}
+    headers = {"Key": api_key, "Accept": "application/json"}
+    for ip in ip_list[:50]:
+        try:
+            resp = requests.get("https://api.abuseipdb.com/api/v2/check",
+                                 params={"ipAddress": ip, "maxAgeInDays": 90},
+                                 headers=headers, timeout=10)
+            if resp.status_code == 429:
+                log.warning(f"AbuseIPDB: daily quota exhausted after {len(results)} IPs — stopping")
+                break
+            if resp.status_code == 401:
+                log.warning("AbuseIPDB: 401 Unauthorized — check abuseipdb_api_key, stopping")
+                break
+            resp.raise_for_status()
+            d = (resp.json() or {}).get("data") or {}
+            results[ip] = {
+                "score": d.get("abuseConfidenceScore", 0),
+                "reports": d.get("totalReports", 0),
+                "isp": d.get("isp", ""),
+                "country": d.get("countryCode", ""),
+            }
+            time.sleep(0.3)
+        except Exception as e:
+            log.debug(f"AbuseIPDB [{ip}]: {e}")
+    return results
+
+
 def enrich_with_virustotal(api_key: str, rows: list) -> None:
     """
     VirusTotal enrichment (v2 redesign). v1's fetch_virustotal() returned a
@@ -5918,6 +6155,18 @@ def generate_ai_inferences(rows: list) -> None:
             except requests.exceptions.ConnectionError as e:
                 rate_limited.add(name)
                 log.warning(f"AI inference [{name}]: unreachable ({e}) — dropping for rest of this run")
+            except requests.exceptions.Timeout as e:
+                # requests.exceptions.ReadTimeout does NOT subclass
+                # ConnectionError (only ConnectTimeout does, via multiple
+                # inheritance) -- a live run found this let a slow-but-live
+                # Ollama instance re-eat its full 600s timeout on every
+                # single batch instead of being dropped after the first one,
+                # same root cause the ConnectionError branch above already
+                # exists to prevent (see chat: ~32 of a 75-minute run spent
+                # here, twice). Same "won't get faster mid-run" reasoning
+                # applies to a timeout as to a refused connection.
+                rate_limited.add(name)
+                log.warning(f"AI inference [{name}]: timed out ({e}) — dropping for rest of this run")
             except Exception as e:
                 log.warning(f"AI inference [{name}]: {e} — trying next provider")
         for r in batch:
@@ -6423,6 +6672,44 @@ def generate_task_scheduler_xml(script_path: str, ts: str):
 
 
 # ═════════════════════════════════════════════════════════════════════════
+#  --ai-backfill MODE — run AI inference standalone against an existing CSV
+#  (default: the master CSV), decoupled from collection entirely (see chat:
+#  this step alone ate ~32 of a 75-minute collection run, twice, to free-
+#  tier rate limits and a slow local Ollama). Run it whenever the providers
+#  are actually free/responsive instead of blocking every collection run
+#  on it. No network calls except the AI providers themselves.
+# ═════════════════════════════════════════════════════════════════════════
+
+def ai_backfill(csv_path: str) -> None:
+    path = Path(csv_path)
+    if not path.exists():
+        log.error(f"AI backfill: {csv_path} not found")
+        return
+    with open(path, newline="", encoding="utf-8-sig", errors="replace") as f:
+        rows = list(csv.DictReader(f))
+    if not rows:
+        log.info(f"AI backfill: {csv_path} is empty, nothing to do")
+        return
+
+    before = sum(1 for r in rows if r.get("ai_inference"))
+    log.info(f"AI backfill: {len(rows) - before} of {len(rows)} rows in {csv_path} missing ai_inference")
+    generate_ai_inferences(rows)
+    after = sum(1 for r in rows if r.get("ai_inference"))
+
+    with open(path, "w", newline="", encoding="utf-8") as f:
+        w = csv.DictWriter(f, fieldnames=CSV_COLUMNS)
+        w.writeheader()
+        for row in rows:
+            w.writerow({col: row.get(col, "") for col in CSV_COLUMNS})
+    log.info(f"AI backfill: filled {after - before} rows ({after}/{len(rows)} total now have "
+             f"ai_inference) -> rewrote {csv_path}")
+
+    if CONFIG.get("dashboard_html") and str(path) == str(Path(CONFIG.get("master_csv", ""))):
+        export_dashboard_snapshot(csv_path, CONFIG["dashboard_html"])
+        log.info(f"Dashboard refreshed with backfilled inferences -> {CONFIG['dashboard_html']}")
+
+
+# ═════════════════════════════════════════════════════════════════════════
 #  --clean MODE — re-filter an existing CSV (e.g. an old merged file) using
 #  the same relevance engine as live collection, without running any network
 #  calls. Targets exactly the three sources that produce keyword false
@@ -6674,6 +6961,8 @@ def run_collection():
     log.info(f"  [T3] Shodan (network scan)             : {status('shodan_api_key')}")
     log.info(f"  [T3] SecurityTrails (DNS intel)        : {status('securitytrails_api_key')}")
     log.info(f"  [--] Censys (IP enrichment, Platform API) : {status('censys_api_id')}")
+    log.info(f"  [--] RIPEstat (ASN/ownership enrichment) : {status()}")
+    log.info(f"  [--] AbuseIPDB (IP reputation enrichment) : {status('abuseipdb_api_key')}")
     log.info(f"  [T3] ZoomEye (internet scan)           : {status('zoomeye_api_key')}")
     log.info(f"  [T3] Netlas.io (internet scan)         : {status('netlas_api_key')}")
     log.info(f"  [T3] Onyphe (internet scan)             : {status('onyphe_api_key')}")
@@ -6698,7 +6987,8 @@ def run_collection():
     log.info(f"  [T8] Telegram channels                 : ACTIVE (free — {len(CONFIG.get('telegram_channels',[]))} channels)")
     log.info(f"  [--] VirusTotal enrichment              : {status('virustotal_api_key')}")
     ai_providers = [n for n, k in [("Groq","groq_api_key"),("Gemini","gemini_api_key"),("OpenRouter","openrouter_api_key"),("Ollama","ollama_url")] if key_available(k)]
-    log.info(f"  [--] AI inference (plain-English 'so what') : {'ACTIVE — ' + '/'.join(ai_providers) if ai_providers else 'SKIPPED — set groq_api_key, gemini_api_key, openrouter_api_key, or ollama_url'}")
+    log.info(f"  [--] AI inference (plain-English 'so what') : DECOUPLED from collection — "
+             f"{'available via --ai-backfill (' + '/'.join(ai_providers) + ')' if ai_providers else 'no provider configured — set groq/gemini/openrouter_api_key or ollama_url'}")
     log.info(f"  [--] Discord alerts                    : {'ACTIVE' if CONFIG.get('discord_webhook_url') else 'DISABLED'}")
     wa_ready = CONFIG.get("twilio_account_sid") and CONFIG.get("twilio_auth_token") and CONFIG.get("whatsapp_to")
     log.info(f"  [--] WhatsApp alerts (Twilio)          : {'ACTIVE' if wa_ready else 'DISABLED'}")
@@ -6904,6 +7194,29 @@ def run_collection():
                     row["post_text"] = row.get("post_text", "") + extra + " | ".join(parts)
         log.info(f"[POST] Censys enrichment complete — {len(censys_data)} IPs enriched")
 
+    if ip_iocs:
+        log.info(f"[POST] RIPEstat ASN/ownership enrichment for {len(ip_iocs)} IPs...")
+        ripe_data = fetch_ripestat_enrichment(ip_iocs)
+        for row in all_rows:
+            if row.get("ioc_type") == "ip" and row.get("ioc_value") in ripe_data:
+                b = ripe_data[row["ioc_value"]]
+                if b.get("org"):
+                    row["post_text"] = row.get("post_text", "") + f" | [RIPEstat] AS{b.get('asn','')} {b.get('org','')}"
+        log.info(f"[POST] RIPEstat enrichment complete — {len(ripe_data)} IPs enriched")
+
+    if ip_iocs and key_available("abuseipdb_api_key"):
+        log.info(f"[POST] AbuseIPDB reputation enrichment for {len(ip_iocs)} IPs...")
+        abuse_data = fetch_abuseipdb_enrichment(ip_iocs, CONFIG["abuseipdb_api_key"])
+        for row in all_rows:
+            if row.get("ioc_type") == "ip" and row.get("ioc_value") in abuse_data:
+                a = abuse_data[row["ioc_value"]]
+                score = a.get("score", 0)
+                row["post_text"] = row.get("post_text", "") + f" | [AbuseIPDB] {score}% confidence, {a.get('reports',0)} reports"
+                if score >= 50:
+                    row["severity"] = "CRITICAL"
+                    row["tags"] = row.get("tags", "") + ";abuseipdb-reported"
+        log.info(f"[POST] AbuseIPDB enrichment complete — {len(abuse_data)} IPs enriched")
+
     if key_available("virustotal_api_key"):
         log.info("[POST] VirusTotal enrichment on this run's real IOCs...")
         enrich_with_virustotal(CONFIG["virustotal_api_key"], all_rows)
@@ -6939,10 +7252,11 @@ def run_collection():
     save_module_health(module_health)
     log.info(f"[POST] {dup_count} duplicates suppressed | {len(new_rows)} new threats this run")
 
-    if (key_available("groq_api_key") or key_available("gemini_api_key")
-            or key_available("openrouter_api_key") or key_available("ollama_url")):
-        log.info("[POST] Generating AI inference for new rows...")
-        generate_ai_inferences(new_rows)
+    log.info("[POST] Skipping AI inference during collection — run "
+             "`python military_osint_tool_v2.py --ai-backfill` whenever "
+             "providers are free/responsive to fill it in (see chat: "
+             "decoupled after this step alone twice ate ~32 of a 75-minute "
+             "run to free-tier rate limits and a slow local Ollama).")
 
     if CONFIG.get("master_csv"):
         log.info("[POST] Merging new findings into master CSV...")
@@ -6985,10 +7299,16 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Military Cyber OSINT Tool v2")
     parser.add_argument("--clean", nargs=2, metavar=("INPUT_CSV", "OUTPUT_CSV"),
                          help="Re-filter an existing CSV (e.g. an old merged file) instead of running a live collection")
+    parser.add_argument("--ai-backfill", nargs="?", const=True, metavar="CSV_PATH",
+                         help="Run AI inference on rows missing it (default: the master CSV) and exit — "
+                              "decoupled from collection, run whenever Groq/Gemini/OpenRouter/Ollama are "
+                              "actually free/responsive instead of blocking a live collection run on it")
     args = parser.parse_args()
 
     if args.clean:
         clean_existing_csv(args.clean[0], args.clean[1])
+    elif args.ai_backfill:
+        ai_backfill(args.ai_backfill if isinstance(args.ai_backfill, str) else CONFIG["master_csv"])
     else:
         run_collection()
 
